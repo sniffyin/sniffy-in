@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Block raw .html extension URLs — canonical versions are without .html
+Disallow: /*.html$
+
+Sitemap: https://sniffy.in/sitemap.xml

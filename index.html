@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- BASIC -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- TITLE (very important) -->
+    <title>Sniffy.in | Pet Grooming at Home in Pune | Dog & Cat Grooming</title>
+
+    <!-- META DESCRIPTION -->
+    <meta
+      name="description"
+      content="Sniffy offers professional dog and cat grooming at home across Pune. Safe, hygienic, stress-free pet grooming services at your doorstep."
+    />
+
+    <!-- SEO -->
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://sniffy.in/" />
+
+    <!-- LOCAL SEO -->
+    <meta name="geo.region" content="IN-MH" />
+    <meta name="geo.placename" content="Pune" />
+
+    <!-- FAVICON -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96"/>
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Sniffy" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+
+    <!-- OPEN GRAPH (WhatsApp / Social) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Pet Grooming at Home in Pune | Sniffy" />
+    <meta
+      property="og:description"
+      content="Professional dog and cat grooming at home in Pune. Book stress-free pet grooming services with Sniffy."
+    />
+    <meta property="og:url" content="https://sniffy.in/" />
+    <meta property="og:image" content="https://sniffy.in/sniffy-logo.png" />
+
+    <!-- ============================================================
+         PERFORMANCE — resource hints (zero SEO impact)
+         ============================================================ -->
+
+    <!-- Open TCP+TLS connections early to hosts the app uses at runtime -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Faster DNS for any remaining external hosts -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+
+    <!--
+      Preload the first review avatar — it is the LCP candidate on mobile.
+      Browser fetches it in parallel with the JS bundle instead of waiting
+      for React to mount. Can shave 300–600 ms off your LCP score.
+      fetchpriority="high" tells the browser to treat this above other images.
+    -->
+    <link
+      rel="preload"
+      as="image"
+      href="/images/review-1.jpg"
+      fetchpriority="high"
+    />
+
+    <!-- ============================================================ -->
+
+    <!-- STRUCTURED DATA (LOCAL BUSINESS) — untouched for SEO -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "PetGrooming",
+        "@id": "https://sniffy.in/#petgrooming",
+        "name": "Sniffy Pet Grooming",
+        "url": "https://sniffy.in",
+        "telephone": "+918971313003",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Pune",
+          "addressRegion": "MH",
+          "addressCountry": "IN"
+        },
+        "areaServed": {
+          "@type": "AdministrativeArea",
+          "name": "Pune"
+        },
+        "priceRange": "₹799 - ₹1299",
+        "serviceOffered": [
+          "Dog Grooming at Home",
+          "Cat Grooming at Home"
+        ],
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          "opens": "09:00",
+          "closes": "21:00"
+        },
+        "sameAs": [
+          "https://www.instagram.com/sniffy.in"
+        ]
+      }
+    </script>
+
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
