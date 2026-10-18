@@ -5340,4 +5340,207 @@ export const blogPosts: BlogPost[] = [
     ],
   },
 
+  // ── Post 51 ─────────────────────────────────────────────────────────────────
+  {
+    slug: 'pet-first-aid-kit-india-what-to-keep-and-what-never-to-use',
+    title: 'The Pet First-Aid Kit Every Pune Home Needs (And 8 "Home Remedies" That Hurt Pets)',
+    excerpt: "It's 11 pm, your dog is bleeding from a torn nail and your vet is closed. What's in your cupboard? Build a pet first-aid kit for Indian homes, learn the first 10 minutes of common emergencies, and see which popular remedies are actually dangerous.",
+    coverImage: '/images/grooming-session-2.jpg',
+    category: 'Pet Health',
+    readTime: '9 min read',
+    date: 'October 2026',
+    audience: 'all',
+    blocks: [
+      {
+        type: 'p',
+        text: "Most pet emergencies do not happen at 11 am on a weekday near a clinic. They happen at night, on a holiday, or during a power cut: a torn nail that will not stop bleeding, a cat that chewed a plant, a dog that ate something off the footpath. In those first ten minutes, what you do (and what you refuse to do) often matters more than what happens later.",
+      },
+      {
+        type: 'p',
+        text: "This guide covers a practical first-aid kit built from items you can buy in any Pune pharmacy, a cheat-sheet for the first ten minutes of common emergencies, and a list of well-meant home remedies that actually make things worse. It is not a replacement for a vet. It is meant to keep your pet safe until you reach one.",
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'Rule zero: the two things to arrange before any emergency' },
+      {
+        type: 'ul',
+        items: [
+          'Save the number of your regular vet and at least one 24-hour clinic near you, under a name you will recognise in a panic (for example "VET NIGHT"). Check their address and whether they treat both dogs and cats.',
+          'Keep a photo of your pet\'s vaccination card and any medical history on your phone, plus a note of their weight. Vets use weight for almost every decision.',
+        ],
+      },
+      {
+        type: 'callout',
+        text: "Call the clinic while you are on the way. A vet who knows what is coming can prepare, and can tell you what to do in the car.",
+      },
+      { type: 'h2', text: 'The kit: what to keep and why' },
+      {
+        type: 'p',
+        text: "Keep everything in one clearly labelled box or zip pouch, in a place the whole family knows. Check it every six months and replace anything past its date.",
+      },
+      { type: 'h3', text: 'For wounds and bleeding' },
+      {
+        type: 'ul',
+        items: [
+          'Sterile gauze pads and rolls, to press on bleeding and to cover wounds',
+          'Self-adhesive vet wrap (the stretchy kind that sticks only to itself). Never use plain tape directly on fur.',
+          'Sterile saline (the pharmacy ampoules or eye-wash bottles) to flush dirt out of cuts and eyes',
+          'A dilute antiseptic recommended by your vet. Ask them which one and at what dilution, because strengths on the bottle are not made for pets.',
+          'Styptic powder or a clotting pencil, for torn or over-trimmed nails. See our guides to trimming [dog nails](/blogs/trimming-your-dogs-nails-without-a-fight) and [cat nails](/blogs/trimming-cat-nails-at-home).',
+          'Blunt-tipped scissors, to cut bandage material and mats near a wound',
+        ],
+      },
+      { type: 'h3', text: 'For checking your pet' },
+      {
+        type: 'ul',
+        items: [
+          'A digital rectal thermometer with a lubricant such as plain petroleum jelly. A normal temperature for dogs and cats is roughly 38.0 to 39.2°C. Above 40°C, or below 37.5°C, needs a vet immediately.',
+          'A small torch, to look at gums, eyes, ears and throat',
+          'A pair of disposable gloves',
+        ],
+      },
+      { type: 'h3', text: 'For ticks, stings and small hazards' },
+      {
+        type: 'ul',
+        items: [
+          'A tick remover hook or fine, pointed tweezers. See [ticks in Pune](/blogs/ticks-in-pune-what-actually-works) for the right technique.',
+          'A credit card or similar flat edge, for scraping out a bee sting',
+          'A cone or soft recovery collar, to stop licking or chewing at a wound',
+        ],
+      },
+      { type: 'h3', text: 'For handling a frightened, hurting pet' },
+      {
+        type: 'ul',
+        items: [
+          'A large towel or blanket, to wrap a cat or small dog, or to use as a stretcher for a large one',
+          'A soft cloth strip or a properly fitted muzzle for a dog in pain. Never muzzle a pet that is vomiting, struggling to breathe or overheated.',
+          'A carrier for each cat and small dog, kept accessible and not buried in a loft',
+        ],
+      },
+      { type: 'h3', text: 'Papers and extras' },
+      {
+        type: 'ul',
+        items: [
+          'Printed copy of the vet and 24-hour clinic numbers and your pet\'s weight',
+          'A small bottle of any medication your pet already takes, with the vet\'s dosage written on it',
+          'A bottle of drinking water and a collapsible bowl',
+        ],
+      },
+      { type: 'h2', text: 'The first ten minutes: what to do in common emergencies' },
+      { type: 'h3', text: 'Bleeding from a nail or small cut' },
+      {
+        type: 'ul',
+        items: [
+          'Stay calm. Your pet reads your panic.',
+          'Press clean gauze firmly on the spot for a full five minutes without peeking. Peeking breaks the clot.',
+          'For a torn or cut-short nail, press styptic powder on the tip and hold.',
+          'If it is still bleeding after ten minutes, or the cut is deep, gaping or spurting, wrap loosely and go to a vet.',
+        ],
+      },
+      { type: 'h3', text: 'Suspected poisoning or eating something toxic' },
+      {
+        type: 'ul',
+        items: [
+          'Take the packet, plant or leftover with you, and note roughly how much and when.',
+          'Call a vet before doing anything. Do not make your pet vomit on your own, because for some substances (acids, petrol, sharp objects) vomiting does more harm.',
+          'Do not offer milk, oil, salt water or any "antidote" from home.',
+        ],
+      },
+      { type: 'h3', text: 'Heatstroke' },
+      {
+        type: 'ul',
+        items: [
+          'Signs: heavy panting, thick drool, bright red or pale gums, stumbling, collapse.',
+          'Move to shade or an air-conditioned room immediately, and pour cool (not ice-cold) water over the body, especially the belly, armpits and paws.',
+          'Offer small sips of water if conscious, and head to a vet even if your pet seems better. Internal damage can show up hours later. More in our [summer dog care guide](/blogs/summer-dog-care-pune-heat-paws-coat).',
+        ],
+      },
+      { type: 'h3', text: 'Insect sting or snake bite (monsoon)' },
+      {
+        type: 'ul',
+        items: [
+          'Bee or wasp: scrape the sting out sideways with a flat edge (do not squeeze it). Watch for facial swelling or breathing trouble, which means an immediate vet visit.',
+          'Suspected snake bite: keep your pet as still as possible, carry them rather than letting them walk, and go straight to a vet. Do not cut, suck, tie a tight band or apply anything to the bite.',
+        ],
+      },
+      { type: 'h3', text: 'A dog or cat fight' },
+      {
+        type: 'ul',
+        items: [
+          'Never reach between fighting animals. Use a loud noise, a blanket thrown over them or a spray of water to break it up.',
+          'Check for small puncture wounds hidden under fur. They look tiny but trap bacteria, and almost always need a vet. Cats especially get abscesses days later.',
+        ],
+      },
+      { type: 'h3', text: 'Choking or sudden trouble breathing' },
+      {
+        type: 'ul',
+        items: [
+          'Look in the mouth with a torch. If you can see the object and can hook it out without pushing it deeper, do so.',
+          'If your pet cannot breathe at all, collapses or turns blue-grey at the gums, drive to the nearest vet immediately and call ahead.',
+        ],
+      },
+      { type: 'h2', text: '8 "home remedies" that hurt pets' },
+      {
+        type: 'p',
+        text: "Almost every Indian household has a favourite remedy. Several of them are dangerous for dogs and cats, who process substances very differently from us.",
+      },
+      {
+        type: 'ul',
+        items: [
+          'Paracetamol, ibuprofen, aspirin or other human painkillers. Even one tablet can damage a cat\'s blood or a dog\'s stomach, kidneys or liver. Cats are especially sensitive.',
+          'Phenol-based floor cleaners and antiseptics (many phenyl and Dettol-type products) on skin or in mopped areas where cats lick their paws. These are toxic, particularly to cats.',
+          'Hydrogen peroxide to induce vomiting. It can burn the stomach and is not safe unless a vet tells you exactly how to use it.',
+          'Turmeric, curd, toothpaste, Vicks or coconut oil packed into wounds. They trap dirt, irritate tissue and hide the injury from the vet.',
+          'Tea tree or other essential oils on skin or in diffusers. Tea tree oil in particular is toxic to both dogs and cats.',
+          'Human shampoo, soap or dish soap for regular baths. They strip the protective skin layer; see [best dog shampoo in India](/blogs/best-dog-shampoo-in-india-what-to-use-and-avoid).',
+          'Rat poison left "just in case". Rodenticides are among the commonest poisoning causes in Indian homes, and they cause delayed internal bleeding. Use sealed bait stations placed where pets cannot reach, or avoid them completely.',
+          'Forcing water, food or liquid into a pet that is drowsy, collapsing or having a seizure. It can go into the lungs.',
+        ],
+      },
+      { type: 'h2', text: 'Foods and plants that are emergencies in disguise' },
+      {
+        type: 'p',
+        text: "Keep these out of reach, and know that eating them is a reason to call a vet even if your pet looks fine at first:",
+      },
+      {
+        type: 'ul',
+        items: [
+          'Grapes and raisins (dogs): can cause sudden kidney failure',
+          'Chocolate, especially dark and cooking chocolate',
+          'Sugar-free gum, sweets and some peanut butters containing xylitol',
+          'Onion, garlic and chives: damage red blood cells, and are present in many leftover curries and snacks',
+          'Lilies (cats): even pollen or vase water can cause kidney failure. Do not keep them in homes with cats.',
+          'Sago palm (dogs and cats): a common ornamental plant that is highly toxic, especially the seeds',
+          'Cooked bones, which splinter and can puncture the gut',
+        ],
+      },
+      {
+        type: 'p',
+        text: "Festivals add risk too. During Diwali, sweets, firecracker residue and fireworks all create emergencies. Our [Diwali pet safety guide](/blogs/diwali-pet-safety-firework-anxiety-pune) covers it in detail.",
+      },
+      { type: 'h2', text: 'Know your pet\'s "normal" so you can spot "abnormal"' },
+      {
+        type: 'p',
+        text: "First aid starts with noticing changes early. Spend two minutes a week doing a quick check of eyes, ears, gums, skin, paws and belly. Our [five-minute head-to-tail health check](/blogs/five-minute-head-to-tail-pet-health-check-at-home) shows exactly how. Regular grooming helps too: a groomer handles every part of your pet's body, and will often catch lumps, wounds, ticks or ear problems before you do.",
+      },
+      {
+        type: 'p',
+        text: "Sniffy brings a trained groomer to your home, so your pet stays calm and gets a proper once-over every visit. Book [dog grooming at home in Pune](/dog-grooming-in-pune), with visits in areas like [Baner](/dog-grooming-in-pune/baner), [Kothrud](/dog-grooming-in-pune/kothrud), [Kharadi](/dog-grooming-in-pune/kharadi) and [Hadapsar](/dog-grooming-in-pune/hadapsar), or see our [cat grooming at home](/cat-grooming-in-pune) service.",
+      },
+      { type: 'h2', text: 'Quick answers' },
+      {
+        type: 'ul',
+        items: [
+          'Can I give my dog a human painkiller in an emergency? No. Call a vet for the right medicine and dose.',
+          'Should I make my pet vomit after they eat something bad? Not unless a vet tells you to. For many substances it makes things worse.',
+          'How often should I check the kit? Every six months, and after every use.',
+          'When is it an emergency? Trouble breathing, collapse, seizures, uncontrolled bleeding, a swollen hard belly, repeated retching with nothing coming up, suspected poisoning, or a pet that suddenly cannot stand or pass urine. Go now.',
+        ],
+      },
+      {
+        type: 'callout',
+        text: "Build the kit this weekend, save two vet numbers tonight, and remember: when in doubt, call a vet first and do nothing risky yourself. Home first aid buys time. It never replaces treatment.",
+      },
+    ],
+  },
+
 ];
