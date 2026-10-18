@@ -23,7 +23,7 @@ import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import LocationPage from '../pages/LocationPage'
 import { readInlineLocationData } from './readInlineLocationData'
-import '../index.css'
+import '../marketing.css'
 
 // Lazy — ServiceDisruptionNotice imports framer-motion, and this page's body
 // is already fully prerendered static HTML, so the LCP element is painted

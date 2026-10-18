@@ -7,7 +7,7 @@
 import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import PunePage from '../pages/PunePage'
-import '../index.css'
+import '../marketing.css'
 
 // Lazy — see src/entries/location.tsx for why.
 const ServiceDisruptionNotice = lazy(() => import('../components/ServiceDisruptionNotice'))
