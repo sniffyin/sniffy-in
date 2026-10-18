@@ -5218,4 +5218,126 @@ export const blogPosts: BlogPost[] = [
     ],
   },
 
+  // ── Post 50 ─────────────────────────────────────────────────────────────────
+  {
+    slug: 'dog-tear-stains-causes-safe-cleaning-prevention-pune',
+    title: 'Dog Tear Stains: Causes, Safe Cleaning and Prevention (Pune Guide)',
+    excerpt: "Reddish-brown streaks under your dog's eyes are common in Shih Tzus, Maltese, Poodles and Pugs. Here is what causes them, what is safe to do at home, what to skip, and when to see a vet.",
+    coverImage: '/images/shihtzu-after.jpg',
+    category: 'Health & Hygiene',
+    readTime: '8 min read',
+    date: 'October 2026',
+    audience: 'dog',
+    blocks: [
+      {
+        type: 'p',
+        text: "Those rusty-brown streaks running from the corner of your dog's eyes down the muzzle are called tear stains. They are one of the most searched dog-care worries in Pune, especially among owners of white and light-coated breeds. In most dogs they are a cosmetic issue, but sometimes they point to something that needs fixing. This guide helps you tell the difference.",
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'What tear stains actually are' },
+      {
+        type: 'p',
+        text: "All dogs make tears. Normally they drain through tiny ducts into the nose. When tears overflow onto the face instead, the constantly damp fur stays moist, and that moisture picks up bacteria or yeast that produce reddish-brown pigments. The staining is the pigment in the fur, not the dirt on top of it, which is why it does not simply wash off.",
+      },
+      { type: 'h2', text: 'Common causes' },
+      {
+        type: 'ul',
+        items: [
+          'Face shape: flat or short-nosed breeds such as Pugs, Shih Tzus and Pekingese have shallow eye sockets and often overflow tears',
+          'Blocked or narrow tear ducts, sometimes from birth',
+          'Hair growing into or touching the eye, which irritates it and increases tearing',
+          'Allergies, including pollen, dust and food sensitivities, which are common in Pune',
+          'Teething in puppies, which usually settles on its own',
+          'Ear infections, which can show up as extra tearing. See [dog ear infections in Pune](/blogs/dog-ear-infections-in-pune).',
+          'Eye problems such as ingrown eyelashes, corneal scratches or infection, which need a vet',
+        ],
+      },
+      { type: 'h2', text: 'Which dogs get them most' },
+      {
+        type: 'p',
+        text: "Staining shows most on white and cream coats, so Maltese, Shih Tzus, Bichon Frises, white Poodles and Lhasa Apsos get the blame. Darker dogs have the same tearing, you just see it less. Breed guides for [Shih Tzus](/blogs/shih-tzu-grooming-in-pune-complete-guide) and [Pomeranians](/blogs/pomeranian-grooming-in-pune-complete-guide) cover the wider coat routine.",
+      },
+      { type: 'h2', text: 'When to see a vet first' },
+      {
+        type: 'p',
+        text: "Before you try any cleaning routine, rule out a medical cause. Tear staining alone is usually harmless, but the signs below are not.",
+      },
+      {
+        type: 'ul',
+        items: [
+          'Yellow or green discharge, or thick crusting in the corners of the eyes',
+          'Squinting, pawing at the eye, or keeping an eye closed',
+          'A red, swollen or cloudy eye',
+          'Sudden onset of heavy tearing in a dog who never had it',
+          'A bad smell from the damp fur, which can mean a skin or yeast infection',
+        ],
+      },
+      {
+        type: 'callout',
+        text: "Eye problems can worsen fast. If your dog is squinting, has coloured discharge or a cloudy eye, skip home remedies and see a vet the same day.",
+      },
+      { type: 'h2', text: 'How to clean tear stains safely at home' },
+      {
+        type: 'ul',
+        items: [
+          'Keep the area dry. Gently wipe under the eyes once or twice a day with a soft, clean cloth or cotton pad.',
+          'Use plain lukewarm water or a vet-approved eye wipe or solution made for dogs.',
+          'Wipe away from the eye, using a fresh pad for each eye so you do not spread bacteria.',
+          'Use a fine-toothed comb to lift crusts from the fur gently, never pulling.',
+          'Dry the area afterwards. Damp fur is what feeds the staining.',
+        ],
+      },
+      { type: 'h2', text: 'What to avoid' },
+      {
+        type: 'ul',
+        items: [
+          'Human makeup removers, hydrogen peroxide, bleach, or whitening products. They can burn the eye or the skin.',
+          'Antibiotic "tear stain" powders without a vet prescription. Some contain drugs that should not be given casually.',
+          'Home remedies such as curd, turmeric or lemon near the eyes. They can irritate and have no proven effect.',
+          'Scissors near the eye. Leave trimming to a trained groomer; one sudden head movement can cause injury.',
+        ],
+      },
+      { type: 'h2', text: 'Prevention that actually helps' },
+      {
+        type: 'ul',
+        items: [
+          'Trim the hair around the eyes regularly so it does not poke into them',
+          'Wipe the face daily, especially after meals and walks in dusty weather',
+          'Feed a good-quality, consistent diet; if staining worsens after a food change, tell your vet',
+          'Use stainless steel or ceramic bowls, and wash them daily, as some dogs react to plastic',
+          'Use filtered or clean drinking water if your tap water is hard or heavily chlorinated',
+          'Keep up with regular grooming so the face coat stays short and tidy',
+        ],
+      },
+      { type: 'h2', text: 'Pune-specific triggers' },
+      {
+        type: 'p',
+        text: "Dust during summer, pollen at the start of the monsoon and mould in humid weeks can all push tearing up. If your dog's staining flares at the same time each year, allergies are a likely suspect. Our [monsoon pet care guide](/blogs/monsoon-pet-care-pune-skin-paws-coat) and [Pune pet care calendar](/blogs/pune-pet-care-calendar-month-by-month) show what to expect through the year.",
+      },
+      { type: 'h2', text: 'How professional grooming helps' },
+      {
+        type: 'p',
+        text: "A groomer cannot cure a medical cause, but regular visits make a real difference. A tidy face trim keeps hair out of the eyes, a proper bath and thorough dry keeps the folds clean, and a groomer will often spot early signs like redness or discharge that you might miss. A [Shih Tzu haircut style](/blogs/shih-tzu-haircut-styles-pune-which-suits-you) with a short, neat face is a good example of a cut that reduces staining.",
+      },
+      {
+        type: 'p',
+        text: "Sniffy brings a trained groomer to your home, so your dog stays calm and the face gets proper attention. Book [dog grooming at home in Pune](/dog-grooming-in-pune), with visits in areas like [Baner](/dog-grooming-in-pune/baner), [Kothrud](/dog-grooming-in-pune/kothrud), [Viman Nagar](/dog-grooming-in-pune/viman-nagar) and [Hinjewadi](/dog-grooming-in-pune/hinjewadi).",
+      },
+      { type: 'h2', text: 'Quick answers' },
+      {
+        type: 'ul',
+        items: [
+          'Are tear stains harmful? Usually not, but the cause should be checked by a vet if it is new or severe.',
+          'Can stains be removed completely? Stained fur does not change colour, so it grows out. Keeping the area dry prevents new staining.',
+          'Do they go away on their own? Puppy teething stains often do. Others persist unless the cause is managed.',
+          'How often should I clean? A quick gentle wipe daily is better than an occasional hard scrub.',
+        ],
+      },
+      {
+        type: 'callout',
+        text: "Keep the area dry, keep hair out of the eyes, rule out medical causes with a vet, and avoid harsh remedies. That four-part routine handles most tear stains.",
+      },
+    ],
+  },
+
 ];
