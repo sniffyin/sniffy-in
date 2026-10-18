@@ -132,6 +132,10 @@ RewriteEngine On
 # ─── 0. SERVE DIRECTORY INDEX PAGES DIRECTLY ─────────────────────────────────
 RewriteRule ^dog-grooming-in-pune/?$ /dog-grooming-in-pune/index.html [L]
 RewriteRule ^cat-grooming-in-pune/?$ /cat-grooming-in-pune/index.html [L]
+# /blogs is both a page (blogs.html) and a folder of posts (blogs/*.html). With
+# no index.html in the folder, Apache answers /blogs and /blogs/ with 403 for
+# anyone without the service worker's cached shell — including crawlers.
+RewriteRule ^blogs/?$ /blogs.html [L]
 
 # ─── 0b. APP DOWNLOAD LINKS ──────────────────────────────────────────────────
 # Share these:   /download/admin   → Sniffy Admin APK
