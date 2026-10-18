@@ -404,5 +404,57 @@ export const locations = [
       "Camp",
       "Hadapsar"
     ]
+  },
+  {
+    slug: "hinjewadi",
+    name: "Hinjewadi",
+    postal: "411057",
+    lat: "18.5913",
+    lng: "73.7389",
+    nearby: [
+      "Wakad",
+      "Maan",
+      "Marunji",
+      "Balewadi"
+    ]
+  },
+  {
+    slug: "pimple-saudagar",
+    name: "Pimple Saudagar",
+    postal: "411027",
+    lat: "18.5980",
+    lng: "73.7997",
+    nearby: [
+      "Rahatani",
+      "Pimple Gurav",
+      "Wakad",
+      "Aundh"
+    ]
+  },
+  {
+    slug: "magarpatta",
+    name: "Magarpatta",
+    postal: "411028",
+    lat: "18.5157",
+    lng: "73.9280",
+    nearby: [
+      "Hadapsar",
+      "Amanora",
+      "Mundhwa",
+      "Sopan Baug"
+    ]
+  },
+  {
+    slug: "yerawada",
+    name: "Yerawada",
+    postal: "411006",
+    lat: "18.5510",
+    lng: "73.8830",
+    nearby: [
+      "Kalyani Nagar",
+      "Vishrantwadi",
+      "Dhanori",
+      "Viman Nagar"
+    ]
   }
 ];

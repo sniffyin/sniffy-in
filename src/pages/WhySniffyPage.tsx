@@ -11,6 +11,10 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { useSeo } from '../lib/useSeo';
+import { SEO_ROUTES } from '../data/seoRoutes';
+import { WHY_SNIFFY_FAQS } from '../data/whySniffyFaqs';
+import { RATING_VALUE, REVIEW_COUNT } from '../data/reputation';
 
 // ── Floating paw print bg decoration ─────────────────────────────────────────
 function PawBg() {
@@ -167,39 +171,18 @@ const reviews = [
 // ── Stats ─────────────────────────────────────────────────────────────────────
 const stats = [
   { value: 2800, suffix: '+', label: 'Happy pets groomed', icon: '🐾' },
-  { value: 4.9, suffix: '★', label: 'Average rating', icon: '⭐' },
+  { value: RATING_VALUE, suffix: '★', label: `Average of ${REVIEW_COUNT} Google reviews`, icon: '⭐' },
   { value: 30, suffix: '+', label: 'Areas in Pune', icon: '📍' },
   { value: 100, suffix: '%', label: 'Satisfaction rate', icon: '💜' },
 ];
 
 // ── FAQ accordion ─────────────────────────────────────────────────────────────
-const faqs = [
-  {
-    q: 'How is Sniffy different from just calling a local groomer?',
-    a: 'Local groomers are often unverified, with no fixed pricing or accountability. Sniffy groomers are certified, background-checked, and operate under our quality standards with transparent flat-rate pricing.',
-  },
-  {
-    q: 'Is home grooming as good as a salon?',
-    a: 'Often better — because your pet is relaxed in their own environment. No travel anxiety, no caging, no exposure to other animals. The groomer focuses entirely on your pet.',
-  },
-  {
-    q: 'What if my pet misbehaves or is difficult to groom?',
-    a: 'Our groomers are trained in animal behaviour and handling. We work at your pet\'s pace, and if needed, we\'ll suggest a split session. Your pet\'s comfort always comes first.',
-  },
-  {
-    q: 'Are your products safe for puppies?',
-    a: 'Yes! We use gentle, sulphate-free, puppy-safe shampoos. We\'ve groomed pups as young as 3 months without any issues.',
-  },
-];
+const faqs = WHY_SNIFFY_FAQS;
 
-function FAQItem({ q, a, index }: { q: string; a: string; index: number }) {
+function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.08 }}
+    <div
       className="border border-gray-200 rounded-2xl overflow-hidden"
     >
       <button
@@ -219,12 +202,14 @@ function FAQItem({ q, a, index }: { q: string; a: string; index: number }) {
       >
         <p className="px-6 pb-5 text-sm text-gray-600 leading-relaxed">{a}</p>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function WhySniffyPage() {
+  useSeo(SEO_ROUTES.whySniffy);
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar activePath="/why-sniffy" />
@@ -238,48 +223,33 @@ export default function WhySniffyPage() {
         <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-sniffy-yellow/10 -translate-x-1/3 translate-y-1/3 blur-2xl pointer-events-none" />
 
         <div className="max-w-3xl mx-auto text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, type: 'spring', stiffness: 200 }}
+          <div
             className="inline-flex items-center gap-2 bg-white border border-purple-200 rounded-full px-4 py-1.5 mb-6 shadow-sm"
           >
             <Award size={14} className="text-sniffy-purple" />
             <span className="text-xs font-bold text-sniffy-purple uppercase tracking-widest">Pune's Most Trusted Pet Grooming</span>
-          </motion.div>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.6 }}
+          <h1
             className="text-4xl md:text-6xl font-black text-gray-900 leading-tight mb-5"
             style={{ fontFamily: 'Georgia, serif' }}
           >
             Why Pet Parents{' '}
             <span className="relative inline-block">
               <span className="relative z-10 text-sniffy-purple">Choose Sniffy</span>
-              <motion.span
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
+              <span
                 className="absolute bottom-1 left-0 right-0 h-3 bg-sniffy-yellow/40 rounded-full origin-left -z-0"
               />
             </span>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+          <p
             className="text-gray-600 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto mb-10"
           >
             Not all grooming is equal. Here's why hundreds of Pune pet parents have ditched salons for good — and never looked back.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35 }}
+          <div
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <a
@@ -294,27 +264,23 @@ export default function WhySniffyPage() {
             >
               See the Comparison
             </a>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* ── STATS STRIP ── */}
       <section className="bg-sniffy-purple py-10 px-4">
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          {stats.map((s, i) => (
-            <motion.div
+          {stats.map((s) => (
+            <div
               key={s.label}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
             >
               <div className="text-3xl mb-1">{s.icon}</div>
               <div className="text-3xl font-black text-white">
                 <Counter target={s.value} suffix={s.suffix} />
               </div>
               <div className="text-white/60 text-xs font-medium mt-1">{s.label}</div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>
@@ -322,10 +288,7 @@ export default function WhySniffyPage() {
       {/* ── 6 REASONS ── */}
       <section className="py-20 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+          <div
             className="text-center mb-14"
           >
             <p className="text-xs font-bold uppercase tracking-widest text-sniffy-purple mb-3">6 Reasons</p>
@@ -333,16 +296,12 @@ export default function WhySniffyPage() {
               The Sniffy Difference
             </h2>
             <p className="text-gray-500 mt-4 max-w-lg mx-auto">Everything a salon offers — plus the things they can't.</p>
-          </motion.div>
+          </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {reasons.map((r, i) => (
+            {reasons.map((r) => (
               <motion.div
                 key={r.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
                 whileHover={{ y: -4, transition: { type: 'spring', stiffness: 300 } }}
                 className={`bg-gradient-to-br ${r.bg} border ${r.border} rounded-3xl p-6 cursor-default`}
               >
@@ -365,10 +324,7 @@ export default function WhySniffyPage() {
       {/* ── COMPARISON TABLE ── */}
       <section id="compare" className="py-20 px-4 bg-gray-50">
         <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+          <div
             className="text-center mb-12"
           >
             <p className="text-xs font-bold uppercase tracking-widest text-sniffy-purple mb-3">Head to Head</p>
@@ -376,12 +332,9 @@ export default function WhySniffyPage() {
               Sniffy vs The Rest
             </h2>
             <p className="text-gray-500 mt-4">See exactly how we stack up.</p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+          <div
             className="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100"
           >
             {/* Header */}
@@ -400,12 +353,8 @@ export default function WhySniffyPage() {
 
             {/* Rows */}
             {compareRows.map((row, i) => (
-              <motion.div
+              <div
                 key={row.label}
-                initial={{ opacity: 0, x: -16 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.04 }}
                 className={`grid grid-cols-4 border-b border-gray-50 hover:bg-purple-50/30 transition-colors ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'}`}
               >
                 <div className="py-4 px-6 text-sm text-gray-700 font-medium flex items-center">{row.label}</div>
@@ -418,7 +367,7 @@ export default function WhySniffyPage() {
                 <div className="py-4 border-l border-gray-100 flex items-center justify-center">
                   <Cell value={row.others} />
                 </div>
-              </motion.div>
+              </div>
             ))}
 
             {/* Legend */}
@@ -427,7 +376,7 @@ export default function WhySniffyPage() {
               <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-full bg-red-50 flex items-center justify-center"><X size={10} className="text-red-400" /></span> No</span>
               <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-full bg-yellow-50 flex items-center justify-center text-yellow-500 font-bold">~</span> Sometimes</span>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -480,20 +429,17 @@ export default function WhySniffyPage() {
       {/* ── FAQs ── */}
       <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-2xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+          <div
             className="text-center mb-10"
           >
             <p className="text-xs font-bold uppercase tracking-widest text-sniffy-purple mb-3">Still wondering?</p>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900" style={{ fontFamily: 'Georgia, serif' }}>
               Common Questions
             </h2>
-          </motion.div>
+          </div>
 
           <div className="space-y-3">
-            {faqs.map((f, i) => <FAQItem key={f.q} q={f.q} a={f.a} index={i} />)}
+            {faqs.map((f) => <FAQItem key={f.q} q={f.q} a={f.a} />)}
           </div>
         </div>
       </section>

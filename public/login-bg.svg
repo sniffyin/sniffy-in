@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 2000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Pink → peach sphere (upper area) -->
+    <radialGradient id="orb1" cx="38%" cy="38%" r="60%">
+      <stop offset="0%"  stop-color="#fef3c7"/>
+      <stop offset="35%" stop-color="#f9a8d4"/>
+      <stop offset="75%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#5b21b6"/>
+    </radialGradient>
+
+    <!-- Cream / yellow sphere (lower area — Sniffy yellow brand tie) -->
+    <radialGradient id="orb2" cx="35%" cy="35%" r="65%">
+      <stop offset="0%"  stop-color="#fff8dc"/>
+      <stop offset="45%" stop-color="#fde68a"/>
+      <stop offset="80%" stop-color="#f9a8d4"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </radialGradient>
+
+    <!-- Soft halos behind the orbs (the "bloom" you see in the ref) -->
+    <radialGradient id="halo1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#f9a8d4" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#f9a8d4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="halo2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#fde68a" stop-opacity="0.40"/>
+      <stop offset="100%" stop-color="#fde68a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Deep sniffy-purple base -->
+  <rect width="1200" height="2000" fill="#2a1064"/>
+
+  <!-- ── Lighter purple wavy ribbon across upper third ── -->
+  <path d="M -50 350 C 200 200, 500 520, 800 380 S 1300 280, 1300 380 L 1300 520 C 1000 600, 700 420, 400 540 S 100 520, -50 480 Z"
+        fill="#5b21b6" opacity="0.55"/>
+  <path d="M -50 420 C 250 300, 550 600, 850 470 S 1300 360, 1300 460 L 1300 560 C 1000 660, 700 500, 400 600 S 100 580, -50 540 Z"
+        fill="#7c3aed" opacity="0.35"/>
+
+  <!-- ── Darker accent wave through middle ── -->
+  <path d="M -50 1280 C 250 1180, 550 1420, 850 1320 S 1300 1230, 1300 1340 L 1300 1450 C 1000 1530, 700 1380, 400 1480 S 100 1470, -50 1430 Z"
+        fill="#5b21b6" opacity="0.55"/>
+  <path d="M -50 1340 C 200 1260, 500 1500, 800 1390 S 1300 1300, 1300 1400 L 1300 1500 C 1000 1580, 700 1430, 400 1530 S 100 1510, -50 1480 Z"
+        fill="#7c3aed" opacity="0.35"/>
+
+  <!-- ── Orb 1: top-right pink-to-peach with halo ── -->
+  <circle cx="1000" cy="280" r="380" fill="url(#halo1)"/>
+  <circle cx="1000" cy="280" r="160" fill="url(#orb1)"/>
+  <!-- decorative outline ring just above it -->
+  <circle cx="1080" cy="180" r="80" fill="none" stroke="#fde68a" stroke-width="2" opacity="0.55"/>
+
+  <!-- ── Orb 2: bottom-left cream/yellow with halo ── -->
+  <circle cx="220" cy="1620" r="420" fill="url(#halo2)"/>
+  <circle cx="220" cy="1620" r="190" fill="url(#orb2)"/>
+  <!-- spiral-feeling stroke ring next to it -->
+  <ellipse cx="490" cy="1530" rx="170" ry="120" fill="none" stroke="#f9a8d4" stroke-width="1.5" opacity="0.55"/>
+  <ellipse cx="490" cy="1530" rx="140" ry="95"  fill="none" stroke="#f9a8d4" stroke-width="1.5" opacity="0.45"/>
+  <ellipse cx="490" cy="1530" rx="110" ry="72"  fill="none" stroke="#f9a8d4" stroke-width="1.5" opacity="0.35"/>
+
+  <!-- ── Scattered decorative elements ── -->
+  <g stroke-linecap="round">
+    <!-- yellow plus signs (sniffy brand colour) -->
+    <g stroke="#fde68a" stroke-width="4" opacity="0.85">
+      <line x1="640" y1="540" x2="680" y2="540"/><line x1="660" y1="520" x2="660" y2="560"/>
+      <line x1="240" y1="900" x2="280" y2="900"/><line x1="260" y1="880" x2="260" y2="920"/>
+      <line x1="1050" y1="1820" x2="1090" y2="1820"/><line x1="1070" y1="1800" x2="1070" y2="1840"/>
+    </g>
+    <!-- pink plus signs -->
+    <g stroke="#f9a8d4" stroke-width="4" opacity="0.85">
+      <line x1="900" y1="780" x2="940" y2="780"/><line x1="920" y1="760" x2="920" y2="800"/>
+      <line x1="400" y1="1880" x2="440" y2="1880"/><line x1="420" y1="1860" x2="420" y2="1900"/>
+      <line x1="1100" y1="1450" x2="1140" y2="1450"/><line x1="1120" y1="1430" x2="1120" y2="1470"/>
+    </g>
+  </g>
+  <!-- tiny outlined circles -->
+  <g fill="none" stroke-width="2" opacity="0.7">
+    <circle cx="820" cy="1180" r="14" stroke="#fde68a"/>
+    <circle cx="380" cy="650"  r="10" stroke="#f9a8d4"/>
+    <circle cx="1080" cy="1700" r="12" stroke="#f9a8d4"/>
+  </g>
+</svg>

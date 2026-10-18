@@ -28,6 +28,10 @@ import {
   bibewadiCatLocation, bibewadiCatReviews, bibewadiAQsCat, bibewadiCatMapEmbed,
   campCatLocation, campCatReviews, campFAQsCat, campCatMapEmbed,
   wanowrieCatLocation, wanowrieCatReviews, wanowrieFAQsCat, wanowrieCatMapEmbed,
+  hinjewadiCatLocation, hinjewadiCatReviews, hinjewadiFAQsCat, hinjewadiCatMapEmbed,
+  pimpleSaudagarCatLocation, pimpleSaudagarCatReviews, pimpleSaudagarFAQsCat, pimpleSaudagarCatMapEmbed,
+  magarpattaCatLocation, magarpattaCatReviews, magarpattaFAQsCat, magarpattaCatMapEmbed,
+  yerawadaCatLocation, yerawadaCatReviews, yerawadaFAQsCat, yerawadaCatMapEmbed,
 } from './catLocationData';
 
 export const CAT_LOCATION_CONTENT = {
@@ -60,6 +64,10 @@ export const CAT_LOCATION_CONTENT = {
   "bibewadi": { location: bibewadiCatLocation, reviews: bibewadiCatReviews, faqs: bibewadiAQsCat, mapEmbed: bibewadiCatMapEmbed },
   "camp": { location: campCatLocation, reviews: campCatReviews, faqs: campFAQsCat, mapEmbed: campCatMapEmbed },
   "wanowrie": { location: wanowrieCatLocation, reviews: wanowrieCatReviews, faqs: wanowrieFAQsCat, mapEmbed: wanowrieCatMapEmbed },
+  "hinjewadi": { location: hinjewadiCatLocation, reviews: hinjewadiCatReviews, faqs: hinjewadiFAQsCat, mapEmbed: hinjewadiCatMapEmbed },
+  "pimple-saudagar": { location: pimpleSaudagarCatLocation, reviews: pimpleSaudagarCatReviews, faqs: pimpleSaudagarFAQsCat, mapEmbed: pimpleSaudagarCatMapEmbed },
+  "magarpatta": { location: magarpattaCatLocation, reviews: magarpattaCatReviews, faqs: magarpattaFAQsCat, mapEmbed: magarpattaCatMapEmbed },
+  "yerawada": { location: yerawadaCatLocation, reviews: yerawadaCatReviews, faqs: yerawadaFAQsCat, mapEmbed: yerawadaCatMapEmbed },
 };
 
 export const CAT_LOCATION_REGISTRY = Object.entries(CAT_LOCATION_CONTENT).map(([slug, content]) => ({

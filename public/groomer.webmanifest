@@ -1,0 +1,41 @@
+{
+  "id": "/groomer",
+  "name": "Sniffy Groomer",
+  "short_name": "Sniffy Groomer",
+  "description": "On-the-go app for Sniffy groomers — assigned sessions, navigation, and milestones.",
+  "start_url": "/groomer?source=pwa",
+  "scope": "/groomer",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "categories": ["business", "productivity"],
+  "background_color": "#ffffff",
+  "theme_color": "#451a8b",
+  "icons": [
+    {
+      "src": "/favicon/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

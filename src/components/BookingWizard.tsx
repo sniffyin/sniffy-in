@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "../lib/supabase";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { LOTTIE_DOG, LOTTIE_CAT, LOTTIE_LOCATION } from "../lib/lottieAssets";
 
 /* ── Dog Button ── */
 function DogButton({ onClick }: { onClick: () => void }) {
@@ -32,7 +33,7 @@ function DogButton({ onClick }: { onClick: () => void }) {
     >
       <div style={{ width: "100%", height: "78%", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <DotLottieReact
-          src="/lottie/Cute_Doggie.lottie"
+          src={LOTTIE_DOG}
           autoplay
           loop
           style={{ width: "160%", height: "160%", marginTop: "8%" }}
@@ -74,7 +75,7 @@ function CatButton({ onClick }: { onClick: () => void }) {
     >
       <div style={{ width: "100%", height: "78%", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <DotLottieReact
-          src="/lottie/Loader_cat.lottie"
+          src={LOTTIE_CAT}
           autoplay
           loop
           style={{ width: "160%", height: "160%", marginTop: "-5%" }}
@@ -277,6 +278,10 @@ interface BookingWizardProps {
   onSuccess: () => void;
 }
 
+function capitalizeFirst(value: string): string {
+  return value.length ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+}
+
 /* DOG BREEDS
 Common Indian grooming breeds first
 */
@@ -384,16 +389,57 @@ export default function BookingWizard({ open, onClose, onSuccess }: BookingWizar
     age: "",
     name: "",
     phone: "",
+    petVaccinated: "" as "" | "yes" | "no",
     locationLabel: "",
     locationCoords: null as { lat: number; lng: number } | null,
   });
 
   const [locationStatus, setLocationStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
+  // Persistent "this field is invalid" flags — set on a blocked Next/Confirm
+  // click, cleared as soon as the user fixes that specific field.
+  const [invalid, setInvalid] = useState<Record<string, boolean>>({});
+  // Transient flags that only drive the one-shot shake animation.
+  const [shakeKeys, setShakeKeys] = useState<Record<string, boolean>>({});
+
+  const markInvalid = (keys: string[]) => {
+    setInvalid((prev) => {
+      const next = { ...prev };
+      keys.forEach((k) => (next[k] = true));
+      return next;
+    });
+    setShakeKeys((prev) => {
+      const next = { ...prev };
+      keys.forEach((k) => (next[k] = true));
+      return next;
+    });
+    setTimeout(() => {
+      setShakeKeys((prev) => {
+        const next = { ...prev };
+        keys.forEach((k) => (next[k] = false));
+        return next;
+      });
+    }, 400);
+  };
+
+  const clearInvalid = (key: string) => {
+    setInvalid((prev) => (prev[key] ? { ...prev, [key]: false } : prev));
+  };
+
+  const fieldClass = (key: string, base: string) =>
+    `${base} ${shakeKeys[key] ? "field-shake" : ""}`;
+
+  const fieldStyle = (key: string): React.CSSProperties =>
+    invalid[key]
+      ? { borderColor: "#ef4444", boxShadow: "0 0 0 3px rgba(239,68,68,0.12)" }
+      : {};
+
   const resetWizard = () => {
     setStep(1);
     setSubmitError(null);
     setLocationStatus("idle");
+    setInvalid({});
+    setShakeKeys({});
     setForm({
       service: "",
       package: "",
@@ -402,6 +448,7 @@ export default function BookingWizard({ open, onClose, onSuccess }: BookingWizar
       age: "",
       name: "",
       phone: "",
+      petVaccinated: "",
       locationLabel: "",
       locationCoords: null,
     });
@@ -436,17 +483,60 @@ export default function BookingWizard({ open, onClose, onSuccess }: BookingWizar
       name: form.name,
       phone: form.phone,
       pet_type: form.service,
+      pet_name: capitalizeFirst(form.petName.trim()),
       breed: form.breed,
       age: ageInt,
       medical: "",
       city: "Pune",
       package: form.package,
       location: locationValue,  // single column
+      pet_vaccinated: form.petVaccinated === "yes",
     };
 
     try {
       const { error } = await supabase.from("bookings").insert([payload]);
       if (error) throw error;
+
+      // ── Telegram Notification ──────────────────────────────────────────
+      try {
+        const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+        const chatId   = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+
+        if (botToken && chatId) {
+          const locationLine = locationValue
+            ? `📍 *Location:* ${locationValue}`
+            : `📍 *Location:* Not provided`;
+
+          const message =
+            `🐾 *New Booking — Sniffy!*\n\n` +
+            `👤 *Name:* ${form.name}\n` +
+            `📞 *Phone:* ${form.phone}\n` +
+            `🐶 *Pet:* ${payload.pet_name} — ${form.service} (${form.breed}, ${form.age})\n` +
+            `💉 *Vaccinated:* ${form.petVaccinated === "yes" ? "Yes" : "No"}\n` +
+            `✂️ *Package:* ${form.package}\n` +
+            `🏙️ *City:* Pune\n` +
+            `${locationLine}\n` +
+            `🕐 *Time:* ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}`;
+
+          await fetch(
+            `https://api.telegram.org/bot${botToken}/sendMessage`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                chat_id: chatId,
+                text: message,
+                parse_mode: "Markdown",
+              }),
+            }
+          );
+        }
+      } catch (telegramErr) {
+        // Telegram failure should never block the booking confirmation
+        console.warn("Telegram notification failed:", telegramErr);
+      }
+      // ──────────────────────────────────────────────────────────────────
+
       onSuccess();
       resetWizard();
       onClose();
@@ -466,7 +556,12 @@ export default function BookingWizard({ open, onClose, onSuccess }: BookingWizar
     form.service === "Dog Grooming" ? dogBreeds : catBreeds;
 
   const petInfoComplete =
-    form.breed !== "" && form.age !== "";
+    form.petName.trim() !== "" && form.breed !== "" && form.age !== "";
+
+  const locationComplete = !!(form.locationCoords || form.locationLabel);
+
+  const contactComplete =
+    !!form.name.trim() && form.phone.length === 10 && form.petVaccinated !== "";
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
@@ -562,15 +657,24 @@ export default function BookingWizard({ open, onClose, onSuccess }: BookingWizar
               </h4>
 
               <input
-                placeholder="Pet Name (optional)"
-                className="w-full border rounded-xl px-4 py-3"
-                onChange={(e)=>setForm({...form,petName:e.target.value})}
+                placeholder="Pet Name"
+                value={form.petName}
+                className={fieldClass("petName", "w-full border rounded-xl px-4 py-3")}
+                style={fieldStyle("petName")}
+                onChange={(e)=>{
+                  clearInvalid("petName");
+                  setForm({...form, petName: capitalizeFirst(e.target.value)});
+                }}
               />
 
               <select
                 value={form.breed}
-                className="w-full border rounded-xl px-4 py-3"
-                onChange={(e)=>setForm({...form,breed:e.target.value})}
+                className={fieldClass("breed", "w-full border rounded-xl px-4 py-3")}
+                style={fieldStyle("breed")}
+                onChange={(e)=>{
+                  clearInvalid("breed");
+                  setForm({...form,breed:e.target.value});
+                }}
               >
 
                 <option value="">Select Breed</option>
@@ -585,8 +689,12 @@ export default function BookingWizard({ open, onClose, onSuccess }: BookingWizar
 
               <select
                 value={form.age}
-                className="w-full border rounded-xl px-4 py-3"
-                onChange={(e)=>setForm({...form,age:e.target.value})}
+                className={fieldClass("age", "w-full border rounded-xl px-4 py-3")}
+                style={fieldStyle("age")}
+                onChange={(e)=>{
+                  clearInvalid("age");
+                  setForm({...form,age:e.target.value});
+                }}
               >
 
                 <option value="">Age of Pet</option>
@@ -606,12 +714,21 @@ export default function BookingWizard({ open, onClose, onSuccess }: BookingWizar
                 </button>
 
                 <button
-                  disabled={!petInfoComplete}
-                  onClick={next}
+                  onClick={() => {
+                    if (!petInfoComplete) {
+                      const missing: string[] = [];
+                      if (form.petName.trim() === "") missing.push("petName");
+                      if (form.breed === "") missing.push("breed");
+                      if (form.age === "") missing.push("age");
+                      markInvalid(missing);
+                      return;
+                    }
+                    next();
+                  }}
                   className={`px-6 py-2 rounded-full font-semibold
                     ${
                       !petInfoComplete
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      ? "bg-gray-300 text-gray-500"
                       : "bg-sniffy-purple text-white"
                     }`}
                 >
@@ -634,7 +751,7 @@ export default function BookingWizard({ open, onClose, onSuccess }: BookingWizar
                 {/* Overflow-clip wrapper kills the internal lottie padding */}
                 <div style={{ width: 120, height: 90, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <DotLottieReact
-                    src="/lottie/Location.lottie"
+                    src={LOTTIE_LOCATION}
                     autoplay
                     loop
                     style={{ width: 170, height: 170, marginTop: -20 }}
@@ -672,6 +789,7 @@ export default function BookingWizard({ open, onClose, onSuccess }: BookingWizar
                           addr.city ||
                           label;
                       } catch (_) {}
+                      clearInvalid("location");
                       setForm((f) => ({ ...f, locationLabel: label, locationCoords: { lat, lng } }));
                       setLocationStatus("success");
                     },
@@ -751,9 +869,17 @@ export default function BookingWizard({ open, onClose, onSuccess }: BookingWizar
               {/* Area dropdown — SECONDARY */}
               <select
                 value={form.locationLabel && !form.locationCoords ? form.locationLabel : ""}
-                className="w-full border rounded-xl px-4 py-3 text-gray-800"
-                style={{ borderColor: form.locationLabel && !form.locationCoords ? "#6B2FA0" : "#e5e7eb" }}
+                className={fieldClass("location", "w-full border rounded-xl px-4 py-3 text-gray-800")}
+                style={{
+                  borderColor: invalid.location
+                    ? "#ef4444"
+                    : form.locationLabel && !form.locationCoords
+                    ? "#6B2FA0"
+                    : "#e5e7eb",
+                  boxShadow: invalid.location ? "0 0 0 3px rgba(239,68,68,0.12)" : undefined,
+                }}
                 onChange={(e) => {
+                  clearInvalid("location");
                   setForm({ ...form, locationLabel: e.target.value, locationCoords: null });
                   setLocationStatus("idle");
                 }}
@@ -788,13 +914,29 @@ export default function BookingWizard({ open, onClose, onSuccess }: BookingWizar
                 </motion.div>
               )}
 
+              {invalid.location && (
+                <p className="text-red-500 text-xs text-center -mt-1">
+                  Please share your location or select an area to continue.
+                </p>
+              )}
+
               <div className="flex justify-between pt-2">
                 <button onClick={back} className="text-gray-500 text-sm">← Back</button>
                 <button
-                  onClick={next}
-                  className="px-6 py-2 rounded-full font-semibold bg-sniffy-purple text-white"
+                  onClick={() => {
+                    if (!locationComplete) {
+                      markInvalid(["location"]);
+                      return;
+                    }
+                    next();
+                  }}
+                  className={`px-6 py-2 rounded-full font-semibold ${
+                    locationComplete
+                      ? "bg-sniffy-purple text-white"
+                      : "bg-gray-300 text-gray-500"
+                  }`}
                 >
-                  {form.locationLabel ? "Next →" : "Skip →"}
+                  Next →
                 </button>
               </div>
             </div>
@@ -812,31 +954,75 @@ export default function BookingWizard({ open, onClose, onSuccess }: BookingWizar
 
               <input
                 placeholder="Your Name"
-                className="w-full border rounded-xl px-4 py-3"
-                onChange={(e)=>setForm({...form,name:e.target.value})}
+                className={fieldClass("name", "w-full border rounded-xl px-4 py-3")}
+                style={fieldStyle("name")}
+                onChange={(e)=>{
+                  clearInvalid("name");
+                  setForm({...form,name:e.target.value});
+                }}
               />
 
               <input
                 placeholder="Mobile Number"
                 maxLength={10}
-                className="w-full border rounded-xl px-4 py-3"
+                className={fieldClass("phone", "w-full border rounded-xl px-4 py-3")}
+                style={fieldStyle("phone")}
                 onChange={(e)=>{
                   const value = e.target.value.replace(/\D/g,'')
+                  clearInvalid("phone");
                   setForm({...form,phone:value})
                 }}
               />
+
+              <div
+                className={fieldClass("petVaccinated", "w-full border rounded-xl pl-4 pr-1.5 py-1.5 flex items-center justify-between gap-3")}
+                style={fieldStyle("petVaccinated")}
+              >
+                <span className="text-sm text-gray-700">
+                  Pet vaccinated? <span className="text-red-500">*</span>
+                </span>
+                <div className="flex items-center rounded-full bg-gray-100 p-0.5 flex-shrink-0">
+                  {(["yes", "no"] as const).map((opt) => (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => {
+                        clearInvalid("petVaccinated");
+                        setForm({ ...form, petVaccinated: opt });
+                      }}
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                        form.petVaccinated === opt
+                          ? "bg-sniffy-purple text-white shadow-sm"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      {opt === "yes" ? "Yes" : "No"}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               {submitError && (
                 <p className="text-red-500 text-sm text-center">{submitError}</p>
               )}
 
               <button
-                disabled={!form.name || form.phone.length !== 10 || isSubmitting}
-                onClick={handleSubmit}
+                disabled={isSubmitting}
+                onClick={() => {
+                  if (!contactComplete) {
+                    const missing: string[] = [];
+                    if (!form.name.trim()) missing.push("name");
+                    if (form.phone.length !== 10) missing.push("phone");
+                    if (form.petVaccinated === "") missing.push("petVaccinated");
+                    markInvalid(missing);
+                    return;
+                  }
+                  handleSubmit();
+                }}
                 className={`w-full py-3 rounded-full font-semibold transition
                   ${
-                    !form.name || form.phone.length !== 10 || isSubmitting
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    !contactComplete || isSubmitting
+                    ? "bg-gray-300 text-gray-500"
                     : "bg-sniffy-purple text-white"
                   }`}
               >

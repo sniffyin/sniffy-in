@@ -22,6 +22,34 @@ RewriteEngine On
 </IfModule>
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# WEBP CONTENT NEGOTIATION
+#
+# Serves foo.webp in place of foo.jpg / foo.png when the browser advertises WebP
+# support AND a .webp sibling exists on disk. Done here rather than with <picture>
+# markup because the same images are rendered from three places — HeroCarousel,
+# HomeStories and the prerendered HTML in scripts/prerenderLocationBody.ts — plus
+# the 66 generated locality pages. One rule covers all of them and cannot drift.
+#
+# Only the grooming-session photos and a couple of others actually have .webp
+# siblings; `-f` means everything else falls through to the original untouched.
+# Generate/refresh siblings with sharp when adding images (see repo notes).
+#
+# The Vary header is not optional: without it a shared/CDN cache can hand a WebP
+# body to a client that never asked for one.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+<IfModule mod_rewrite.c>
+  RewriteCond %{HTTP_ACCEPT} image/webp
+  RewriteCond %{REQUEST_FILENAME} (?i)(.*)\.(jpe?g|png)$
+  RewriteCond %1\.webp -f
+  RewriteRule (?i)(.*)\.(jpe?g|png)$ $1.webp [T=image/webp,E=WEBP_SERVED:1,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header append Vary Accept env=REDIRECT_WEBP_SERVED
+</IfModule>
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # CACHING — dual strategy (mod_expires + mod_headers fallback)
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -31,6 +59,15 @@ RewriteEngine On
   <FilesMatch "\.(js|css)$">
     ExpiresDefault "access plus 1 year"
   </FilesMatch>
+
+  <!-- The service worker script itself must never be far-future cached —
+       it's the one file whose staleness silently pins every visitor to an
+       old build forever, since the SW it installs is what decides whether
+       to fetch anything else fresh. The generic \.(js|css)$ rule above
+       matches it too, so this override must come after it. -->
+  <Files "sw.js">
+    ExpiresActive Off
+  </Files>
 
   ExpiresByType image/jpeg    "access plus 1 week"
   ExpiresByType image/png     "access plus 1 week"
@@ -57,6 +94,16 @@ RewriteEngine On
   <FilesMatch "\.(js|css)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
+
+  <!-- Override for sw.js — must come after the \.(js|css)$ block above so
+       this Cache-Control wins. Was being served as "immutable, 1 year" like
+       any other JS asset, which meant browsers (and any CDN in front of the
+       origin) kept handing out the pre-cyber-attack service worker for a
+       full year instead of picking up each new deploy — the root cause of
+       visitors seeing a stale cached site. -->
+  <Files "sw.js">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </Files>
 
   <FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|ico)$">
     Header set Cache-Control "public, max-age=604800, must-revalidate"
@@ -86,6 +133,25 @@ RewriteEngine On
 RewriteRule ^dog-grooming-in-pune/?$ /dog-grooming-in-pune/index.html [L]
 RewriteRule ^cat-grooming-in-pune/?$ /cat-grooming-in-pune/index.html [L]
 
+# ─── 0b. APP DOWNLOAD LINKS ──────────────────────────────────────────────────
+# Share these:   /download/admin   → Sniffy Admin APK
+#                /download/groomer → Sniffy Groomer APK
+# The APK files live in public/downloads/ (copied to dist/downloads/ by Vite).
+# To ship a new build, overwrite the file with the same name — links never change.
+RewriteRule ^download/admin/?$   /downloads/sniffy-admin.apk   [L,NC]
+RewriteRule ^download/groomer/?$ /downloads/sniffy-groomer.apk [L,NC]
+
+<IfModule mod_mime.c>
+  AddType application/vnd.android.package-archive .apk
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.apk$">
+    Header set Content-Disposition "attachment"
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
 # ─── 1. .html → clean URL (301) ──────────────────────────────────────────────
 # If anyone visits /wakad.html or /dog-grooming-in-pune/wakad.html,
 # redirect them to the canonical clean URL.
@@ -103,7 +169,49 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.+)$ /$1.html [L]
 
-# ─── 4. SPA FALLBACK (for React routes) ──────────────────────────────────────
+# ─── 3b. MISSING HASHED ASSETS → REAL 404 (never SPA-fallback) ───────────────
+# Files in /assets/ are content-hashed and immutable. A request for one that
+# does NOT exist means a stale HTML page is pointing at an old build's asset
+# (typically after a partial deploy: new /assets/ + index.html uploaded, but
+# the dog-/cat-grooming-in-pune HTML folders left behind). Without this rule
+# such a request falls through to the SPA fallback (rule 4) and gets served
+# index.html with a text/html MIME type — which the browser rejects with the
+# confusing "Failed to load module script" / "Refused to apply style" errors.
+# Returning a clean 404 makes the failure obvious and easy to diagnose.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^assets/ - [R=404,L]
+
+# ─── 4. SPA FALLBACK — ONLY the three routes that have no static file ────────
+#
+# This used to be an unconditional `RewriteRule ^ /index.html [L]`, which meant
+# EVERY unknown path was answered with the home page shell and **HTTP 200**:
+#
+#   /dog-grooming-in-pune/typo   → 200 + home page
+#   /old-campaign-url            → 200 + home page
+#   /wp-login.php                → 200 + home page
+#
+# Google classifies that as a soft 404. It spends crawl budget re-checking URLs
+# that do not exist, reports them in Search Console instead of indexing real
+# pages, and — because index.html carried `<link rel="canonical" href="/">` —
+# told Google every one of those junk URLs was a duplicate of the home page.
+#
+# It is no longer needed for the marketing site: `scripts/prerenderSpa.ts` emits
+# a real .html file for every info route and blog post, and the four page
+# generators emit one per locality, so rule 3 above already serves all of them
+# from disk. The ONLY routes in src/App.tsx with no file behind them are the
+# three app surfaces, which are client-rendered behind a login gate and are
+# `noindex` by nature:
+#
+#   /admin  /groomer  /account
+#
+# Anything else now falls through to a genuine 404 (see ErrorDocument below).
+# If you add a new React route, either prerender it in prerenderSpa.ts (preferred
+# — it gets a real <title>, canonical and body for crawlers) or add it here.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ /index.html [L]
+RewriteRule ^(admin|groomer|account|quick-book)(/.*)?$ /index.html [L]
+
+# ─── 5. 404 ──────────────────────────────────────────────────────────────────
+# Reached when nothing above matched and no file exists. Serves the prerendered
+# error page from scripts/prerenderSpa.ts with a real 404 status.
+ErrorDocument 404 /404.html

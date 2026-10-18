@@ -16,30 +16,19 @@ interface LocationFAQsProps {
 export default function LocationFAQs({ location, faqs }: LocationFAQsProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqs.map((faq) => ({
-      '@type': 'Question',
-      name: faq.question,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: faq.answer,
-      },
-    })),
-  };
-
   return (
     <section
       className="py-12 md:py-16 px-4 bg-gradient-to-b from-white to-sniffy-purple/10"
       aria-labelledby={`faq-heading-${location.slug}`}
     >
 
-      {/* SEO Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      {/*
+        FAQPage schema is NOT emitted here. `scripts/generateLocationPages.ts`
+        and `generateCatLocationPages.ts` bake it into each generated page's
+        <head> from this same `faqs` array (via faqSchemaTag), so a crawler sees
+        it without running JS. Emitting it here as well put two FAQPage nodes on
+        every locality page.
+      */}
 
       <div className="max-w-3xl mx-auto">
 

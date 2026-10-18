@@ -1,92 +1,99 @@
-import { motion } from 'framer-motion';
-import { Crown, Check, Zap } from 'lucide-react';
+import { Check, Zap, Phone } from 'lucide-react';
 
 export default function EliteMembership() {
   const benefits = [
-    { text: '10% OFF on every grooming service', icon: '💸' },
-    { text: '2 complimentary coat conditioning oil massages (worth ₹600)', icon: '✨' },
-    { text: 'Priority booking — 24-hour advance access', icon: '⚡' },
-    { text: 'Birthday surprise gift for your pet', icon: '🎁' },
-    { text: '2 complimentary pet consultancy sessions (worth ₹498)', icon: '🩺' },
+    '10% OFF on every grooming service',
+    '2 coat conditioning oil massages (worth ₹600)',
+    'Priority booking — 24-hr advance access',
+    'Birthday surprise gift for your pet',
+    '2 pet consultancy sessions (worth ₹498)',
   ];
 
   return (
-    <section className="py-16 px-4 bg-white">
-      <div className="max-w-5xl mx-auto">
-
-        {/* Section label */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-10"
+    <section id="elite" className="py-6 md:py-8 px-4 bg-white">
+      <div className="max-w-7xl mx-auto">
+        <div
+          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#2a1152] via-[#3a1a6b] to-[#2e1065] shadow-xl"
         >
-          <p className="text-xs uppercase tracking-widest text-sniffy-purple font-bold mb-2">Members only</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-            Sniffy <span className="text-sniffy-yellow">Elite</span> Membership
-          </h2>
-        </motion.div>
+          {/* Ambient glow accents — kept subtle so the panel reads calm, not punchy */}
+          <div className="pointer-events-none absolute -top-24 -right-24 w-72 h-72 rounded-full bg-sniffy-yellow/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-28 -left-20 w-72 h-72 rounded-full bg-fuchsia-500/10 blur-3xl" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="grid grid-cols-1 md:grid-cols-[1fr_280px] gap-0 bg-white rounded-[28px] border-2 border-gray-100 shadow-xl overflow-hidden"
-        >
-
-          {/* Left — benefits */}
-          <div className="p-8 md:p-10">
-            <div className="flex items-center gap-2 mb-6">
-              <Crown size={18} className="text-sniffy-yellow" />
-              <span className="text-sm font-bold text-gray-500 uppercase tracking-wide">Exclusive Benefits</span>
-            </div>
-            <ul className="space-y-4">
-              {benefits.map((benefit, index) => (
-                <motion.li
-                  key={index}
-                  initial={{ opacity: 0, x: -16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.08 }}
-                  className="flex items-start gap-3"
-                >
-                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check size={13} className="text-green-600" strokeWidth={3} />
-                  </div>
-                  <span className="text-gray-700 text-sm font-medium leading-snug">{benefit.text}</span>
-                </motion.li>
-              ))}
-            </ul>
+          {/* Faded photo tucked into the bottom-right corner only — like the package
+              cards. It sits behind the glass price panel, whose backdrop-blur gives it
+              the soft "liquid glass" read. A radial mask keeps it in the corner. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute bottom-0 right-0 w-2/3 h-2/3 overflow-hidden rounded-br-3xl"
+          >
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                // -800, not the 1600w original: this is a CSS background (no
+                // srcset possible) behind a decorative panel, and the 800w file
+                // is already in cache from the hero carousel.
+                backgroundImage: 'url(/images/grooming-session-3-800.jpg)',
+                opacity: 0.4,
+                maskImage:
+                  'radial-gradient(130% 130% at 100% 100%, black 0%, rgba(0,0,0,0.55) 38%, transparent 72%)',
+                WebkitMaskImage:
+                  'radial-gradient(130% 130% at 100% 100%, black 0%, rgba(0,0,0,0.55) 38%, transparent 72%)',
+              }}
+            />
           </div>
 
-          {/* Right — price + CTA */}
-          <div className="bg-sniffy-purple p-8 md:p-10 flex flex-col items-center justify-center text-center gap-5">
-            <Crown size={32} className="text-sniffy-yellow" />
+          <div className="relative grid grid-cols-1 md:grid-cols-[1.6fr_1fr]">
+            {/* ── Left: header + benefits ── */}
+            <div className="p-5 sm:p-6 md:p-8">
+              <h2 className="text-xl sm:text-2xl md:text-[1.7rem] font-bold text-white leading-tight mb-4">
+                Sniffy <span className="text-sniffy-yellow">Elite</span> Membership
+              </h2>
 
-            <div>
-              <div className="flex items-baseline justify-center gap-2 mb-1">
-                <span className="text-4xl font-extrabold text-sniffy-yellow">₹449</span>
-                <span className="text-base text-white/50 line-through">₹999</span>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-2">
+                {benefits.map((benefit) => (
+                  <li
+                    key={benefit}
+                    className="flex items-start gap-2"
+                  >
+                    <span className="w-[18px] h-[18px] flex-shrink-0 rounded-full bg-sniffy-yellow/20 flex items-center justify-center mt-0.5">
+                      <Check size={11} className="text-sniffy-yellow" strokeWidth={3.5} />
+                    </span>
+                    <span className="text-white/90 text-xs sm:text-[13px] font-medium leading-snug">
+                      {benefit}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* ── Right: price + CTA (glass panel) ── */}
+            <div className="relative md:border-l border-t md:border-t-0 border-white/10 bg-white/5 backdrop-blur-sm p-5 sm:p-6 md:p-8 flex flex-row md:flex-col items-center justify-between md:justify-center gap-4 md:gap-3.5">
+              <div className="text-left md:text-center">
+                <div className="flex items-baseline md:justify-center gap-2">
+                  <span className="text-3xl md:text-4xl font-extrabold text-sniffy-yellow leading-none">
+                    ₹449
+                  </span>
+                  <span className="text-sm text-white/40 line-through">₹999</span>
+                </div>
+                <p className="text-white/60 text-xs mt-1">per 6 months</p>
+                <p className="inline-flex items-center gap-1 text-[11px] font-bold text-white bg-white/10 border border-white/15 rounded-full px-2.5 py-0.5 mt-2">
+                  <Zap size={11} className="text-sniffy-yellow" />
+                  Save over 50%
+                </p>
               </div>
-              <p className="text-white/70 text-sm">per 6 months</p>
+
+              <div className="flex flex-col items-center gap-1 w-auto md:w-full max-w-[10rem] md:max-w-none">
+                <p className="inline-flex items-center gap-1.5 text-sniffy-yellow text-xs sm:text-[13px] font-bold text-center md:justify-center">
+                  <Phone size={13} className="flex-shrink-0" />
+                  Call us to activate Elite
+                </p>
+                <p className="text-white/45 text-[10px] text-center leading-snug">
+                  We verify &amp; set it up over a quick call.
+                </p>
+              </div>
             </div>
-
-            <div className="bg-white/10 rounded-2xl px-4 py-2">
-              <p className="text-white text-sm font-bold flex items-center gap-1.5">
-                <Zap size={14} className="text-sniffy-yellow" />
-                Save over 50%
-              </p>
-            </div>
-
-            <button className="w-full bg-sniffy-yellow text-gray-900 font-bold py-3.5 rounded-full text-sm hover:opacity-90 transition-all shadow-lg">
-              Join Elite Now
-            </button>
-
-            <p className="text-white/50 text-xs">Cancel anytime. No hidden fees.</p>
           </div>
-
-        </motion.div>
+        </div>
       </div>
     </section>
   );

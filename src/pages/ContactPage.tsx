@@ -4,11 +4,12 @@
  */
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, MessageCircle, Clock, Send, CheckCircle } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { supabase } from '../lib/supabase';
+import { useSeo } from '../lib/useSeo';
+import { SEO_ROUTES } from '../data/seoRoutes';
 
 // ─── Contact methods ──────────────────────────────────────────────────────────
 
@@ -59,6 +60,8 @@ const coverageAreas = [
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function ContactPage() {
+  useSeo(SEO_ROUTES.contact);
+
   const [form, setForm] = useState({ name: '', phone: '', message: '' });
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
@@ -112,11 +115,8 @@ export default function ContactPage() {
 
         {/* ── Hero ── */}
         <section className="bg-gradient-to-b from-purple-100 via-purple-50 to-white px-4 py-16 md:py-20 text-center">
-          <motion.div
+          <div
             className="max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
           >
             <p className="text-xs uppercase tracking-widest text-sniffy-purple font-bold mb-4">
               Get in touch
@@ -128,23 +128,19 @@ export default function ContactPage() {
             <p className="text-gray-500 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
               Questions about grooming, worried about your dog's coat, want to know if we cover your area — just reach out. We reply fast.
             </p>
-          </motion.div>
+          </div>
         </section>
 
         {/* ── Contact methods ── */}
         <section className="px-4 py-12 bg-white">
           <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
-            {contactMethods.map((method, i) => (
-              <motion.a
+            {contactMethods.map((method) => (
+              <a
                 key={method.label}
                 href={method.href}
                 target={method.href.startsWith('http') ? '_blank' : undefined}
                 rel="noopener noreferrer"
                 className={`group flex flex-col gap-4 border rounded-3xl p-6 transition-all duration-200 hover:shadow-md ${method.color}`}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
               >
                 <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${method.iconColor}`}>
                   <method.icon size={20} />
@@ -157,7 +153,7 @@ export default function ContactPage() {
                 <span className="mt-auto text-sm font-semibold text-sniffy-purple group-hover:underline">
                   {method.cta} →
                 </span>
-              </motion.a>
+              </a>
             ))}
           </div>
         </section>

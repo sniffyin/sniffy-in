@@ -4,4 +4,10 @@ Allow: /
 # Block raw .html extension URLs — canonical versions are without .html
 Disallow: /*.html$
 
+# Role-policy sign links — personal, one-time, admin-generated only
+Disallow: /policy-sign/
+
+# Unlisted shareable booking form — sent to customers directly
+Disallow: /quick-book
+
 Sitemap: https://sniffy.in/sitemap.xml

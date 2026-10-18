@@ -17,6 +17,23 @@
 
 import fs from 'fs'
 import path from 'path'
+import { ALL_PUNE_CITIES } from '../src/data/locationData.ts'
+// Aliased: this generator already declares its own local `faqs` for the
+// FAQPage schema below. These are the page component's arrays, used so the
+// prerendered body matches exactly what React renders on top of it.
+import {
+  stats as hubStats,
+  whySections as hubWhySections,
+  faqs as hubFaqs,
+  reviews as hubReviews,
+} from '../src/data/puneHubContent.ts'
+import { prerenderHubBody, offerCatalogJson } from './prerenderLocationBody.ts'
+import { clampDescription } from './seoText.ts'
+// The rating below is real, sourced from the Google Business Profile, and is
+// rendered in the page body by prerenderHubBody() — all three of which are
+// required for it to be legitimate markup. See src/data/reputation.ts.
+import { aggregateRatingJson } from '../src/data/reputation.ts'
+
 
 const outputRoot = path.join(process.cwd(), 'dog-grooming-in-pune')
 
@@ -65,6 +82,20 @@ const faqSchema = faqs
   )
   .join(',\n      ')
 
+const prerenderedBody = prerenderHubBody({
+  h1: 'Dog Grooming at Home Across Pune',
+  intro: 'Doorstep pet grooming services across Pune. Trained groomers visit your home — fully equipped, on time, no salon stress.',
+  stats: hubStats,
+  whySections: hubWhySections,
+  reviews: hubReviews,
+  faqs: hubFaqs,
+  cities: ALL_PUNE_CITIES,
+}, 'dog')
+
+// Offer/OfferCatalog from the same packages.ts arrays prerenderHubBody renders,
+// so no price appears in markup that is absent from the page.
+const offerCatalog = offerCatalogJson('dog', 'https://sniffy.in/dog-grooming-in-pune')
+
 const html = `<!doctype html>
 <html lang="en">
   <head>
@@ -73,7 +104,11 @@ const html = `<!doctype html>
 
     <title>Dog Grooming at Home in Pune | All Areas Covered | Sniffy</title>
 
-    <meta name="description" content="Professional dog and cat grooming at your home across Pune — Wakad, Wagholi, Kothrud, Shivajinagar, Kondhwa, NIBM, Dhanori and Pimpri-Chinchwad. Trained groomers come to your door with everything needed. Starting ₹799." />
+    <!-- Rewritten from a 222-char version that Google cut mid-list, and that
+         opened by promising "dog and cat grooming" on the DOG hub. Locality
+         names are carried by the on-page links and areaServed below; spending
+         the visible description on eight of the 33 was the wrong trade. -->
+    <meta name="description" content="${clampDescription('Book dog grooming at home anywhere in Pune from ₹799. A trained groomer comes to your door across 33 localities — bath, haircut, nail and ear care.', 'dog hub')}" />
 
     <meta name="robots" content="index, follow" />
 
@@ -97,6 +132,7 @@ const html = `<!doctype html>
     <meta property="og:description" content="Professional in-home dog grooming across Pune. Trained groomers come to your doorstep for bath, trim, nail care and more. Starting at ₹799." />
     <meta property="og:url" content="https://sniffy.in/dog-grooming-in-pune" />
     <meta property="og:image" content="https://sniffy.in/sniffy-logo.png" />
+    <meta property="og:site_name" content="Sniffy" />
     <meta property="og:locale" content="en_IN" />
 
     <!-- Twitter -->
@@ -108,11 +144,12 @@ const html = `<!doctype html>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "PetGrooming",
+        "@type": "LocalBusiness",
         "@id": "https://sniffy.in/dog-grooming-in-pune#petgrooming",
         "name": "Sniffy — Dog Grooming at Home in Pune",
         "url": "https://sniffy.in/dog-grooming-in-pune",
-        "image": "https://sniffy.in/sniffy-logo.png",
+        "image": "https://sniffy.in/images/grooming-session-1.jpg",
+        "logo": "https://sniffy.in/sniffy-logo.png",
         "telephone": "+918971313003",
         "email": "care@sniffy.in",
         "address": {
@@ -136,16 +173,13 @@ const html = `<!doctype html>
           { "@type": "Place", "name": "Dhanori, Pune" },
           { "@type": "Place", "name": "Pimpri-Chinchwad, Pune" }
         ],
-        "serviceType": "Dog Grooming at Home",
+        "knowsAbout": "Dog grooming at home",
+        "hasOfferCatalog": ${offerCatalog},
+
         "priceRange": "₹799 - ₹1299",
         "paymentAccepted": "Cash, UPI",
         "currenciesAccepted": "INR",
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.9",
-          "reviewCount": "120",
-          "bestRating": "5"
-        },
+        "aggregateRating": ${aggregateRatingJson()},
         "openingHoursSpecification": {
           "@type": "OpeningHoursSpecification",
           "dayOfWeek": [
@@ -155,7 +189,8 @@ const html = `<!doctype html>
           "closes": "21:00"
         },
         "sameAs": [
-          "https://www.instagram.com/sniffy.in"
+          "https://www.instagram.com/sniffy.in",
+          "https://g.page/r/CdJR67bjxy_gEBI"
         ]
       }
     </script>
@@ -196,7 +231,13 @@ const html = `<!doctype html>
   </head>
 
   <body>
-    <div id="root"></div>
+    <!--
+      #root is pre-filled so non-JS crawlers see the page text. createRoot()
+      clears this container on mount, so React fully replaces it.
+    -->
+    <div id="root">
+${prerenderedBody}
+    </div>
     <script type="module" src="/src/entries/pune.tsx"></script>
   </body>
 </html>`

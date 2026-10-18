@@ -1,50 +1,18 @@
-import { motion } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
+import { HOME_TESTIMONIALS } from '../data/homeTestimonials';
+import { GOOGLE_REVIEW_URL } from '../data/siteLinks';
+import RatingSummary from './RatingSummary';
 
 export default function Testimonials() {
-  const testimonials = [
-    {
-      petName: 'Bruno',
-      ownerName: 'Priya Sharma',
-      review:
-        'Amazing service! The groomer was so patient with Bruno. He came home looking and smelling wonderful. Highly recommend Sniffy!',
-      rating: 5,
-    },
-    {
-      petName: 'Whiskers',
-      ownerName: 'Rahul Desai',
-      review:
-        'My cat was so relaxed during the grooming. The team really knows how to handle anxious pets. Great value for money!',
-      rating: 5,
-    },
-    {
-      petName: 'Max',
-      ownerName: 'Sneha Patil',
-      review:
-        'Professional, punctual, and caring. Max looks like a completely different dog! The spa bath package is absolutely worth it.',
-      rating: 5,
-    },
-    {
-      petName: 'Coco',
-      ownerName: 'Amit Kulkarni',
-      review:
-        'Home grooming is so convenient! No more stressful car rides to the salon. Coco is happy and so are we. Thank you Sniffy!',
-      rating: 5,
-    },
-  ];
+  const testimonials = HOME_TESTIMONIALS;
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-white">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-8 md:py-12 px-4 bg-white">
+      <div className="max-w-5xl mx-auto">
 
         {/* Heading */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-8 md:mb-12"
-        >
-          <h2 className="text-2xl md:text-4xl font-bold mb-2 leading-tight">
+        <div className="text-center mb-6 md:mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold mb-1.5 leading-tight">
             <span className="text-sniffy-purple">What Pet Parents</span>{' '}
             <span className="text-sniffy-yellow">Say</span>
           </h2>
@@ -52,50 +20,52 @@ export default function Testimonials() {
           <p className="text-gray-600 text-sm md:text-base">
             Loved by pets and their families across Pune
           </p>
-        </motion.div>
+
+          {/*
+            The home page's LocalBusiness JSON-LD in index.html now carries an
+            aggregateRating. This is the on-page rating that backs it — the two
+            have to ship together. See src/data/reputation.ts.
+          */}
+          <RatingSummary className="mt-4" />
+        </div>
 
         {/* Cards */}
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-3 md:grid-cols-2">
 
           {testimonials.map((testimonial, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.08 }}
-
               className="bg-gradient-to-br from-sniffy-yellow/10 to-sniffy-purple/10
-              rounded-2xl p-5 md:p-6 relative border border-gray-100"
+              rounded-xl p-3.5 relative border border-gray-100"
             >
 
               {/* Quote icon */}
               <Quote
-                size={26}
+                size={22}
                 className="text-sniffy-yellow/20 absolute top-3 right-3"
               />
 
               {/* Stars */}
-              <div className="flex gap-1 mb-2">
+              <div className="flex gap-1 mb-1">
                 {[...Array(testimonial.rating)].map((_, i) => (
                   <Star
                     key={i}
-                    size={16}
+                    size={14}
                     className="fill-sniffy-yellow text-sniffy-yellow"
                   />
                 ))}
               </div>
 
               {/* Review */}
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
+              <p className="text-gray-700 text-[13px] leading-snug mb-2.5">
                 {testimonial.review}
               </p>
 
               {/* User */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
 
                 <div
-                  className="w-10 h-10 rounded-full
+                  className="w-8 h-8 rounded-full
                   bg-gradient-to-br from-sniffy-purple to-sniffy-yellow
                   flex items-center justify-center text-white font-bold text-sm"
                 >
@@ -114,9 +84,30 @@ export default function Testimonials() {
 
               </div>
 
-            </motion.div>
+            </div>
           ))}
 
+        </div>
+
+        {/*
+          Google review CTA. Every other marketing surface (locality pages, both
+          city hubs, the hero) links out to the Business Profile — the home page
+          was the one that did not, despite being the most-visited page. Review
+          volume and recency are primary local-pack ranking inputs, so this is
+          the highest-traffic place to ask.
+        */}
+        <div className="text-center mt-8 md:mt-10">
+          <a
+            href={GOOGLE_REVIEW_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 border border-sniffy-purple
+            text-sniffy-purple px-6 py-2.5 rounded-full font-semibold text-sm
+            hover:bg-sniffy-purple hover:text-white transition"
+          >
+            <Star size={16} className="fill-sniffy-yellow text-sniffy-yellow" />
+            Read all Google Reviews
+          </a>
         </div>
       </div>
     </section>

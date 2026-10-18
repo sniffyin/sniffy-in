@@ -27,7 +27,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.9064",
 
     title: "Dog Grooming at Home in Dhanori, Pune | Sniffy",
-    description: "Sniffy brings professional dog grooming to your home in Dhanori, Pune. A trained groomer visits your door with everything needed — bath, trim, nail care and more. No salon trips, no stress for your dog. Starting ₹799.",
+    description: "Dog grooming at home in Dhanori, Pune from ₹799. A trained groomer brings bath, haircut, nail and ear care to your door. Same-day slots — book online.",
 
     ogTitle: "Dog Grooming at Home in Dhanori, Pune | Sniffy",
     ogDescription: "Trained groomers visit your home in Dhanori, Pune. Bath, trim & nail care for your dog — from ₹799.",
@@ -46,7 +46,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8936",
 
     title: "Professional Dog Grooming at Home in Kondhwa, Pune | Sniffy",
-    description: "Getting your dog groomed in Kondhwa, Pune is now as simple as booking a slot. Sniffy's trained groomers come to your home with all equipment — so your dog stays calm, clean and comfortable. From ₹799.",
+    description: "Dog grooming at home in Kondhwa, Pune from ₹799. Trained groomer, full kit, bath to blow-dry at your door. No salon trip. Pick a slot and book online.",
 
     ogTitle: "Professional Dog Grooming at Home in Kondhwa, Pune | Sniffy",
     ogDescription: "Sniffy's groomers visit your home in Kondhwa, Pune. Calm, thorough dog grooming sessions from ₹799.",
@@ -65,7 +65,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8143",
 
     title: "Trusted Dog Grooming at Home in Kothrud, Pune | Sniffy",
-    description: "Sniffy offers reliable in-home dog grooming across Kothrud, Pune. Our groomers arrive at your door fully equipped and work at a pace your dog is comfortable with — bath, haircut, nail trim and more. From ₹799.",
+    description: "Dog grooming at home in Kothrud, Pune from ₹799. Bath, haircut, nail and ear care by a trained groomer at your door. Book a morning or evening slot.",
 
     ogTitle: "Trusted Dog Grooming at Home in Kothrud, Pune | Sniffy",
     ogDescription: "Reliable in-home dog grooming in Kothrud, Pune. Trained groomers, pet-safe products, from ₹799.",
@@ -84,7 +84,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8948",
 
     title: "Dog Grooming at Home in NIBM, Pune | Book a Groomer | Sniffy",
-    description: "Looking for dog grooming in NIBM, Pune? Sniffy sends a trained groomer directly to your home — clean equipment, gentle handling and a thorough session your dog will be comfortable with. Starting ₹799.",
+    description: "Dog grooming at home in NIBM, Pune from ₹799. A trained groomer visits with clean tools for bath, trim and nail care. Gentle handling — book online.",
 
     ogTitle: "Dog Grooming at Home in NIBM, Pune | Sniffy",
     ogDescription: "Book a trained dog groomer at your home in NIBM, Pune. Gentle, thorough sessions from ₹799.",
@@ -103,7 +103,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.7997",
 
     title: "Dog Grooming at Home Across Pimpri-Chinchwad, Pune | Sniffy",
-    description: "Sniffy provides in-home dog grooming across all of Pimpri-Chinchwad, Pune — Akurdi, Nigdi, Bhosari, Pimple Saudagar and more. One booking and a groomer comes to you with everything needed. From ₹799.",
+    description: "Dog grooming at home across Pimpri-Chinchwad from ₹799 — Akurdi, Nigdi, Bhosari, Pimple Saudagar. Groomer comes to you with the full kit. Book online.",
 
     ogTitle: "Dog Grooming at Home Across Pimpri-Chinchwad, Pune | Sniffy",
     ogDescription: "In-home dog grooming across Pimpri-Chinchwad — all areas covered, trained groomers, from ₹799.",
@@ -122,7 +122,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8474",
 
     title: "Dog Grooming at Home in Shivajinagar, Pune | Certified Groomers | Sniffy",
-    description: "Sniffy's certified groomers visit your home in Shivajinagar, Pune for a complete dog grooming session — bath, haircut, ear cleaning, nail trim and more. Your dog gets full attention in the comfort of home. From ₹799.",
+    description: "Dog grooming at home in Shivajinagar, Pune from ₹799. Certified groomer does bath, haircut, ear cleaning and nail trim at your door. Book a slot.",
 
     ogTitle: "Dog Grooming at Home in Shivajinagar, Pune | Sniffy",
     ogDescription: "Certified groomers at your door in Shivajinagar, Pune. Complete dog grooming sessions from ₹799.",
@@ -141,7 +141,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.9799",
 
     title: "Dog Grooming at Home in Wagholi, Pune | Flexible Slots | Sniffy",
-    description: "Sniffy makes dog grooming in Wagholi, Pune effortless — pick a time that works for you and a trained groomer shows up at your home. Morning, afternoon or evening slots available. Starting ₹799.",
+    description: "Dog grooming at home in Wagholi, Pune from ₹799. Morning, afternoon or evening slots — a trained groomer comes to you with everything. Book online.",
 
     ogTitle: "Dog Grooming at Home in Wagholi, Pune | Sniffy",
     ogDescription: "Flexible in-home dog grooming slots in Wagholi, Pune — morning to evening, from ₹799.",
@@ -160,7 +160,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.7602",
 
     title: "Dog Grooming at Home in Wakad, Pune | No Salon Needed | Sniffy",
-    description: "Sniffy brings certified dog grooming to your home in Wakad, Pune — so your dog gets a proper bath, trim and nail care without either of you going anywhere. Apartment-friendly setup, from ₹799.",
+    description: "Dog grooming at home in Wakad, Pune from ₹799. Apartment-friendly setup; certified groomer handles bath, trim and nail care at your door. Book now.",
 
     ogTitle: "Dog Grooming at Home in Wakad, Pune | Sniffy",
     ogDescription: "Certified in-home dog grooming in Wakad, Pune. Apartment-friendly, trained groomers, from ₹799.",
@@ -179,7 +179,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.9042",
 
     title: "Dog Grooming at Home in Kalyani Nagar, Pune | Sniffy",
-    description: "Skip the salon run — Sniffy sends a trained groomer to your home in Kalyani Nagar, Pune. Full grooming session including bath, blow-dry, nail trim and ear cleaning, done in your own space. From ₹799.",
+    description: "Dog grooming at home in Kalyani Nagar, Pune from ₹799. Bath, blow-dry, nail trim and ear cleaning by a trained groomer at your door. Book a slot.",
 
     ogTitle: "Dog Grooming at Home in Kalyani Nagar, Pune | Sniffy",
     ogDescription: "Home dog grooming in Kalyani Nagar, Pune. Trained groomers, full session at your door — from ₹799.",
@@ -198,7 +198,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.9169",
 
     title: "Dog Grooming at Home in Lohegaon, Pune | Doorstep Service | Sniffy",
-    description: "No need to travel for a good groom — Sniffy's trained groomers come to you in Lohegaon, Pune. Bath, trim, nail care and more, done calmly in your home. Hygienic setup, gentle handling. From ₹799.",
+    description: "Dog grooming at home in Lohegaon, Pune from ₹799. Trained groomer, hygienic kit, bath to nail care at your door. No travel — book online today.",
 
     ogTitle: "Dog Grooming at Home in Lohegaon, Pune | Sniffy",
     ogDescription: "Doorstep dog grooming in Lohegaon, Pune. Trained groomers, hygienic setup — from ₹799.",
@@ -217,7 +217,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.9427",
 
     title: "Dog Grooming at Home in Kharadi, Pune | Book Online | Sniffy",
-    description: "Too busy for a salon trip? Sniffy fits dog grooming around your schedule in Kharadi, Pune — early morning, afternoon or evening slots. A trained groomer shows up with everything and handles it all. From ₹799.",
+    description: "Dog grooming at home in Kharadi, Pune from ₹799. Early morning to evening slots; the groomer arrives with everything needed. Book online in minutes.",
 
     ogTitle: "Dog Grooming at Home in Kharadi, Pune | Sniffy",
     ogDescription: "Flexible home dog grooming in Kharadi, Pune. Book a slot that works for you — from ₹799.",
@@ -236,7 +236,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.9143",
 
     title: "Dog Grooming at Home in Viman Nagar, Pune | Sniffy",
-    description: "Sniffy's groomers come to your home in Viman Nagar, Pune — so your dog gets a thorough, stress-free session without leaving the house. Bath, trim, nail care and more, done right at your door. From ₹799.",
+    description: "Dog grooming at home in Viman Nagar, Pune from ₹799. Stress-free bath, trim, nail and ear care by a trained groomer at your door. Book a slot today.",
 
     ogTitle: "Dog Grooming at Home in Viman Nagar, Pune | Sniffy",
     ogDescription: "Stress-free home dog grooming in Viman Nagar, Pune. Trained groomers at your door — from ₹799.",
@@ -255,7 +255,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.9213",
 
     title: "Dog Grooming at Home in Mundwa, Pune | Sniffy",
-    description: "Sniffy makes proper dog grooming easy in Mundwa, Pune — a certified groomer visits your home with all equipment, handles the full session, and leaves your space clean. No mess, no hassle. From ₹799.",
+    description: "Dog grooming at home in Mundwa, Pune from ₹799. Certified groomer brings the full kit, grooms your dog and leaves your space clean. Book online.",
 
     ogTitle: "Dog Grooming at Home in Mundwa, Pune | Sniffy",
     ogDescription: "Certified home dog grooming in Mundwa, Pune. Clean setup, trained groomers — from ₹799.",
@@ -274,7 +274,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8938",
 
     title: "Dog Grooming at Home in Koregaon Park, Pune | Sniffy",
-    description: "Sniffy brings premium dog grooming to your home in Koregaon Park, Pune. Our experienced groomers handle every breed with care — full bath, coat treatment, nail trim and more, done at your doorstep. From ₹799.",
+    description: "Dog grooming at home in Koregaon Park, Pune from ₹799. Experienced groomers, all breeds — bath, coat care and nail trim at your door. Book a slot.",
 
     ogTitle: "Dog Grooming at Home in Koregaon Park, Pune | Sniffy",
     ogDescription: "Premium home dog grooming in Koregaon Park, Pune. Experienced groomers, all breeds — from ₹799.",
@@ -293,7 +293,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8143",
 
     title: "Dog Grooming at Home in Dhayari, Pune | Sniffy",
-    description: "Quality dog grooming has finally reached Dhayari, Pune — Sniffy's trained groomers visit your home so your dog gets the care they deserve without a long drive. Full session, clean setup, from ₹799.",
+    description: "Dog grooming at home in Dhayari, Pune from ₹799. A trained groomer visits with a clean setup for bath, haircut and nail care. Book a slot online.",
 
     ogTitle: "Dog Grooming at Home in Dhayari, Pune | Sniffy",
     ogDescription: "Home dog grooming now available in Dhayari, Pune. Trained groomers, full session — from ₹799.",
@@ -312,7 +312,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8213",
 
     title: "Dog Grooming at Home in Karve Nagar, Pune | Sniffy",
-    description: "Sniffy offers gentle, thorough dog grooming at your home in Karve Nagar, Pune — especially suited for senior dogs and nervous pets who do better in a familiar environment. Full session from ₹799.",
+    description: "Dog grooming at home in Karve Nagar, Pune from ₹799. Gentle, unhurried sessions — ideal for senior or anxious dogs. Book a groomer at your door.",
 
     ogTitle: "Dog Grooming at Home in Karve Nagar, Pune | Sniffy",
     ogDescription: "Gentle home dog grooming in Karve Nagar, Pune — great for senior dogs, full session from ₹799.",
@@ -331,7 +331,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8274",
 
     title: "Dog Grooming at Home in Ambegaon, Pune | Sniffy",
-    description: "Sniffy now covers Ambegaon, Pune for in-home dog grooming. Book a slot and a trained groomer visits your door — bath, trim, nail care and a full coat check, done without the salon trip. From ₹799.",
+    description: "Dog grooming at home in Ambegaon, Pune from ₹799. Bath, trim, nail care and a full coat check at your door — no salon trip. Book a slot online.",
 
     ogTitle: "Dog Grooming at Home in Ambegaon, Pune | Sniffy",
     ogDescription: "In-home dog grooming now in Ambegaon, Pune. Trained groomers at your door — from ₹799.",
@@ -350,7 +350,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.7874",
 
     title: "Dog Grooming at Home in Baner, Pune | On-Time Service | Sniffy",
-    description: "Sniffy's groomers show up on time at your home in Baner, Pune — fully equipped for a proper dog grooming session that fits your schedule. No waiting rooms, no travel, just a clean dog and a clean space. From ₹799.",
+    description: "Dog grooming at home in Baner, Pune from ₹799. On-time groomers arrive fully equipped for bath, haircut and nail care. Book a slot that suits you.",
 
     ogTitle: "Dog Grooming at Home in Baner, Pune | Sniffy",
     ogDescription: "On-time home dog grooming in Baner, Pune. Fully equipped groomers at your door — from ₹799.",
@@ -369,7 +369,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.7763",
 
     title: "Dog Grooming at Home in Bavdhan, Pune | Sniffy",
-    description: "Your dog doesn't need to leave Bavdhan for a great groom. Sniffy sends a trained groomer to your home in Bavdhan, Pune — calm one-on-one session, full grooming care, zero travel stress. From ₹799.",
+    description: "Dog grooming at home in Bavdhan, Pune from ₹799. One-on-one session at your door — bath, haircut, nail and ear care. No travel. Book online today.",
 
     ogTitle: "Dog Grooming at Home in Bavdhan, Pune | Sniffy",
     ogDescription: "Home dog grooming in Bavdhan, Pune — calm, one-on-one session at your door, from ₹799.",
@@ -388,7 +388,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8474",
 
     title: "Dog Grooming at Home in Khadki, Pune | Sniffy",
-    description: "Sniffy brings professional dog grooming to your home in Khadki, Pune — punctual, well-equipped and thorough. Whether you're in a society or a cantonment quarter, our groomer handles it all at your door. From ₹799.",
+    description: "Dog grooming at home in Khadki, Pune from ₹799. Societies and cantonment quarters covered; punctual, fully equipped groomers. Book a slot online.",
 
     ogTitle: "Dog Grooming at Home in Khadki, Pune | Sniffy",
     ogDescription: "Professional home dog grooming in Khadki, Pune — punctual groomers, all areas covered, from ₹799.",
@@ -407,7 +407,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.7433",
 
     title: "Dog Grooming at Home in Ravet, Pune | Sniffy",
-    description: "Sniffy now serves Ravet, Pune with in-home dog grooming — no need to drive out of the area for a reliable session. A trained groomer visits your home with all the equipment. Bath, trim, nails and more. From ₹799.",
+    description: "Dog grooming at home in Ravet, Pune from ₹799. A trained groomer comes to you with everything — bath, trim, nails and ear care. Book online today.",
 
     ogTitle: "Dog Grooming at Home in Ravet, Pune | Sniffy",
     ogDescription: "In-home dog grooming now available in Ravet, Pune. Trained groomers at your door — from ₹799.",
@@ -426,7 +426,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8143",
 
     title: "Dog Grooming at Home in Aundh, Pune | Sniffy",
-    description: "Sniffy's trained groomers visit your home in Aundh, Pune for a complete dog grooming session — on your time, in your space, with professional equipment. Bath, trim, ear clean, nail care and more. From ₹799.",
+    description: "Dog grooming at home in Aundh, Pune from ₹799. Trained groomer, professional kit — bath, trim, ear clean and nail care at your door. Book a slot.",
 
     ogTitle: "Dog Grooming at Home in Aundh, Pune | Sniffy",
     ogDescription: "Complete home dog grooming in Aundh, Pune — trained groomers on your schedule, from ₹799.",
@@ -445,7 +445,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.7763",
 
     title: "Dog Grooming at Home in Kalewadi, Pune | Sniffy",
-    description: "Sniffy covers Kalewadi, Pune for in-home dog grooming — so you and your dog skip the traffic and the waiting room. Trained groomer, hygienic setup, full session done at your doorstep. From ₹799.",
+    description: "Dog grooming at home in Kalewadi, Pune from ₹799. Skip the traffic and the waiting room — hygienic full session at your door. Book online today.",
 
     ogTitle: "Dog Grooming at Home in Kalewadi, Pune | Sniffy",
     ogDescription: "Home dog grooming in Kalewadi, Pune — skip the salon, trained groomers at your door, from ₹799.",
@@ -464,7 +464,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8627",
 
     title: "Dog Grooming at Home in Katraj, Pune | Sniffy",
-    description: "Sniffy brings the groomer to you in Katraj, Pune — so your dog gets a proper, relaxed grooming session at home instead of a stressful salon visit. Full grooming package, clean equipment. From ₹799.",
+    description: "Dog grooming at home in Katraj, Pune from ₹799. Relaxed full grooming package with clean equipment at your door. No salon stress — book a slot.",
 
     ogTitle: "Dog Grooming at Home in Katraj, Pune | Sniffy",
     ogDescription: "Relaxed home dog grooming in Katraj, Pune — no salon stress, trained groomers at your door, from ₹799.",
@@ -483,7 +483,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.9042",
 
     title: "Dog Grooming at Home in Handewadi, Pune | Sniffy",
-    description: "Sniffy's trained groomers now visit homes in Handewadi, Pune — full dog grooming sessions done right at your door. Bath, blow-dry, trim, nail care and more. No driving, no waiting. From ₹799.",
+    description: "Dog grooming at home in Handewadi, Pune from ₹799. Bath, blow-dry, trim and nail care at your door — no driving, no waiting. Book online today.",
 
     ogTitle: "Dog Grooming at Home in Handewadi, Pune | Sniffy",
     ogDescription: "Home dog grooming now in Handewadi, Pune — full session at your door, trained groomers, from ₹799.",
@@ -502,7 +502,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.9427",
 
     title: "Dog Grooming at Home in Hadapsar, Pune | Sniffy",
-    description: "Whether you're near Magarpatta or deep in Hadapsar, Pune — Sniffy's groomers come to you. Trained, well-equipped and on time, they handle the full session while your dog stays comfortable at home. From ₹799.",
+    description: "Dog grooming at home in Hadapsar, Pune from ₹799 — Magarpatta to Manjri. On-time, fully equipped groomers at your door. Book a slot online.",
 
     ogTitle: "Dog Grooming at Home in Hadapsar, Pune | Sniffy",
     ogDescription: "Home dog grooming across all of Hadapsar, Pune — trained groomers, on-time arrival, from ₹799.",
@@ -521,7 +521,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8627",
 
     title: "Dog Grooming at Home in Bibewadi, Pune | Sniffy",
-    description: "Sniffy sends trained groomers to your home in Bibewadi, Pune for a calm, thorough dog grooming session — suited for family dogs of all ages. No salon, no travel, just a well-groomed dog. From ₹799.",
+    description: "Dog grooming at home in Bibewadi, Pune from ₹799. Calm, thorough sessions for family dogs of every age and breed. Book a groomer at your door.",
 
     ogTitle: "Dog Grooming at Home in Bibewadi, Pune | Sniffy",
     ogDescription: "Calm home dog grooming in Bibewadi, Pune — trained groomers for dogs of all ages, from ₹799.",
@@ -540,7 +540,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8825",
 
     title: "Dog Grooming at Home in Camp, Pune | Sniffy",
-    description: "Sniffy offers in-home dog grooming in Camp, Pune — a discreet, professional service that works in bungalows and apartments alike. Experienced groomers, all breeds welcome, full session at your door. From ₹799.",
+    description: "Dog grooming at home in Camp, Pune from ₹799. Bungalow or apartment, experienced groomers handle all breeds at your door. Book a slot online.",
 
     ogTitle: "Dog Grooming at Home in Camp, Pune | Sniffy",
     ogDescription: "Professional home dog grooming in Camp, Pune — experienced groomers, all breeds, from ₹799.",
@@ -559,7 +559,7 @@ export const locationsSEO: LocationSEO[] = [
     lng: "73.8938",
 
     title: "Dog Grooming at Home in Wanowrie, Pune | Sniffy",
-    description: "Sniffy's groomers visit your home in Wanowrie, Pune for a proper, unhurried dog grooming session — the kind your dog actually stays calm through. Bath, trim, nail care and a full coat check. From ₹799.",
+    description: "Dog grooming at home in Wanowrie, Pune from ₹799. Unhurried bath, trim, nail care and a full coat check at your door. Book a slot online today.",
 
     ogTitle: "Dog Grooming at Home in Wanowrie, Pune | Sniffy",
     ogDescription: "Unhurried home dog grooming in Wanowrie, Pune — trained groomers, full session at your door, from ₹799.",
@@ -568,6 +568,80 @@ export const locationsSEO: LocationSEO[] = [
     twitterDescription: "Unhurried, thorough home dog grooming in Wanowrie, Pune — at your door, from ₹799.",
 
     nearby: ["NIBM", "Kondhwa", "Camp", "Hadapsar"]
-  }
+  },
+  {
+    slug: "hinjewadi",
+    name: "Hinjewadi",
+    postal: "411057",
+    lat: "18.5913",
+    lng: "73.7389",
 
+    title: "Dog Grooming at Home in Hinjewadi, Pune | Sniffy",
+    description: "Dog grooming at home in Hinjewadi, Pune from ₹799. Trained groomer at your door for bath, haircut and nail care. Weekend slots — book online.",
+
+    ogTitle: "Dog Grooming at Home in Hinjewadi, Pune | Sniffy",
+    ogDescription: "Trained groomers visit your home in Hinjewadi, Pune. Bath, trim & nail care for your dog — from ₹799.",
+
+    twitterTitle: "Dog Grooming at Home in Hinjewadi, Pune | Sniffy",
+    twitterDescription: "Professional dog grooming at your door in Hinjewadi, Pune. No salon needed — from ₹799.",
+
+    nearby: ["Wakad", "Maan", "Marunji", "Balewadi"]
+  },
+
+  {
+    slug: "pimple-saudagar",
+    name: "Pimple Saudagar",
+    postal: "411027",
+    lat: "18.5980",
+    lng: "73.7997",
+
+    title: "Dog Grooming at Home in Pimple Saudagar, Pune | Sniffy",
+    description: "Dog grooming at home in Pimple Saudagar, Pune from ₹799. Trained groomer visits your society flat for bath, trim and nail care. Book online.",
+
+    ogTitle: "Dog Grooming at Home in Pimple Saudagar, Pune | Sniffy",
+    ogDescription: "Trained groomers visit your home in Pimple Saudagar, Pune. Bath, trim & nail care for your dog — from ₹799.",
+
+    twitterTitle: "Dog Grooming at Home in Pimple Saudagar, Pune | Sniffy",
+    twitterDescription: "Professional dog grooming at your door in Pimple Saudagar, Pune. No salon needed — from ₹799.",
+
+    nearby: ["Rahatani", "Pimple Gurav", "Wakad", "Aundh"]
+  },
+
+  {
+    slug: "magarpatta",
+    name: "Magarpatta",
+    postal: "411028",
+    lat: "18.5157",
+    lng: "73.9280",
+
+    title: "Dog Grooming at Home in Magarpatta, Pune | Sniffy",
+    description: "Dog grooming at home in Magarpatta, Pune from ₹799. Groomer comes to your tower with the full kit — bath, haircut, nail care. Book a slot online.",
+
+    ogTitle: "Dog Grooming at Home in Magarpatta, Pune | Sniffy",
+    ogDescription: "Trained groomers visit your home in Magarpatta, Pune. Bath, trim & nail care for your dog — from ₹799.",
+
+    twitterTitle: "Dog Grooming at Home in Magarpatta, Pune | Sniffy",
+    twitterDescription: "Professional dog grooming at your door in Magarpatta, Pune. No salon needed — from ₹799.",
+
+    nearby: ["Hadapsar", "Amanora", "Mundhwa", "Sopan Baug"]
+  },
+
+  {
+    slug: "yerawada",
+    name: "Yerawada",
+    postal: "411006",
+    lat: "18.5510",
+    lng: "73.8830",
+
+    title: "Dog Grooming at Home in Yerawada, Pune | Sniffy",
+    description: "Dog grooming at home in Yerawada, Pune from ₹799. Trained groomer at your door for bath, trim, nail and ear care. No salon trip — book online.",
+
+    ogTitle: "Dog Grooming at Home in Yerawada, Pune | Sniffy",
+    ogDescription: "Trained groomers visit your home in Yerawada, Pune. Bath, trim & nail care for your dog — from ₹799.",
+
+    twitterTitle: "Dog Grooming at Home in Yerawada, Pune | Sniffy",
+    twitterDescription: "Professional dog grooming at your door in Yerawada, Pune. No salon needed — from ₹799.",
+
+    nearby: ["Kalyani Nagar", "Vishrantwadi", "Dhanori", "Viman Nagar"]
+  }
 ]

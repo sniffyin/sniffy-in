@@ -1,0 +1,45 @@
+// Shared data between Navbar.tsx (eager) and the lazy-loaded MobileMenu.tsx —
+// kept in a separate module so neither file has to import the other.
+
+export const navLinks = [
+  { label: 'How It Works', href: '/how-it-works' },
+  { label: 'Gallery',      href: '/gallery' },
+  { label: 'FAQs',         href: '/faqs' },
+  { label: 'Why Sniffy',   href: '/why-sniffy' },
+  { label: 'Blogs',        href: '/blogs' },
+  { label: 'About Us',     href: '/about' },
+  { label: 'Contact',      href: '/contact' },
+  { label: 'Be a Groomer', href: '/groomer-onboarding' },
+];
+
+export const ALL_LOCALITIES = [
+  { name: 'Dhanori',          slug: 'dog-grooming-in-pune/dhanori' },
+  { name: 'Wagholi',          slug: 'dog-grooming-in-pune/wagholi' },
+  { name: 'Kalyani Nagar',    slug: 'dog-grooming-in-pune/kalyani-nagar' },
+  { name: 'Lohegaon',         slug: 'dog-grooming-in-pune/lohegaon' },
+  { name: 'Kharadi',          slug: 'dog-grooming-in-pune/kharadi' },
+  { name: 'Viman Nagar',      slug: 'dog-grooming-in-pune/viman-nagar' },
+  { name: 'Mundwa',           slug: 'dog-grooming-in-pune/mundwa' },
+  { name: 'Koregaon Park',    slug: 'dog-grooming-in-pune/koregaon-park' },
+  { name: 'Kothrud',          slug: 'dog-grooming-in-pune/kothrud' },
+  { name: 'Shivajinagar',     slug: 'dog-grooming-in-pune/shivajinagar' },
+  { name: 'Dhayari',          slug: 'dog-grooming-in-pune/dhayari' },
+  { name: 'Karve Nagar',      slug: 'dog-grooming-in-pune/karve-nagar' },
+  { name: 'Ambegaon',         slug: 'dog-grooming-in-pune/ambegaon' },
+  { name: 'Baner',            slug: 'dog-grooming-in-pune/baner' },
+  { name: 'Bavdhan',          slug: 'dog-grooming-in-pune/bavdhan' },
+  { name: 'Wakad',            slug: 'dog-grooming-in-pune/wakad' },
+  { name: 'Pimpri-Chinchwad', slug: 'dog-grooming-in-pune/pimpri-chinchwad' },
+  { name: 'Khadki',           slug: 'dog-grooming-in-pune/khadki' },
+  { name: 'Ravet',            slug: 'dog-grooming-in-pune/ravet' },
+  { name: 'Aundh',            slug: 'dog-grooming-in-pune/aundh' },
+  { name: 'Kalewadi',         slug: 'dog-grooming-in-pune/kalewadi' },
+  { name: 'Kondhwa',          slug: 'dog-grooming-in-pune/kondhwa' },
+  { name: 'NIBM',             slug: 'dog-grooming-in-pune/nibm' },
+  { name: 'Katraj',           slug: 'dog-grooming-in-pune/katraj' },
+  { name: 'Handewadi',        slug: 'dog-grooming-in-pune/handewadi' },
+  { name: 'Hadapsar',         slug: 'dog-grooming-in-pune/hadapsar' },
+  { name: 'Bibewadi',         slug: 'dog-grooming-in-pune/bibewadi' },
+  { name: 'Camp',             slug: 'dog-grooming-in-pune/camp' },
+  { name: 'Wanowrie',         slug: 'dog-grooming-in-pune/wanowrie' },
+];

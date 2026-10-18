@@ -31,6 +31,10 @@ import {
   bibewadiLocation, bibewadiReviews, bibewadiFAQs, bibewadiMapEmbed,
   campLocation, campReviews, campFAQs, campMapEmbed,
   wanowrieLocation, wanowrieReviews, wanowrieFAQs, wanowrieMapEmbed,
+  hinjewadiLocation, hinjewadiReviews, hinjewadiFAQs, hinjewadiMapEmbed,
+  pimpleSaudagarLocation, pimpleSaudagarReviews, pimpleSaudagarFAQs, pimpleSaudagarMapEmbed,
+  magarpattaLocation, magarpattaReviews, magarpattaFAQs, magarpattaMapEmbed,
+  yerawadaLocation, yerawadaReviews, yerawadaFAQs, yerawadaMapEmbed,
 } from "./locationData";
 
 export const LOCATION_CONTENT = {
@@ -64,6 +68,10 @@ export const LOCATION_CONTENT = {
   "bibewadi": { location: bibewadiLocation, reviews: bibewadiReviews, faqs: bibewadiFAQs, mapEmbed: bibewadiMapEmbed },
   "camp": { location: campLocation, reviews: campReviews, faqs: campFAQs, mapEmbed: campMapEmbed },
   "wanowrie": { location: wanowrieLocation, reviews: wanowrieReviews, faqs: wanowrieFAQs, mapEmbed: wanowrieMapEmbed },
+  "hinjewadi": { location: hinjewadiLocation, reviews: hinjewadiReviews, faqs: hinjewadiFAQs, mapEmbed: hinjewadiMapEmbed },
+  "pimple-saudagar": { location: pimpleSaudagarLocation, reviews: pimpleSaudagarReviews, faqs: pimpleSaudagarFAQs, mapEmbed: pimpleSaudagarMapEmbed },
+  "magarpatta": { location: magarpattaLocation, reviews: magarpattaReviews, faqs: magarpattaFAQs, mapEmbed: magarpattaMapEmbed },
+  "yerawada": { location: yerawadaLocation, reviews: yerawadaReviews, faqs: yerawadaFAQs, mapEmbed: yerawadaMapEmbed },
 };
 
 export const LOCATION_REGISTRY = locations.map((loc) => {

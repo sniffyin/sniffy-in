@@ -15,11 +15,19 @@
 
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Upload, X, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { X, CheckCircle2, AlertCircle, Loader2, Users, Scissors } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { supabase } from '../lib/supabase';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { useSeo } from '../lib/useSeo';
+import { SEO_ROUTES } from '../data/seoRoutes';
+import {
+  PUNE_AREAS, ALL_PUNE, uploadWithRetry, UPLOAD_CONCURRENCY, SectionHeader, FieldGroup, TextInput,
+  SelectInput, ChipToggle, CardToggle, RadioCard, Toggle, UploadZone, SignatureField, StepIndicator,
+  type UploadJob,
+} from './onboarding/shared';
+import HelperOnboardingForm from './onboarding/HelperOnboardingForm';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -55,15 +63,6 @@ const initialForm: FormData = {
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
-const PUNE_AREAS = [
-  'Baner', 'Aundh', 'Wakad', 'Hinjewadi', 'Kothrud', 'Karve Nagar',
-  'Shivajinagar', 'Viman Nagar', 'Kalyani Nagar', 'Koregaon Park',
-  'Kharadi', 'Wagholi', 'Hadapsar', 'Kondhwa', 'NIBM', 'Katraj',
-  'Dhayari', 'Bavdhan', 'Pimpri-Chinchwad', 'Ravet', 'Kalewadi',
-  'Lohegaon', 'Dhanori', 'Camp', 'Wanowrie', 'Mundwa', 'Bibewadi',
-];
-
-
 const PET_OPTIONS = [
   { value: 'dog',        emoji: '🐶', label: 'Dogs',        sub: 'All breeds' },
   { value: 'cat',        emoji: '🐱', label: 'Cats',        sub: 'All breeds' },
@@ -83,255 +82,18 @@ const KIT_OPTIONS = [
   { value: 'no',  emoji: '', label: 'No, I need equipment',   sub: 'We can help you get started' },
 ];
 
-// ─── Helper: upload file to Supabase Storage ─────────────────────────────────
-
-async function uploadFile(file: File, folder: string): Promise<string | null> {
-  const ext  = file.name.split('.').pop();
-  const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-  const { error } = await supabase.storage
-    .from('groomer-uploads')
-    .upload(path, file, { upsert: false });
-  if (error) { console.error('Upload error', error); return null; }
-  const { data } = supabase.storage.from('groomer-uploads').getPublicUrl(path);
-  return data.publicUrl;
-}
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-function SectionHeader({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
-  return (
-    <div className="flex items-start gap-4 mb-8">
-      {/* <div className="w-12 h-12 flex-shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl">
-        {emoji}
-      </div> */}
-      <div>
-        <h2 className="text-xl font-bold text-gray-900">{title}</h2>
-        <p className="text-sm text-gray-500 mt-0.5">{desc}</p>
-      </div>
-    </div>
-  );
-}
-
-function FieldGroup({ label, required, hint, children }: {
-  label: string; required?: boolean; hint?: string; children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-bold text-gray-800">
-        {label}{required && <span className="text-red-500 ml-1">*</span>}
-      </label>
-      {children}
-      {hint && <p className="text-xs text-gray-400">{hint}</p>}
-    </div>
-  );
-}
-
-function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <input
-      {...props}
-      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-sniffy-purple focus:border-sniffy-purple outline-none transition-all text-gray-800 font-medium placeholder-gray-400 bg-white"
-    />
-  );
-}
-
-function SelectInput(props: React.SelectHTMLAttributes<HTMLSelectElement> & { children: React.ReactNode }) {
-  const { children, ...rest } = props;
-  return (
-    <select
-      {...rest}
-      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-sniffy-purple focus:border-sniffy-purple outline-none transition-all text-gray-800 font-medium bg-white appearance-none cursor-pointer"
-    >
-      {children}
-    </select>
-  );
-}
-
-function ChipToggle({ checked, onChange, emoji, label }: {
-  checked: boolean; onChange: () => void; emoji: string; label: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onChange}
-      className={`flex items-center gap-2 px-4 py-2.5 rounded-full border-2 text-sm font-semibold transition-all ${
-        checked
-          ? 'bg-purple-50 border-sniffy-purple text-sniffy-purple'
-          : 'border-gray-200 text-gray-600 hover:border-gray-300'
-      }`}
-    >
-      <span>{emoji}</span>
-      {label}
-    </button>
-  );
-}
-
-function CardToggle({ checked, onChange, emoji, label, sub }: {
-  checked: boolean; onChange: () => void; emoji: string; label: string; sub?: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onChange}
-      className={`flex flex-col items-center gap-2 p-5 rounded-2xl border-2 text-center transition-all ${
-        checked
-          ? 'bg-purple-50 border-sniffy-purple'
-          : 'border-gray-200 hover:border-gray-300'
-      }`}
-    >
-      <span className="text-3xl leading-none">{emoji}</span>
-      <span className={`text-sm font-bold ${checked ? 'text-sniffy-purple' : 'text-gray-700'}`}>{label}</span>
-      {sub && <span className="text-xs text-gray-400">{sub}</span>}
-    </button>
-  );
-}
-
-function RadioCard({ checked, onChange, emoji, label, sub }: {
-  checked: boolean; onChange: () => void; emoji: string; label: string; sub: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onChange}
-      className={`flex items-center gap-4 p-4 rounded-2xl border-2 text-left transition-all ${
-        checked
-          ? 'bg-purple-50 border-sniffy-purple'
-          : 'border-gray-200 hover:border-gray-300'
-      }`}
-    >
-      {/* <span className="text-2xl flex-shrink-0">{emoji}</span> */}
-      <div>
-        <div className={`text-sm font-bold ${checked ? 'text-sniffy-purple' : 'text-gray-800'}`}>{label}</div>
-        <div className="text-xs text-gray-400 mt-0.5">{sub}</div>
-      </div>
-    </button>
-  );
-}
-
-function Toggle({ checked, onChange, label }: { checked: boolean; onChange: () => void; label: string }) {
-  return (
-    <div className="flex items-center gap-4">
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        onClick={onChange}
-        className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${checked ? 'bg-sniffy-purple' : 'bg-gray-200'}`}
-      >
-        <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${checked ? 'translate-x-6' : 'translate-x-0'}`} />
-      </button>
-      <span className="text-sm font-medium text-gray-700">{label}</span>
-    </div>
-  );
-}
-
-interface UploadZoneProps {
-  label: string;
-  hint: string;
-  accept: string;
-  multiple?: boolean;
-  files: File[];
-  onChange: (files: File[]) => void;
-  emoji: string;
-}
-
-function UploadZone({ label, hint, accept, multiple, files, onChange, emoji }: UploadZoneProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleFiles = (incoming: FileList | null) => {
-    if (!incoming) return;
-    const arr = Array.from(incoming);
-    onChange(multiple ? [...files, ...arr] : arr);
-  };
-
-  const removeFile = (idx: number) => {
-    onChange(files.filter((_, i) => i !== idx));
-  };
-
-  return (
-    <div className="space-y-2">
-      <div
-        onClick={() => inputRef.current?.click()}
-        className="flex items-center justify-between gap-4 border-2 border-dashed border-gray-200 hover:border-sniffy-purple hover:bg-purple-50/40 rounded-2xl px-5 py-4 cursor-pointer transition-all"
-      >
-        <input
-          ref={inputRef}
-          type="file"
-          accept={accept}
-          multiple={multiple}
-          className="hidden"
-          onChange={(e) => handleFiles(e.target.files)}
-        />
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">{emoji}</span>
-          <div>
-            <div className="font-bold text-sm text-gray-800">{label}</div>
-            <div className="text-xs text-gray-400 mt-0.5">{hint}</div>
-          </div>
-        </div>
-        <div className="flex-shrink-0 inline-flex items-center gap-1.5 bg-sniffy-purple text-white text-xs font-bold px-4 py-2 rounded-full">
-          <Upload size={12} /> Browse
-        </div>
-      </div>
-
-      {files.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {files.map((f, i) => (
-            <div key={i} className="flex items-center gap-2 bg-purple-50 border border-purple-100 rounded-xl px-3 py-1.5">
-              <span className="text-xs font-semibold text-sniffy-purple truncate max-w-[160px]">{f.name}</span>
-              <button type="button" onClick={() => removeFile(i)} className="text-gray-400 hover:text-red-500">
-                <X size={12} />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Step indicator ───────────────────────────────────────────────────────────
-
-function StepIndicator({ current }: { current: number }) {
-  const steps = ['Personal Info', 'Services', 'Experience', 'Documents'];
-  return (
-    <div className="flex items-center justify-center gap-0 overflow-x-auto px-4 py-4">
-      {steps.map((label, i) => {
-        const idx    = i + 1;
-        const done   = idx < current;
-        const active = idx === current;
-        return (
-          <div key={label} className="flex items-center flex-shrink-0">
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all ${
-              active ? 'bg-sniffy-purple text-white' : done ? 'text-green-600' : 'text-gray-400'
-            }`}>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-                active ? 'bg-white text-sniffy-purple' :
-                done   ? 'bg-green-500 text-white' :
-                        'border-2 border-gray-300 text-gray-400'
-              }`}>
-                {done ? '✓' : idx}
-              </div>
-              <span className={`text-xs font-bold hidden sm:block ${active ? 'text-white' : done ? 'text-green-600' : 'text-gray-400'}`}>
-                {label}
-              </span>
-            </div>
-            {i < steps.length - 1 && (
-              <div className={`w-6 h-px mx-1 ${done ? 'bg-green-400' : 'bg-gray-200'}`} />
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function GroomerOnboardingPage() {
+  useSeo(SEO_ROUTES.groomerOnboarding);
+
+  const [role, setRole]         = useState<'groomer' | 'helper'>('groomer');
   const [step, setStep]         = useState(1);
   const [form, setForm]         = useState<FormData>(initialForm);
   const [submitting, setSubmitting] = useState(false);
+  const [progress, setProgress]     = useState({ done: 0, total: 0 });
+  const uploadedRef = useRef(new Map<string, Map<File | string, string>>()); // survives failed submits so retries only re-send what failed
   const [submitted, setSubmitted]   = useState(false);
   const [error, setError]           = useState('');
 
@@ -339,6 +101,10 @@ export default function GroomerOnboardingPage() {
   const [portfolioFiles, setPortfolioFiles]   = useState<File[]>([]);
   const [aadhaarFiles, setAadhaarFiles]       = useState<File[]>([]);
   const [certFiles, setCertFiles]             = useState<File[]>([]);
+  const [areaMode, setAreaMode] = useState<'all' | 'specific' | null>(null);
+  const [passportFiles, setPassportFiles]     = useState<File[]>([]);
+  const [signature, setSignature]             = useState<string | null>(null);
+  const [signatureFile, setSignatureFile]     = useState<File | null>(null);
 
   const update = (patch: Partial<FormData>) => setForm(f => ({ ...f, ...patch }));
 
@@ -352,11 +118,17 @@ export default function GroomerOnboardingPage() {
     update({ areas: arr.includes(area) ? arr.filter(x => x !== area) : [...arr, area] });
   };
 
+  const chooseAreaMode = (mode: 'all' | 'specific') => {
+    setAreaMode(mode);
+    update({ areas: mode === 'all' ? [ALL_PUNE] : [] });
+  };
+
   // ── Validation per step
   const validateStep = (): string => {
     if (step === 1) {
       if (!form.full_name.trim()) return 'Please enter your full name.';
       if (!form.phone.trim() || !/^\+?[0-9\s-]{8,14}$/.test(form.phone)) return 'Please enter a valid phone number.';
+      if (!areaMode) return 'Please choose whether you serve all of Pune or specific areas.';
       if (form.areas.length === 0) return 'Please select at least one area you can serve.';
     }
     if (step === 2) {
@@ -369,7 +141,9 @@ export default function GroomerOnboardingPage() {
     }
     if (step === 4) {
       if (portfolioFiles.length < 1) return 'Please upload at least one grooming photo.';
+      if (passportFiles.length === 0) return 'Please upload your passport-size photo.';
       if (aadhaarFiles.length === 0) return 'Please upload your Aadhaar card.';
+      if (!signature && !signatureFile) return 'Please add your signature.';
       if (!form.consent_terms) return 'Please accept the Terms & Conditions.';
       if (!form.consent_background_check) return 'Please consent to the background verification check.';
     }
@@ -394,12 +168,45 @@ export default function GroomerOnboardingPage() {
     setSubmitting(true);
 
     try {
-      // Upload files in parallel
-      const [portfolioUrls, aadhaarUrls, certUrls] = await Promise.all([
-        Promise.all(portfolioFiles.map(f => uploadFile(f, 'portfolio'))),
-        Promise.all(aadhaarFiles.map(f => uploadFile(f, 'aadhaar'))),
-        Promise.all(certFiles.map(f => uploadFile(f, 'certificates'))),
-      ]);
+      const sigSrc: File | string = signatureFile ?? signature!;
+      const jobs: UploadJob[] = [
+        { src: passportFiles[0], folder: 'passport',  label: 'Passport photo' },
+        { src: sigSrc,           folder: 'signature', label: 'Signature' },
+        ...aadhaarFiles.map((f, i) => ({ src: f, folder: 'aadhaar',      label: `Aadhaar file ${i + 1}` })),
+        ...portfolioFiles.map((f, i) => ({ src: f, folder: 'portfolio',   label: `Grooming photo ${i + 1}` })),
+        ...certFiles.map((f, i) => ({ src: f, folder: 'certificates',     label: `Certificate ${i + 1}` })),
+      ];
+
+      const urls: string[] = new Array(jobs.length);
+      let done = 0;
+      jobs.forEach((j, i) => { const c = uploadedRef.current.get(j.folder)?.get(j.src); if (c) { urls[i] = c; done++; } });
+      setProgress({ done, total: jobs.length });
+
+      const pending = jobs.map((_, i) => i).filter(i => !urls[i]);
+      let failure: Error | null = null;
+      const worker = async () => {
+        while (!failure && pending.length) {
+          const i = pending.shift()!;
+          try {
+            urls[i] = await uploadWithRetry(jobs[i].src, jobs[i].folder, jobs[i].label);
+            const { folder, src } = jobs[i];
+            if (!uploadedRef.current.has(folder)) uploadedRef.current.set(folder, new Map());
+            uploadedRef.current.get(folder)!.set(src, urls[i]);
+            setProgress(p => ({ ...p, done: p.done + 1 }));
+          } catch (e) {
+            failure = e instanceof Error ? e : new Error('Upload failed.');
+          }
+        }
+      };
+      await Promise.all(Array.from({ length: Math.min(UPLOAD_CONCURRENCY, pending.length) }, worker));
+      if (failure) throw failure;
+
+      const urlsFor = (folder: string) => jobs.flatMap((j, i) => (j.folder === folder ? [urls[i]] : []));
+      const passportUrl  = urls[0];
+      const signatureUrl = urls[1];
+      const aadhaarUrls   = urlsFor('aadhaar');
+      const portfolioUrls = urlsFor('portfolio');
+      const certUrls      = urlsFor('certificates');
 
       const { error: dbErr } = await supabase.from('groomer_applications').insert({
         full_name:             form.full_name.trim(),
@@ -409,9 +216,11 @@ export default function GroomerOnboardingPage() {
         services:              form.services,
         years_experience:      form.years_experience?? 0,
         has_own_kit:           form.has_own_kit,
-        portfolio_urls:        portfolioUrls.filter(Boolean),
-        aadhaar_urls:          aadhaarUrls.filter(Boolean),
-        certificate_urls:      certUrls.filter(Boolean),
+        portfolio_urls:        portfolioUrls,
+        aadhaar_urls:          aadhaarUrls,
+        certificate_urls:      certUrls,
+        passport_photo_url:    passportUrl,
+        signature_url:         signatureUrl,
         consent_terms:         form.consent_terms,
         consent_background_check: form.consent_background_check,
         consent_whatsapp:      form.consent_whatsapp,
@@ -490,14 +299,43 @@ export default function GroomerOnboardingPage() {
             <p className="text-xs uppercase tracking-widest text-sniffy-purple font-bold mb-2">Join the Sniffy team</p>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-3">
               <span className="text-sniffy-purple">Become a</span>{' '}
-              <span className="text-sniffy-yellow">Sniffy Groomer</span>
+              <span className="text-sniffy-yellow">{role === 'groomer' ? 'Sniffy Groomer' : "Groomer's Helper"}</span>
             </h1>
             <p className="text-gray-500 text-sm md:text-base leading-relaxed max-w-lg mx-auto">
-              Connect with thousands of pet parents across Pune who need a skilled groomer like you. Start earning more, today.
+              {role === 'groomer'
+                ? 'Connect with thousands of pet parents across Pune who need a skilled groomer like you. Start earning more, today.'
+                : 'Go along with our groomers on home visits, assist with the pets and earn while you learn the craft.'}
             </p>
+
+            {/* Role switch */}
+            <div role="tablist" aria-label="Apply as" className="mt-5 inline-flex w-full max-w-md bg-white border-2 border-purple-100 rounded-full p-1 shadow-sm">
+              {([
+                { value: 'groomer' as const, label: 'Groomer',            Icon: Scissors },
+                { value: 'helper'  as const, label: "Groomer's Helper",   Icon: Users },
+              ]).map(({ value, label, Icon }) => (
+                <button
+                  key={value}
+                  type="button"
+                  role="tab"
+                  aria-selected={role === value}
+                  onClick={() => { setRole(value); setError(''); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  className={`flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold transition-all ${
+                    role === value ? 'bg-sniffy-purple text-white shadow' : 'text-gray-500 hover:text-sniffy-purple'
+                  }`}
+                >
+                  <Icon size={15} /> {label}
+                </button>
+              ))}
+            </div>
           </motion.div>
         </section>
 
+        {role === 'helper' ? (
+          <div className="max-w-7xl mx-auto px-4 pb-12">
+            <div className="max-w-2xl mx-auto"><HelperOnboardingForm /></div>
+          </div>
+        ) : (
+          <>
         {/* ── Step indicator ── */}
         <div className="sticky top-[73px] z-20 bg-white border-b border-gray-100 shadow-sm">
           <div className="max-w-3xl mx-auto">
@@ -524,7 +362,7 @@ export default function GroomerOnboardingPage() {
                   {step === 1 && (
                     <div className="space-y-6">
                       <div className="bg-white rounded-[20px] border-2 border-sniffy-yellow/20 shadow-sm p-8">
-                        <SectionHeader emoji="" title="Personal Information" desc="Tell us about yourself so pet parents can trust you." />
+                        <SectionHeader emoji="" title="Personal Information" />
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                           <FieldGroup label="Full Name" required>
@@ -545,26 +383,50 @@ export default function GroomerOnboardingPage() {
 
                         <div className="h-px bg-gray-100 my-6" />
 
-                        <FieldGroup label="Areas You Can Serve In Pune" required hint="Select as many areas as you can cover">
-                          <SelectInput
-                            value=""
-                            onChange={e => { if (e.target.value) toggleArea(e.target.value); e.target.value = ''; }}
-                          >
-                            <option value="">+ Select an area to add</option>
-                            {PUNE_AREAS.filter(a => !form.areas.includes(a)).map(a => (
-                              <option key={a}>{a}</option>
+                        <FieldGroup label="Areas You Can Serve In Pune" required hint={areaMode === 'specific' ? 'Select as many areas as you can cover' : undefined}>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {([
+                              { mode: 'all' as const,      label: 'All of Pune',    sub: 'I can travel anywhere in the city' },
+                              { mode: 'specific' as const, label: 'Specific areas', sub: 'I will pick the areas I cover' },
+                            ]).map(o => (
+                              <button
+                                key={o.mode}
+                                type="button"
+                                onClick={() => chooseAreaMode(o.mode)}
+                                className={`text-left rounded-2xl border-2 px-5 py-3 transition-all ${
+                                  areaMode === o.mode
+                                    ? 'border-sniffy-purple bg-purple-50'
+                                    : 'border-gray-200 hover:border-sniffy-purple/50'
+                                }`}
+                              >
+                                <div className="font-bold text-sm text-gray-800">{o.label}</div>
+                                <div className="text-xs text-gray-400 mt-0.5">{o.sub}</div>
+                              </button>
                             ))}
-                          </SelectInput>
-                          {form.areas.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-2">
-                              {form.areas.map(a => (
-                                <span key={a} className="inline-flex items-center gap-1.5 bg-purple-50 border border-purple-100 text-sniffy-purple text-sm font-semibold px-3 py-1.5 rounded-full">
-                                  📍 {a}
-                                  <button type="button" onClick={() => toggleArea(a)} className="hover:text-red-500">
-                                    <X size={13} />
-                                  </button>
-                                </span>
+                          </div>
+                          {areaMode === 'specific' && (
+                            <div className="mt-3">
+                          <SelectInput
+                              value=""
+                              onChange={e => { if (e.target.value) toggleArea(e.target.value); e.target.value = ''; }}
+                            >
+                              <option value="">+ Select an area to add</option>
+                              {PUNE_AREAS.filter(a => !form.areas.includes(a)).map(a => (
+                                <option key={a}>{a}</option>
                               ))}
+                            </SelectInput>
+                            {form.areas.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {form.areas.map(a => (
+                                  <span key={a} className="inline-flex items-center gap-1.5 bg-purple-50 border border-purple-100 text-sniffy-purple text-sm font-semibold px-3 py-1.5 rounded-full">
+                                    📍 {a}
+                                    <button type="button" onClick={() => toggleArea(a)} className="hover:text-red-500">
+                                      <X size={13} />
+                                    </button>
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                             </div>
                           )}
                         </FieldGroup>
@@ -700,18 +562,37 @@ export default function GroomerOnboardingPage() {
                         <SectionHeader emoji="" title="Documents & Photos" desc="Verified groomers earn 3× more trust from pet parents." />
 
                         <FieldGroup
+                          label="Passport-size Photo"
+                          required
+                          hint="Recent colour photo, face clearly visible, plain background."
+                        >
+                          <UploadZone
+                            label="Upload Passport Photo"
+                            hint="JPEG, PNG, WEBP · Auto-compressed"
+                            accept="image/*"
+                            files={passportFiles}
+                            onChange={setPassportFiles}
+                            emoji=""
+                            onError={setError}
+                          />
+                        </FieldGroup>
+
+                        <div className="h-px bg-gray-100 my-6" />
+
+                        <FieldGroup
                           label="Grooming Portfolio Photos"
                           required
                           hint="Upload your best before/after grooming shots. Minimum 1 photo required."
                         >
                           <UploadZone
                             label="Upload Grooming Photos"
-                            hint="Drag & drop or click to browse · JPEG, PNG, WEBP · Max 5 MB each"
+                            hint="Drag & drop or click to browse · JPEG, PNG, WEBP · Auto-compressed for slow networks"
                             accept="image/*"
                             multiple
                             files={portfolioFiles}
                             onChange={setPortfolioFiles}
                             emoji=""
+                            onError={setError}
                           />
                         </FieldGroup>
 
@@ -724,12 +605,13 @@ export default function GroomerOnboardingPage() {
                         >
                           <UploadZone
                             label="Upload Aadhaar Card"
-                            hint="Front & back · JPG, PNG, or PDF · Max 10 MB · 128-bit encrypted"
+                            hint="Front & back · JPG, PNG, or PDF (PDF max 10 MB) · 128-bit encrypted"
                             accept="image/*,.pdf"
                             multiple
                             files={aadhaarFiles}
                             onChange={setAadhaarFiles}
                             emoji=""
+                            onError={setError}
                           />
                         </FieldGroup>
 
@@ -738,13 +620,24 @@ export default function GroomerOnboardingPage() {
                         <FieldGroup label="Certifications (Optional)" hint="Any grooming courses, IGDBA, or training certificates">
                           <UploadZone
                             label="Upload Certificates"
-                            hint="PDF or images · Max 10 MB each"
+                            hint="PDF (max 10 MB) or images"
                             accept="image/*,.pdf"
                             multiple
                             files={certFiles}
                             onChange={setCertFiles}
                             emoji=""
+                            onError={setError}
                           />
+                        </FieldGroup>
+
+                        <div className="h-px bg-gray-100 my-6" />
+
+                        <FieldGroup
+                          label="Your Signature"
+                          required
+                          hint="Sign with your finger as it appears on your ID, or upload a photo of it signed on paper."
+                        >
+                          <SignatureField dataUrl={signature} file={signatureFile} onDataUrl={setSignature} onFile={setSignatureFile} onError={setError} />
                         </FieldGroup>
 
                         <div className="h-px bg-gray-100 my-6" />
@@ -818,7 +711,7 @@ export default function GroomerOnboardingPage() {
                     className="bg-sniffy-purple text-white font-bold px-8 py-3.5 rounded-full hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-purple-200 disabled:opacity-60"
                   >
                     {submitting ? (
-                      <><Loader2 size={16} className="animate-spin" /> Submitting…</>
+                      <><Loader2 size={16} className="animate-spin" /> {progress.total > 0 && progress.done < progress.total ? `Uploading ${progress.done} of ${progress.total}…` : 'Submitting…'}</>
                     ) : (
                       <><CheckCircle2 size={16} /> Submit Application</>
                     )}
@@ -829,6 +722,9 @@ export default function GroomerOnboardingPage() {
 
           </div>
         </div>
+
+          </>
+        )}
 
         {/* ── Bottom CTA (matches FAQsPage style exactly) ── */}
         <div className="max-w-2xl mx-auto px-4 pb-20">

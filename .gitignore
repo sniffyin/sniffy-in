@@ -21,3 +21,9 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Private / local-only
+.claude/
+supabase/.temp/
+*.docx
+ssl-expense-voucher-*.pdf

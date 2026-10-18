@@ -1,6 +1,12 @@
 import fs from "fs"
 import path from "path"
 import { catLocationsSEO } from '../src/data/catLocationsSEO.ts'
+import { CAT_LOCATION_CONTENT } from '../src/data/catLocationRegistry.ts'
+import { prerenderLocationBody, faqSchemaTag, offerCatalogJson, locationDataScript } from './prerenderLocationBody.ts'
+import { clampDescription } from './seoText.ts'
+// Safe to emit here because prerenderLocationBody() renders the same rating in
+// the page body (ratingSummaryHtml). Don't add it to a page that doesn't.
+import { aggregateRatingJson } from '../src/data/reputation.ts'
 
 const outputRoot = path.join(process.cwd(), "cat-grooming-in-pune")
 
@@ -9,6 +15,25 @@ if (!fs.existsSync(outputRoot)) {
 }
 
 catLocationsSEO.forEach((loc) => {
+
+  // See generateLocationPages.ts — body copy and <head> metadata come from
+  // separate files, so guard against them drifting apart.
+  const content = CAT_LOCATION_CONTENT[loc.slug as keyof typeof CAT_LOCATION_CONTENT]
+
+  if (!content) {
+    throw new Error(
+      `generateCatLocationPages: no CAT_LOCATION_CONTENT entry for slug "${loc.slug}". ` +
+      `Add it to src/data/catLocationRegistry.ts, or remove the slug from catLocationsSEO.ts.`
+    )
+  }
+
+  const prerenderedBody = prerenderLocationBody(content.location, content.reviews, content.faqs, 'cat')
+  const faqSchema = faqSchemaTag(content.faqs)
+
+  // Offer/OfferCatalog built from the same packages.ts arrays the body
+  // renders, so every price in this markup is visible on the page — a hard
+  // requirement for price structured data.
+  const offerCatalog = offerCatalogJson('cat', `https://sniffy.in/cat-grooming-in-pune/${loc.slug}`)
 
   const nearbyAreas = loc.nearby
     .map(area => `{ "@type": "Place", "name": "${area}, Pune" }`)
@@ -23,7 +48,7 @@ catLocationsSEO.forEach((loc) => {
 
     <title>${loc.title}</title>
 
-    <meta name="description" content="${loc.description}" />
+    <meta name="description" content="${clampDescription(loc.description, `cat/${loc.slug}`)}" />
 
     <meta name="robots" content="index, follow" />
 
@@ -48,6 +73,7 @@ catLocationsSEO.forEach((loc) => {
     <meta property="og:description" content="${loc.ogDescription}" />
     <meta property="og:url" content="https://sniffy.in/cat-grooming-in-pune/${loc.slug}" />
     <meta property="og:image" content="https://sniffy.in/sniffy-logo.png" />
+    <meta property="og:site_name" content="Sniffy" />
     <meta property="og:locale" content="en_IN" />
 
     <!-- Twitter -->
@@ -59,11 +85,12 @@ catLocationsSEO.forEach((loc) => {
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "PetGrooming",
+        "@type": "LocalBusiness",
         "@id": "https://sniffy.in/cat-grooming-in-pune/${loc.slug}#petgrooming",
         "name": "Sniffy Cat Grooming — ${loc.name}",
         "url": "https://sniffy.in/cat-grooming-in-pune/${loc.slug}",
-        "image": "https://sniffy.in/sniffy-logo.png",
+        "image": "https://sniffy.in/images/grooming-session-1.jpg",
+        "logo": "https://sniffy.in/sniffy-logo.png",
         "telephone": "+918971313003",
         "email": "care@sniffy.in",
 
@@ -86,12 +113,16 @@ catLocationsSEO.forEach((loc) => {
           ${nearbyAreas}
         ],
 
-        "serviceType": "Cat Grooming at Home",
+        "knowsAbout": "Cat grooming at home",
+
+        "hasOfferCatalog": ${offerCatalog},
 
         "priceRange": "₹799 - ₹1299",
 
         "paymentAccepted": "Cash, UPI",
         "currenciesAccepted": "INR",
+
+        "aggregateRating": ${aggregateRatingJson()},
 
         "openingHoursSpecification": {
           "@type": "OpeningHoursSpecification",
@@ -103,7 +134,8 @@ catLocationsSEO.forEach((loc) => {
         },
 
         "sameAs": [
-          "https://www.instagram.com/sniffy.in"
+          "https://www.instagram.com/sniffy.in",
+          "https://g.page/r/CdJR67bjxy_gEBI"
         ]
       }
     </script>
@@ -140,10 +172,21 @@ catLocationsSEO.forEach((loc) => {
       }
     </script>
 
+    <!-- FAQ Schema — generated from the same FAQ array the body renders -->
+${faqSchema}
+
   </head>
 
   <body>
-    <div id="root"></div>
+    <!--
+      #root is pre-filled so non-JS crawlers see the page text. createRoot()
+      clears this container on mount, so React fully replaces it and no
+      hydration mismatch is possible. See scripts/prerenderLocationBody.ts.
+    -->
+    <div id="root">
+${prerenderedBody}
+    </div>
+${locationDataScript(content.location, content.reviews, content.faqs)}
     <script type="module" src="/src/entries/catLocation.tsx"></script>
   </body>
 </html>

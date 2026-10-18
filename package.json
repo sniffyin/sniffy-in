@@ -9,22 +9,35 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "test": "tsx --test $(find src -name '*.test.ts')",
     "generate-pages": "npx tsx scripts/generateLocationPages.ts",
     "generate-pune": "npx tsx scripts/generatePunePage.ts",
     "generate-cat-pages": "npx tsx scripts/generateCatLocationPages.ts",
     "generate-cat-pune": "npx tsx scripts/generateCatPunePage.ts",
-    "generate-sitemap": "node scripts/generate-sitemap.js",
+    "generate-sitemap": "tsx scripts/generate-sitemap.ts",
+    "check-prices": "npx tsx scripts/checkPrices.ts",
+    "prerender-spa": "tsx scripts/prerenderSpa.ts",
     "generate-all": "npm run generate-pages && npm run generate-pune && npm run generate-cat-pages && npm run generate-cat-pune",
-    "deploy": "npm run generate-all && npm run build && npm run generate-sitemap && npm run preview"
+    "deploy": "npm run check-prices && npm run generate-all && npm run build && npm run prerender-spa && npm run generate-sitemap && npm run preview"
   },
   "dependencies": {
     "@lottiefiles/dotlottie-react": "^0.18.3",
     "@supabase/supabase-js": "^2.89.0",
+    "@types/leaflet": "^1.9.22",
+    "@types/qrcode": "^1.5.6",
+    "@vis.gl/react-google-maps": "^1.9.0",
     "framer-motion": "^12.23.24",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
+    "leaflet": "^1.9.4",
     "lucide-react": "^0.344.0",
+    "qrcode": "^1.5.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.13.1"
+    "react-leaflet": "^4.2.1",
+    "react-router-dom": "^7.13.1",
+    "recharts": "^3.9.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
@@ -38,8 +51,10 @@
     "globals": "^15.9.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
-    "vite": "^7.3.1"
+    "vite": "^7.3.1",
+    "vite-plugin-pwa": "^1.3.0"
   }
 }

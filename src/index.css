@@ -16,6 +16,11 @@
   0% { transform: translateX(-100%) skewX(-15deg); }
   100% { transform: translateX(250%) skewX(-15deg); }
 }
+/* Hero carousel: active pill progress fill (0 → full width over the slide interval) */
+@keyframes heroPillFill {
+  from { width: 0%; }
+  to { width: 100%; }
+}
 @keyframes badgePulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(107,47,160,0.5); }
   50% { box-shadow: 0 0 0 6px rgba(107,47,160,0); }
@@ -23,4 +28,72 @@
 @keyframes badgeShimmer {
   0% { transform: translateX(-100%) skewX(-20deg); }
   100% { transform: translateX(300%) skewX(-20deg); }
+}
+@keyframes fieldShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
+}
+.field-shake {
+  animation: fieldShake 0.4s ease;
+}
+/* Packages: dog/cat list swap (was a framer-motion fade+slide; CSS-only so
+   the eager homepage bundle doesn't need to load framer-motion for it). */
+@keyframes packageSwapIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.animate-package-swap-in {
+  animation: packageSwapIn 0.3s ease-out;
+}
+
+/* Navbar: desktop locality-search dropdown and the hamburger icon swap (both
+   were framer-motion; CSS-only so Navbar — used on every public page — isn't
+   forced to eager-load framer-motion just for these two flourishes). Both use
+   a `key` remount in the component to retrigger the animation, so only an
+   "enter" keyframe is needed — there is no exit state to animate out of. */
+@keyframes localityDropdownIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-locality-dropdown-in {
+  animation: localityDropdownIn 0.15s ease-out forwards;
+}
+@keyframes navIconSwap {
+  from { opacity: 0; transform: rotate(-90deg); }
+  to { opacity: 1; transform: rotate(0deg); }
+}
+.animate-nav-icon-swap {
+  animation: navIconSwap 0.2s ease-out forwards;
+}
+
+/* HeroSlider: CTA row fade-in-up (was framer-motion; CSS-only for the same
+   reason as above — HeroSlider is part of the home page's critical path). */
+@keyframes heroCtaFadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-hero-cta-fade-in-up {
+  animation: heroCtaFadeInUp 0.5s ease-out 0.15s both;
+}
+
+/* Toast: booking-success backdrop + panel (was framer-motion; CSS-only — see
+   Toast.tsx's header comment — because Toast is mounted on the home page at
+   all times with isVisible=false, so a static framer-motion import put it on
+   that page's critical path for an animation nobody has triggered yet). */
+@keyframes toastBackdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-toast-backdrop-in {
+  animation: toastBackdropIn 0.25s ease-out forwards;
+}
+@keyframes toastPanelIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+.animate-toast-panel-in {
+  animation: toastPanelIn 0.25s ease-out forwards;
 }

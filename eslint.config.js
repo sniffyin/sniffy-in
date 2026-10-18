@@ -23,6 +23,7 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      'max-len': 'off', // lottieAssets.ts has long base64 inline strings
     },
   }
 );

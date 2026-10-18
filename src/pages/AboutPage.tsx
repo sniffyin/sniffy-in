@@ -3,9 +3,11 @@
  * Header + Footer + content only.
  */
 
-import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { useSeo } from '../lib/useSeo';
+import { SEO_ROUTES } from '../data/seoRoutes';
+import { RATING_DISPLAY, REVIEW_COUNT } from '../data/reputation';
 
 // ─── Values ───────────────────────────────────────────────────────────────────
 
@@ -52,6 +54,8 @@ const team = [
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AboutPage() {
+  useSeo(SEO_ROUTES.about);
+
   return (
     <div className="min-h-screen bg-white">
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
@@ -62,12 +66,7 @@ export default function AboutPage() {
 
         {/* ── Hero ── */}
         <section className="bg-gradient-to-b from-purple-100 via-purple-50 to-white px-4 py-16 md:py-24">
-          <motion.div
-            className="max-w-3xl mx-auto text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="max-w-3xl mx-auto text-center">
             <p className="text-xs uppercase tracking-widest text-sniffy-purple font-bold mb-4">About Sniffy</p>
             <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
               We started Sniffy because{' '}
@@ -76,29 +75,19 @@ export default function AboutPage() {
             <p className="text-gray-600 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
               Sniffy is a professional at-home dog grooming service operating across Pune. We send trained, certified groomers to your home — so your dog gets proper care in the place they feel safest.
             </p>
-          </motion.div>
+          </div>
         </section>
 
         {/* ── The problem we saw ── */}
         <section className="bg-white py-16 px-4">
           <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 md:gap-20 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div>
               <div className="w-full aspect-[4/3] rounded-[40px] overflow-hidden bg-gray-100 shadow-md">
-                <img src="/images/grooming-session-4.jpg" alt="Dog grooming at home in Pune" className="w-full h-full object-cover" />
+                <img src="/images/grooming-session-4.jpg" alt="Dog grooming at home in Pune" className="w-full h-full object-cover" loading="lazy" decoding="async" />
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div>
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-5">What we saw in the market</h2>
               <div className="space-y-4 text-gray-600 leading-relaxed text-base">
                 <p>
@@ -114,20 +103,14 @@ export default function AboutPage() {
                   That's the gap we set out to fill.
                 </p>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
         {/* ── What we built ── */}
         <section className="bg-gray-50 py-16 px-4">
           <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 md:gap-20 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="order-2 md:order-1"
-            >
+            <div className="order-2 md:order-1">
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-5">What Sniffy actually is</h2>
               <div className="space-y-4 text-gray-600 leading-relaxed text-base">
                 <p>
@@ -140,50 +123,34 @@ export default function AboutPage() {
                   The groomer works with your dog one-on-one. No cages. No other animals. No rushing to get to the next client. Just a calm, thorough session that your dog gets to experience in the place they already feel safe.
                 </p>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="order-1 md:order-2"
-            >
+            <div className="order-1 md:order-2">
               <div className="w-full aspect-[4/3] rounded-[40px] overflow-hidden bg-gray-100 shadow-md">
-                <img src="/images/grooming-session-2.jpg" alt="Professional groomer at work in Pune" className="w-full h-full object-cover" />
+                <img src="/images/grooming-session-2.jpg" alt="Professional groomer at work in Pune" className="w-full h-full object-cover" loading="lazy" decoding="async" />
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
         {/* ── Values ── */}
         <section className="bg-white py-16 px-4">
           <div className="max-w-4xl mx-auto">
-            <motion.div
-              className="text-center mb-12"
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
+            <div className="text-center mb-12">
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">What we stand for</h2>
               <p className="text-gray-500 text-base max-w-lg mx-auto">These aren't marketing lines. They're the things that actually shape how we operate day to day.</p>
-            </motion.div>
+            </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-              {values.map((v, i) => (
-                <motion.div
+              {values.map((v) => (
+                <div
                   key={v.title}
                   className="bg-gray-50 rounded-[24px] p-7"
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.08 }}
                 >
                   <div className="text-3xl mb-3">{v.emoji}</div>
                   <h3 className="font-bold text-gray-900 text-base mb-2">{v.title}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed">{v.body}</p>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
@@ -227,18 +194,12 @@ export default function AboutPage() {
 
         {/* ── Numbers ── */}
         <section className="bg-sniffy-purple py-16 px-4">
-          <motion.div
-            className="max-w-4xl mx-auto"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
+          <div className="max-w-4xl mx-auto">
             <p className="text-center text-white/60 text-xs uppercase tracking-widest font-bold mb-10">Sniffy in numbers</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               {[
                 { number: '1,500+', label: 'Sessions completed' },
-                { number: '4.9',    label: 'Average rating' },
+                { number: RATING_DISPLAY, label: `Average of ${REVIEW_COUNT} Google reviews` },
                 { number: '8',      label: 'Areas covered in Pune' },
                 { number: '9 AM–9 PM', label: 'Available every day' },
               ].map(({ number, label }) => (
@@ -248,18 +209,12 @@ export default function AboutPage() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </section>
 
         {/* ── CTA ── */}
         <section className="bg-white px-4 py-16 text-center">
-          <motion.div
-            className="max-w-xl mx-auto"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
+          <div className="max-w-xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Want to experience the difference?</h2>
             <p className="text-gray-500 text-base mb-8">Book a session and see for yourself why Pune's pet parents are switching to Sniffy.</p>
             <a
@@ -268,7 +223,7 @@ export default function AboutPage() {
             >
               Book a Grooming Session
             </a>
-          </motion.div>
+          </div>
         </section>
 
       </main>

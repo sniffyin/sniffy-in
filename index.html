@@ -5,13 +5,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- TITLE (very important) -->
-    <title>Sniffy.in | Pet Grooming at Home in Pune | Dog & Cat Grooming</title>
+    <!-- TITLE (very important)
+         Keep in sync with HOME_SEO in src/data/seoRoutes.ts — scripts/prerenderSpa.ts
+         overwrites this tag with that value at build time, so a mismatch here only
+         shows up in dev.
+         Species-first, brand last: "Dog & Cat Grooming" is the highest-volume
+         phrasing and the opening of the tag carries the most weight. 55 chars,
+         so it renders in full rather than truncating. -->
+    <title>Dog &amp; Cat Grooming at Home in Pune | From ₹799 | Sniffy</title>
 
     <!-- META DESCRIPTION -->
     <meta
       name="description"
-      content="Sniffy offers professional dog and cat grooming at home across Pune. Safe, hygienic, stress-free pet grooming services at your doorstep."
+      content="Book dog grooming or cat grooming at home in Pune from ₹799. A trained groomer comes to your door across 33 localities — no salon, no travel, one visit."
     />
 
     <!-- SEO -->
@@ -27,54 +33,114 @@
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96"/>
     <link rel="shortcut icon" href="/favicon/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="Sniffy" />
     <link rel="manifest" href="/favicon/site.webmanifest" />
+
+    <!-- PWA / INSTALLABLE APP -->
+    <!-- Android: tints the status bar to match the brand. -->
+    <meta name="theme-color" content="#451a8b" />
+    <!-- iOS Safari: lets the page run in standalone (no Safari chrome) when
+         added to the Home Screen, and pins the home-screen tile label. -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Sniffy" />
+    <meta name="application-name" content="Sniffy" />
 
     <!-- OPEN GRAPH (WhatsApp / Social) -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Pet Grooming at Home in Pune | Sniffy" />
+    <meta property="og:title" content="Dog &amp; Cat Grooming at Home in Pune | From ₹799 | Sniffy" />
     <meta
       property="og:description"
-      content="Professional dog and cat grooming at home in Pune. Book stress-free pet grooming services with Sniffy."
+      content="Book dog grooming or cat grooming at home in Pune from ₹799. A trained groomer comes to your door across 33 localities — no salon, no travel, one visit."
     />
     <meta property="og:url" content="https://sniffy.in/" />
     <meta property="og:image" content="https://sniffy.in/sniffy-logo.png" />
+    <meta property="og:site_name" content="Sniffy" />
 
     <!-- ============================================================
          PERFORMANCE — resource hints (zero SEO impact)
          ============================================================ -->
 
-    <!-- Open TCP+TLS connections early to hosts the app uses at runtime -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Open TCP+TLS connections early to hosts the app uses at runtime.
+         Note: the app ships NO web fonts (system font stack + Georgia), so
+         there are deliberately no fonts.googleapis/gstatic hints here —
+         preconnecting to unused origins only wastes the connection budget. -->
+    <!-- WeatherWidget calls Open-Meteo on dashboard load. Warming the TCP+TLS
+         handshake here saves ~100-300 ms off the first weather paint. -->
+    <link rel="preconnect" href="https://api.open-meteo.com" crossorigin />
 
     <!-- Faster DNS for any remaining external hosts -->
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://api.open-meteo.com" />
 
     <!--
-      Preload the first review avatar — it is the LCP candidate on mobile.
-      Browser fetches it in parallel with the JS bundle instead of waiting
-      for React to mount. Can shave 300–600 ms off your LCP score.
-      fetchpriority="high" tells the browser to treat this above other images.
+      Preload the first hero slide image — it is the LCP element on both
+      mobile and desktop (the full-bleed doorstep hero card). Browser fetches
+      it in parallel with the JS bundle instead of waiting for React to mount.
+      fetchpriority="high" treats it above other images; the matching <img>
+      in HeroCarousel also carries fetchPriority="high" so the hint isn't
+      wasted on a duplicate lower-priority request.
+
+      Points at the .webp variant (25-35% smaller than the .jpg) to match the
+      <picture><source type="image/webp"> HeroCarousel now renders. The
+      type="image/webp" attribute makes browsers without webp support skip
+      this preload entirely rather than fetch a resource they can't use —
+      those browsers fall back to the .jpg via the <picture> element itself.
     -->
     <link
       rel="preload"
       as="image"
-      href="/images/review-1.jpg"
+      type="image/webp"
+      href="/images/grooming-session-1.webp"
+      imagesrcset="/images/grooming-session-1-800.webp 800w, /images/grooming-session-1.webp 1600w"
+      imagesizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1319px) calc(100vw - 44px), 1236px"
       fetchpriority="high"
     />
 
     <!-- ============================================================ -->
 
-    <!-- STRUCTURED DATA (LOCAL BUSINESS) — untouched for SEO -->
+    <!-- ============================================================
+         STRUCTURED DATA (LOCAL BUSINESS + WEBSITE)
+
+         @type MUST be a real schema.org type. This node used to declare
+         "PetGrooming", which does not exist (schema.org/PetGrooming is a
+         404) — an unrecognised @type makes a parser fall back to a bare
+         Thing, so the telephone, address, opening hours, price range and
+         rating below were all being read as properties of nothing. There
+         is no pet-grooming subtype in the vocabulary; LocalBusiness is the
+         correct generic. (ProfessionalService looks like a better fit but
+         is deprecated — schema.org retired it for being confused with
+         Service.)
+
+         LocalBusiness is itself a subtype of Organization, so the brand
+         signals — logo, sameAs, contactPoint — belong on THIS node rather
+         than a second Organization node. Splitting them would describe two
+         entities to a crawler where the business is one.
+
+         The old "serviceOffered" property is likewise not in the
+         vocabulary (also a 404). The forward link to the two Service nodes
+         in the @graph below is expressed with hasOfferCatalog + itemOffered
+         @id references, which mirrors the "provider" back-reference each
+         Service already carries.
+         ============================================================ -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "PetGrooming",
+        "@type": "LocalBusiness",
         "@id": "https://sniffy.in/#petgrooming",
         "name": "Sniffy Pet Grooming",
         "url": "https://sniffy.in",
+        "image": "https://sniffy.in/images/grooming-session-1.jpg",
+        "logo": "https://sniffy.in/sniffy-logo.png",
         "telephone": "+918971313003",
+        "email": "care@sniffy.in",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer service",
+          "telephone": "+918971313003",
+          "email": "care@sniffy.in",
+          "areaServed": "IN",
+          "availableLanguage": ["English", "Hindi", "Marathi"]
+        },
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "Pune",
@@ -86,10 +152,29 @@
           "name": "Pune"
         },
         "priceRange": "₹799 - ₹1299",
-        "serviceOffered": [
-          "Dog Grooming at Home",
-          "Cat Grooming at Home"
-        ],
+        "paymentAccepted": "Cash, UPI",
+        "currenciesAccepted": "INR",
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Pet grooming services in Pune",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": { "@id": "https://sniffy.in/#dog-grooming" }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": { "@id": "https://sniffy.in/#cat-grooming" }
+            }
+          ]
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "5.0",
+          "reviewCount": "255",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
         "openingHoursSpecification": {
           "@type": "OpeningHoursSpecification",
           "dayOfWeek": [
@@ -105,7 +190,238 @@
           "closes": "21:00"
         },
         "sameAs": [
-          "https://www.instagram.com/sniffy.in"
+          "https://www.instagram.com/sniffy.in",
+          "https://g.page/r/CdJR67bjxy_gEBI"
+        ]
+      }
+    </script>
+
+    <!-- ============================================================
+         STRUCTURED DATA (WEBSITE)
+
+         Names the site as an entity and attributes it to the business
+         above. No SearchAction/sitelinks-searchbox: that markup is only
+         honoured when the site has a real internal search results URL,
+         and this one has none — declaring it would be a false claim.
+         ============================================================ -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://sniffy.in/#website",
+        "url": "https://sniffy.in/",
+        "name": "Sniffy",
+        "alternateName": "Sniffy Pet Grooming",
+        "description": "At-home dog and cat grooming across Pune and Pimpri-Chinchwad.",
+        "inLanguage": "en-IN",
+        "publisher": { "@id": "https://sniffy.in/#petgrooming" }
+      }
+    </script>
+
+    <!-- ============================================================
+         STRUCTURED DATA (SERVICES + PRICED OFFERS)
+
+         The LocalBusiness block above only carries a "priceRange" string,
+         which search engines cannot break down. This @graph exposes each
+         package and add-on as a real Offer so the prices are machine
+         readable, and lists the localities we actually serve.
+
+         SOURCE OF TRUTH: src/pages/admin/types.ts → PACKAGES and ADD_ONS.
+         If a price changes there, change it here too — there is no build
+         step generating this file. (Deliberately static rather than
+         rendered from React: it ships in the raw HTML, so it is readable
+         without executing JS, and importing types.ts into a marketing
+         component would pull admin code into the home-page bundle.)
+
+         The visible copy backing these prices lives in
+         src/data/homeStories.ts → "What pet grooming in Pune actually costs".
+
+         NOTE: no aggregateRating in THIS @graph on purpose — it belongs on
+         the business entity, and the LocalBusiness node above now carries it
+         (real figure, from the Google Business Profile, rendered visibly by
+         <RatingSummary /> in the Testimonials section).
+
+         Still no `Review` markup anywhere: the testimonials are first-party
+         marketing copy, not reviews collected from verified customers on
+         this site, and marking those up is a manual-action risk.
+
+         The rating numbers above are duplicated from src/data/reputation.ts
+         because this file has no build step. Change them in BOTH places.
+         ============================================================ -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Service",
+            "@id": "https://sniffy.in/#dog-grooming",
+            "name": "Dog Grooming at Home in Pune",
+            "serviceType": "Dog grooming at home",
+            "description": "Doorstep dog grooming across Pune — spa bath, haircut, deshedding, nail trimming, ear cleaning and tick and flea treatment, carried out at the customer's home by a trained groomer.",
+            "provider": { "@id": "https://sniffy.in/#petgrooming" },
+            "areaServed": [
+              { "@type": "City", "name": "Pune" },
+              { "@type": "City", "name": "Pimpri-Chinchwad" },
+              { "@type": "Place", "name": "Ambegaon" },
+              { "@type": "Place", "name": "Aundh" },
+              { "@type": "Place", "name": "Baner" },
+              { "@type": "Place", "name": "Bavdhan" },
+              { "@type": "Place", "name": "Bibewadi" },
+              { "@type": "Place", "name": "Camp" },
+              { "@type": "Place", "name": "Dhanori" },
+              { "@type": "Place", "name": "Dhayari" },
+              { "@type": "Place", "name": "Hadapsar" },
+              { "@type": "Place", "name": "Handewadi" },
+              { "@type": "Place", "name": "Kalewadi" },
+              { "@type": "Place", "name": "Kalyani Nagar" },
+              { "@type": "Place", "name": "Karve Nagar" },
+              { "@type": "Place", "name": "Katraj" },
+              { "@type": "Place", "name": "Khadki" },
+              { "@type": "Place", "name": "Kharadi" },
+              { "@type": "Place", "name": "Kondhwa" },
+              { "@type": "Place", "name": "Koregaon Park" },
+              { "@type": "Place", "name": "Kothrud" },
+              { "@type": "Place", "name": "Lohegaon" },
+              { "@type": "Place", "name": "Mundwa" },
+              { "@type": "Place", "name": "NIBM" },
+              { "@type": "Place", "name": "Ravet" },
+              { "@type": "Place", "name": "Shivajinagar" },
+              { "@type": "Place", "name": "Viman Nagar" },
+              { "@type": "Place", "name": "Wagholi" },
+              { "@type": "Place", "name": "Wakad" },
+              { "@type": "Place", "name": "Wanowrie" }
+            ],
+            "availableChannel": {
+              "@type": "ServiceChannel",
+              "serviceUrl": "https://sniffy.in/",
+              "availableLanguage": [
+                { "@type": "Language", "name": "English" },
+                { "@type": "Language", "name": "Hindi" },
+                { "@type": "Language", "name": "Marathi" }
+              ]
+            },
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Dog grooming packages and add-ons",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "name": "Spa Bath",
+                  "description": "Bath with breed-appropriate shampoo, blow-dry to the skin, brushing, nail trimming and ear cleaning.",
+                  "price": "799",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Hair Cut",
+                  "description": "Full breed-appropriate haircut and styling, including sanitary and paw trims.",
+                  "price": "999",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Spa Bath + Hair Cut",
+                  "description": "Complete grooming session combining the spa bath and the full haircut.",
+                  "price": "1299",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Tick & Flea Care",
+                  "description": "Anti-tick and anti-flea treatment, recommended through the Pune monsoon.",
+                  "price": "149",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Medicated Bath",
+                  "description": "Medicated wash for fungal or bacterial skin conditions.",
+                  "price": "299",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Destressing Massage",
+                  "description": "Coconut or neem oil massage for coat condition and calming.",
+                  "price": "299",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Hygiene Hair Cut",
+                  "description": "Face and sanitary area trim without a full body haircut.",
+                  "price": "299",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Deworming",
+                  "description": "Deworming treatment administered during the grooming visit.",
+                  "price": "299",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock"
+                }
+              ]
+            }
+          },
+          {
+            "@type": "Service",
+            "@id": "https://sniffy.in/#cat-grooming",
+            "name": "Cat Grooming at Home in Pune",
+            "serviceType": "Cat grooming at home",
+            "description": "Doorstep cat grooming across Pune using cat-formulated products and low-restraint handling — bathing, de-matting, nail trimming, sanitary trims and lion cuts for matted Persian and Himalayan coats.",
+            "provider": { "@id": "https://sniffy.in/#petgrooming" },
+            "areaServed": { "@type": "City", "name": "Pune" },
+            "availableChannel": {
+              "@type": "ServiceChannel",
+              "serviceUrl": "https://sniffy.in/"
+            },
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Cat grooming packages and add-ons",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "name": "Spa Bath",
+                  "description": "Cat-formulated bath, gentle blow-dry, combing, nail trimming and ear cleaning.",
+                  "price": "799",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Hair Cut",
+                  "description": "Cat haircut including lion cut and de-matting for longhair breeds.",
+                  "price": "999",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Spa Bath + Hair Cut",
+                  "description": "Complete cat grooming session combining the bath and the haircut.",
+                  "price": "1299",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Hygiene Hair Cut",
+                  "description": "Face and sanitary area trim without a full body haircut.",
+                  "price": "299",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock"
+                }
+              ]
+            }
+          }
         ]
       }
     </script>

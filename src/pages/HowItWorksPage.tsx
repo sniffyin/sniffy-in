@@ -7,22 +7,23 @@
  */
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import BookingWizard from '../components/BookingWizard';
 import Toast from '../components/Toast';
+import { useSeo } from '../lib/useSeo';
+import { SEO_ROUTES } from '../data/seoRoutes';
 
 // ─── Steps data ───────────────────────────────────────────────────────────────
 
 const steps = [
   {
     number: '01',
-    heading: 'Book a Slot That Works for You',
-    subheading: 'Morning, afternoon or evening — your schedule, your call.',
+    heading: 'Book a Slot',
+    subheading: 'Morning, afternoon or evening — you pick.',
     paragraphs: [
-      'Fill in your name and number on our quick booking form and we\'ll call you back within minutes to confirm a time. No app downloads, no account creation, no waiting in queues.',
-      'We offer morning, afternoon and evening slots across all days of the week including Sundays. Working from home? We\'ll slot in around your calls. Heading out later? We\'ll be done before you leave.',
+      'Add your name and number to the booking form. We call you back in a few minutes to confirm a time. No app, no account, no queue.',
+      'Slots are open every day, including Sundays. Tell us when works for you and we\'ll fit in around it.',
     ],
     image: '/images/grooming-session-1.jpg',
     imageAlt: 'Booking a dog grooming session at home in Pune',
@@ -30,11 +31,11 @@ const steps = [
   },
   {
     number: '02',
-    heading: 'Your Groomer Arrives at Your Door',
-    subheading: 'Fully equipped, on time, ready to get started.',
+    heading: 'The Groomer Comes to You',
+    subheading: 'On time, with everything they need.',
     paragraphs: [
-      'Your assigned groomer arrives at the confirmed time with everything needed — shampoos, conditioners, professional-grade clippers, dryers, nail tools and more. You don\'t need to arrange a single thing.',
-      'We work cleanly and quietly. Our equipment is compact and designed for home use — whether you\'re in a high-rise apartment or an independent house, the setup is smooth and leaves no mess behind.',
+      'Your groomer shows up at the agreed time with all the gear — shampoo, clippers, dryer, nail tools. You don\'t have to set up anything.',
+      'The kit is small and made for homes. Apartment or house, the setup is quick and they leave no mess.',
     ],
     image: '/images/grooming-session-2.jpg',
     imageAlt: 'Professional groomer arriving at home with grooming kit',
@@ -42,11 +43,11 @@ const steps = [
   },
   {
     number: '03',
-    heading: 'A Calm, Thorough Grooming Session',
-    subheading: 'One groomer, one dog, zero distractions.',
+    heading: 'One Groomer, One Dog',
+    subheading: 'No cages, no waiting.',
     paragraphs: [
-      'Unlike a salon where your dog sits in a cage waiting their turn, our sessions are one-on-one. Your groomer gives your dog their full, undivided attention from start to finish.',
-      'We work at your dog\'s pace. If they need a break, we take one. Anxious dogs, senior dogs, first-timers — we\'ve worked with all kinds and know how to keep them calm.',
+      'It\'s just your groomer and your dog — full attention, start to finish. No cage, no waiting for a turn.',
+      'We go at your dog\'s pace and take breaks if needed. Nervous dogs, older dogs, first-timers — we\'ve handled them all.',
     ],
     image: '/images/grooming-session-3.jpg',
     imageAlt: 'Calm one-on-one dog grooming session at home',
@@ -54,11 +55,11 @@ const steps = [
   },
   {
     number: '04',
-    heading: 'Bath, Trim, Nails — The Full Works',
-    subheading: 'Every session covers everything your dog needs.',
+    heading: 'Bath, Trim and Nails',
+    subheading: 'Everything your dog needs in one visit.',
     paragraphs: [
-      'A standard session includes a spa bath with shampoo and conditioner, blow dry, brushing, nail clipping, eye and ear cleaning, paw massage, mouth spray and a spritz of perfume.',
-      'For breeds with specific coat needs — double coats, curly coats, long feathering — our groomers adjust their technique accordingly. We don\'t use a one-size-fits-all approach.',
+      'A session covers a bath with shampoo and conditioner, blow dry, brushing, nail clipping, ear and eye cleaning, a paw massage and a spritz of perfume.',
+      'Different coats need different care. Our groomers change their approach to suit your dog\'s breed.',
     ],
     image: '/images/grooming-session-4.jpg',
     imageAlt: 'Complete dog grooming session including bath trim and nail care',
@@ -66,11 +67,11 @@ const steps = [
   },
   {
     number: '05',
-    heading: 'Your Dog, Clean and Happy',
-    subheading: 'Done right, in your home, on your time.',
+    heading: 'All Done',
+    subheading: 'Clean dog, no stress.',
     paragraphs: [
-      'By the end of the session your dog is clean, smelling great and back in their favourite spot at home — without having been stressed by a car ride or a noisy salon.',
-      'Your groomer cleans up completely before leaving. Many customers set up a monthly plan so their dog gets consistent grooming without having to rebook each time.',
+      'Your dog ends up clean and comfy at home — no car ride, no noisy salon.',
+      'The groomer tidies up before leaving. Many customers set up a monthly plan so they don\'t have to book each time.',
     ],
     image: '/images/grooming-session-1.jpg',
     imageAlt: 'Happy clean dog after professional grooming at home in Pune',
@@ -85,26 +86,34 @@ function StepBlock({ step, index, onBookNow }: { step: typeof steps[0]; index: n
 
   const content = (
     <div>
-      {/* Step number */}
-      <div className="flex items-center gap-3 mb-4">
-        <span className="text-sniffy-yellow font-extrabold text-4xl md:text-5xl leading-none">{step.number}</span>
-        <div className="w-8 h-px bg-sniffy-yellow/40" />
+      {/* ── Desktop header: big number + full heading ── */}
+      <div className="hidden md:block">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-sniffy-yellow font-extrabold text-5xl leading-none">{step.number}</span>
+          <div className="w-8 h-px bg-sniffy-yellow/40" />
+        </div>
+        <h2 className="text-3xl font-bold mb-2 text-gray-900 leading-tight">{step.heading}</h2>
+        <p className="text-gray-400 mb-4 text-base font-medium">{step.subheading}</p>
       </div>
 
-      {/* Mobile thumbnail */}
-      <div className="md:hidden flex items-center gap-4 mb-5">
-        <div className="w-20 h-20 flex-shrink-0 rounded-2xl overflow-hidden bg-gray-100 shadow-sm">
+      {/* ── Mobile header: thumbnail + number + heading in one compact row ── */}
+      <div className="md:hidden flex items-center gap-4 mb-3">
+        <div className="w-16 h-16 flex-shrink-0 rounded-2xl overflow-hidden bg-gray-100 shadow-sm">
           <img src={step.image} alt={step.imageAlt} className="w-full h-full object-cover" loading="lazy" />
         </div>
-        <div className="w-px h-10 bg-sniffy-yellow/30 rounded-full" />
+        <div className="min-w-0">
+          <span className="text-sniffy-yellow font-extrabold text-xs tracking-wider">STEP {step.number}</span>
+          <h2 className="text-lg font-bold text-gray-900 leading-tight">{step.heading}</h2>
+          <p className="text-gray-400 text-xs font-medium">{step.subheading}</p>
+        </div>
       </div>
 
-      <h2 className="text-xl md:text-3xl font-bold mb-2 text-gray-900 leading-tight">{step.heading}</h2>
-      <p className="text-gray-400 mb-4 text-sm md:text-base font-medium">{step.subheading}</p>
-      <div className="space-y-3 text-gray-600 text-sm md:text-base leading-relaxed">
+      <div className="space-y-2.5 text-gray-600 text-sm md:text-base leading-relaxed">
         {step.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
       </div>
-      <button onClick={onBookNow} className="mt-6 bg-sniffy-purple text-white px-8 py-3 rounded-full font-semibold hover:opacity-90 transition-all text-sm">
+
+      {/* Per-step Book Now — desktop only; mobile uses one CTA at the end */}
+      <button onClick={onBookNow} className="hidden md:inline-block mt-6 bg-sniffy-purple text-white px-8 py-3 rounded-full font-semibold hover:opacity-90 transition-all text-sm">
         Book Now
       </button>
     </div>
@@ -119,16 +128,12 @@ function StepBlock({ step, index, onBookNow }: { step: typeof steps[0]; index: n
   );
 
   return (
-    <section className={bg + ' py-10 md:py-16 px-4'}>
-      <motion.div
+    <section className={bg + ' py-7 md:py-16 px-4'}>
+      <div
         className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8 md:gap-16 items-center"
-        initial={{ opacity: 0, y: 28 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.15 }}
-        transition={{ duration: 0.6 }}
       >
         {step.imageLeft ? <>{image}{content}</> : <>{content}{image}</>}
-      </motion.div>
+      </div>
     </section>
   );
 }
@@ -136,6 +141,8 @@ function StepBlock({ step, index, onBookNow }: { step: typeof steps[0]; index: n
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HowItWorksPage() {
+  useSeo(SEO_ROUTES.howItWorks);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast]     = useState(false);
 
@@ -154,21 +161,21 @@ export default function HowItWorksPage() {
 
       <main>
         {/* Page hero */}
-        <section className="bg-gradient-to-b from-purple-100 via-purple-50 to-white px-4 pt-14 pb-8 md:py-20 text-center">
-          <motion.div className="max-w-2xl mx-auto" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <p className="text-xs uppercase tracking-widest text-sniffy-purple font-bold mb-4">The Process</p>
-            <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-5">How Sniffy Works</h1>
-            <p className="text-gray-600 text-base md:text-lg leading-relaxed max-w-lg mx-auto">
-              Professional dog grooming at your home in Pune — here's exactly what happens from the moment you book to the moment your dog is done.
+        <section className="bg-gradient-to-b from-purple-100 via-purple-50 to-white px-4 pt-4 pb-5 md:py-20 text-center">
+          <div className="max-w-2xl mx-auto">
+            <p className="text-[10px] md:text-xs uppercase tracking-widest text-sniffy-purple font-bold mb-1.5 md:mb-4">The Process</p>
+            <h1 className="text-xl md:text-5xl font-bold text-gray-900 leading-tight mb-2 md:mb-5">How Sniffy Works</h1>
+            <p className="text-gray-600 text-xs md:text-lg leading-relaxed max-w-lg mx-auto">
+              Dog grooming at home in Pune. Here's what happens, from booking to done — in five simple steps.
             </p>
-          </motion.div>
+          </div>
 
           {/* Mobile-only: number circles + arrows, no text labels */}
-          <div className="md:hidden mt-8 flex items-center justify-center gap-2">
+          <div className="md:hidden mt-4 flex items-center justify-center gap-2">
             {steps.map((step, i) => (
               <div key={step.number} className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-full bg-white/80 border border-purple-200 shadow-sm flex items-center justify-center flex-shrink-0">
-                  <span className="text-sniffy-purple font-extrabold text-xs">{step.number}</span>
+                <div className="w-8 h-8 rounded-full bg-white/80 border border-purple-200 shadow-sm flex items-center justify-center flex-shrink-0">
+                  <span className="text-sniffy-purple font-extrabold text-[11px]">{step.number}</span>
                 </div>
                 {i < steps.length - 1 && (
                   <span className="text-sniffy-yellow font-bold text-base leading-none">›</span>
@@ -201,15 +208,15 @@ export default function HowItWorksPage() {
         ))}
 
         {/* Bottom CTA */}
-        {/* <section className="bg-sniffy-purple px-4 py-16 text-center">
-          <motion.div className="max-w-xl mx-auto" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
+        <section className="bg-sniffy-purple px-4 py-12 md:py-16 text-center">
+          <div className="max-w-xl mx-auto">
             <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">Ready to book your dog's first session?</h2>
-            <p className="text-white/70 text-base mb-8">Starting ₹799 · All areas across Pune · 9 AM – 9 PM daily</p>
+            <p className="text-white/70 text-sm md:text-base mb-8">Starting ₹799 · All areas across Pune · 9 AM – 9 PM daily</p>
             <button onClick={() => setIsModalOpen(true)} className="bg-sniffy-yellow text-gray-900 font-bold px-10 py-4 rounded-full text-base hover:opacity-90 transition-all shadow-lg">
               Book Now
             </button>
-          </motion.div>
-        </section> */}
+          </div>
+        </section>
       </main>
 
       <Footer />

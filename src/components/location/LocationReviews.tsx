@@ -1,6 +1,7 @@
-import { motion } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
 import type { LocationConfig } from './LocationHero';
+import { GOOGLE_REVIEW_URL } from '../../data/siteLinks';
+import RatingSummary from '../RatingSummary';
 
 export interface LocationReview {
   petName: string;
@@ -21,10 +22,7 @@ export default function LocationReviews({ location, reviews }: LocationReviewsPr
       <div className="max-w-6xl mx-auto">
 
         {/* Heading */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+        <div
           className="text-center mb-8 md:mb-12"
         >
           <h2 className="text-2xl md:text-4xl font-bold mb-2 leading-tight">
@@ -35,20 +33,23 @@ export default function LocationReviews({ location, reviews }: LocationReviewsPr
           <p className="text-gray-600 text-sm md:text-base">
             Loved by pet families across {location.name} and nearby areas
           </p>
-        </motion.div>
+
+          {/*
+            The page's LocalBusiness JSON-LD carries an aggregateRating; this is
+            the visible counterpart Google requires it to have. Removing one
+            without the other leaves the markup describing something the page
+            doesn't show. See src/data/reputation.ts.
+          */}
+          <RatingSummary className="mt-4" />
+        </div>
 
         {/* Reviews Grid */}
         <div className="grid gap-5 md:grid-cols-2">
 
           {reviews.map((review, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.08 }}
-
-              className="bg-gradient-to-br from-sniffy-yellow/10 to-sniffy-purple/10 
+              className="bg-gradient-to-br from-sniffy-yellow/10 to-sniffy-purple/10
               rounded-2xl p-5 md:p-6 relative border border-gray-100"
             >
 
@@ -99,20 +100,17 @@ export default function LocationReviews({ location, reviews }: LocationReviewsPr
 
               </div>
 
-            </motion.div>
+            </div>
           ))}
 
         </div>
 
         {/* Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+        <div
           className="text-center mt-8 md:mt-10"
         >
           <a
-            href="https://g.page/r/CdJR67bjxy_gEBI/review"
+            href={GOOGLE_REVIEW_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 border border-sniffy-purple 
@@ -122,7 +120,7 @@ export default function LocationReviews({ location, reviews }: LocationReviewsPr
             <Star size={16} className="fill-sniffy-yellow text-sniffy-yellow" />
             Read all Google Reviews
           </a>
-        </motion.div>
+        </div>
 
       </div>
     </section>

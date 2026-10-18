@@ -4,19 +4,26 @@
  * PERFORMANCE CHANGES (SEO-safe):
  *   • BookingWizard lazy loaded — pulls in Supabase (41 KB) only when modal opens
  *   • All standalone pages lazy loaded — user only downloads the page they visit
- *   • LocationPageWrapper lazy loaded — locationData (59 KB) deferred until needed
+ *   • LocationRoute lazy loaded (src/pages/LocationRoute.tsx) — the registry
+ *     lookup lives INSIDE that chunk, so locationData (~311 KB of locality
+ *     copy) is fetched only when a locality URL is opened. It previously sat
+ *     in a static import here and downloaded on every route, home included.
  *   • Above-the-fold home components (Hero, Packages etc.) stay eagerly loaded
  *     so the initial paint is unaffected
  */
 
-import { lazy, Suspense, useState } from 'react';
-import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { BrowserRouter, Routes, Route, useParams, useLocation } from 'react-router-dom';
 
 // ─── Above-the-fold / always needed — eager imports ───────────────────────────
 import Hero from './components/Hero';
 import Packages from './components/Packages';
 import EliteMembership from './components/EliteMembership';
 import BeforeAfterSlider from './components/BeforeAfterSlider';
+// Eager, not lazy — this is the home page's indexable SEO copy. A lazy chunk
+// behind <Suspense fallback={null}> risks it being absent from the rendered DOM.
+import HomeStories from './components/HomeStories';
+import AreasWeServe from './components/AreasWeServe';
 import Testimonials from './components/Testimonials';
 import FAQs from './components/FAQs';
 import Footer from './components/Footer';
@@ -27,6 +34,9 @@ import Toast from './components/Toast';
 // when the user actually triggers them (opens modal / navigates to page).
 
 const BookingWizard = lazy(() => import('./components/BookingWizard'));
+// Home page gallery teaser — pulls the Supabase client in to fetch a
+// handful of photos, so it stays out of the initial bundle like BookingWizard.
+const GalleryPeek = lazy(() => import('./components/GalleryPeek'));
 // import FloatingVideo from './components/FloatingVideo';
 // import BookingModal from './components/BookingModal';
 
@@ -36,12 +46,114 @@ const FAQsPage             = lazy(() => import('./pages/FAQsPage'));
 const BlogsPage            = lazy(() => import('./pages/BlogsPage').then(m => ({ default: m.BlogsPage })));
 const BlogPostPage         = lazy(() => import('./pages/BlogsPage').then(m => ({ default: m.BlogPostPage })));
 const AboutPage            = lazy(() => import('./pages/AboutPage'));
+const GalleryPage          = lazy(() => import('./pages/GalleryPage'));
 const ContactPage          = lazy(() => import('./pages/ContactPage'));
 const WhySniffyPage        = lazy(() => import('./pages/WhySniffyPage'));
 const GroomerOnboardingPage = lazy(() => import('./pages/GroomerOnboardingPage'));
-const LocationPage         = lazy(() => import('./pages/LocationPage'));
+const LocationRoute        = lazy(() => import('./pages/LocationRoute'));
+const AdminDashboard   = lazy(() => import('./pages/AdminDashboard'));
+const GroomerDashboard = lazy(() => import('./pages/GroomerDashboard'));
+// Phase 4 — customer portal at /account.  Phone OTP, self-service pets,
+// session history with receipts, request-to-book.
+const CustomerPortal   = lazy(() => import('./pages/CustomerPortal'));
+// Role-policy "read & sign" page — reached only via an admin-generated link
+// (Admin > Policies > Generate Link), never linked from any nav. Kept out of
+// search indexing (see HIDE_FLOATING_ON below, robots.txt, and the page's
+// own noindex meta tag).
+const PolicySignPage   = lazy(() => import('./pages/PolicySignPage'));
+// Unlisted single-screen booking form shared directly with customers who
+// call / WhatsApp. Independent of BookingWizard. noindex, no site chrome.
+const QuickBookPage    = lazy(() => import('./pages/QuickBookPage'));
+// Catch-all 404 — only downloads when a user lands on an unknown URL
+const NotFoundPage     = lazy(() => import('./pages/NotFoundPage'));
 
-import { LOCATION_REGISTRY } from './data/locationRegistry';
+
+// Route-aware PWA gate: swaps the <link rel="manifest"> based on
+// pathname (so /groomer installs as "Sniffy Groomer" and /admin installs
+// as "Sniffy Admin") and renders the Install-App banner inside those two
+// scopes. Tiny + cheap — safe to keep eager-imported.
+import PWAInstallGate from './components/PWAInstallGate';
+
+// Persistent floating Book / WhatsApp speed-dial. Self-contained (owns its own
+// BookingWizard), so it needs no per-page wiring — mounted once below, hidden on
+// the operational surfaces (admin / groomer / customer portal).
+//
+// Both of these import framer-motion for genuinely rich animation (spring
+// physics, staggered children, an infinite breathing-halo loop) that isn't
+// worth hand-converting to CSS. Lazy-loading them instead — same pattern as
+// BookingWizard/GalleryPeek — keeps that ~39 KB gzipped dependency off every
+// public page's critical bundle. Neither needs to be visible on first paint:
+// FloatingActions deliberately delays its own entrance by 900ms already, and
+// ServiceDisruptionNotice only decides whether to show at all inside a
+// post-mount effect (it's a once-per-browser localStorage-gated notice).
+const FloatingActions = lazy(() => import('./components/FloatingActions'));
+const ServiceDisruptionNotice = lazy(() => import('./components/ServiceDisruptionNotice'));
+import RelatedArticles from './components/RelatedArticles';
+
+const HIDE_FLOATING_ON = ['/admin', '/groomer', '/account', '/policy-sign', '/quick-book'];
+
+function PublicFloatingActions() {
+  const { pathname } = useLocation();
+  if (HIDE_FLOATING_ON.some(p => pathname === p || pathname.startsWith(p + '/'))) {
+    return null;
+  }
+  return (
+    <Suspense fallback={null}>
+      <FloatingActions />
+    </Suspense>
+  );
+}
+
+// Same surfaces as the floating actions — internal admin/groomer tools and the
+// customer's own account portal don't need the public-facing outage notice.
+function PublicServiceDisruptionNotice() {
+  const { pathname } = useLocation();
+  if (HIDE_FLOATING_ON.some(p => pathname === p || pathname.startsWith(p + '/'))) {
+    return null;
+  }
+  return (
+    <Suspense fallback={null}>
+      <ServiceDisruptionNotice />
+    </Suspense>
+  );
+}
+
+// Defers the GalleryPeek chunk download AND its Supabase query until the
+// section is about to scroll into view. Without this, React.lazy's import()
+// fires the moment <GalleryPeek/> is rendered — i.e. on every home page load,
+// even for visitors who never scroll that far — adding an extra JS chunk
+// fetch + DB round trip to initial load for no reason. rootMargin starts the
+// real fetch a bit early so the section doesn't visibly pop in mid-scroll.
+function DeferredGalleryPeek() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    if (shouldLoad || !ref.current) return;
+    const el = ref.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '600px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [shouldLoad]);
+
+  return (
+    <div ref={ref}>
+      {shouldLoad && (
+        <Suspense fallback={null}>
+          <GalleryPeek />
+        </Suspense>
+      )}
+    </div>
+  );
+}
 
 // ─── Home ─────────────────────────────────────────────────────────────────────
 
@@ -75,8 +187,12 @@ function HomePage() {
       <Packages onBookNow={() => handleOpenModal()} />
       <EliteMembership />
       <BeforeAfterSlider />
+      <DeferredGalleryPeek />
+      <HomeStories onBookNow={() => handleOpenModal()} />
       <Testimonials />
+      <AreasWeServe />
       <FAQs />
+      <RelatedArticles />
       <Footer />
       {/* <BookingModal
         isOpen={isModalOpen}
@@ -97,30 +213,6 @@ function HomePage() {
   );
 }
 
-// ─── Location page wrapper ────────────────────────────────────────────────────
-
-function LocationPageWrapper() {
-  const { slug } = useParams<{ slug: string }>();
-  const data = LOCATION_REGISTRY[slug ?? ''];
-
-  if (!data) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Location not found.</p>
-      </div>
-    );
-  }
-
-  return (
-    <Suspense fallback={null}>
-      <LocationPage
-        location={data.location}
-        reviews={data.reviews}
-        faqs={data.faqs}
-      />
-    </Suspense>
-  );
-}
 
 // ─── Blog post wrapper ────────────────────────────────────────────────────────
 
@@ -143,6 +235,12 @@ function BlogPostWrapper() {
 export default function App() {
   return (
     <BrowserRouter>
+      {/* Mounted inside the router so it can read pathname via
+          useLocation. Doesn't render any chrome on public/SEO routes —
+          only swaps the manifest link tag. */}
+      <PWAInstallGate />
+      <PublicFloatingActions />
+      <PublicServiceDisruptionNotice />
       <Suspense fallback={null}>
         <Routes>
           {/* Home */}
@@ -156,10 +254,24 @@ export default function App() {
           <Route path="/blogs"                         element={<BlogsPage />} />
           <Route path="/blogs/:slug"                   element={<BlogPostWrapper />} />
           <Route path="/about"                         element={<AboutPage />} />
+          <Route path="/gallery"                       element={<GalleryPage />} />
           <Route path="/groomer-onboarding"            element={<GroomerOnboardingPage />} />
 
           {/* Location pages */}
-          <Route path="/dog-grooming-in-pune/:slug"    element={<LocationPageWrapper />} />
+          <Route path="/dog-grooming-in-pune/:slug"    element={<LocationRoute />} />
+          <Route path="/admin"   element={<AdminDashboard />} />
+          <Route path="/groomer" element={<GroomerDashboard />} />
+          {/* Phase 4 — customer portal.  Phone OTP gate → self-service shell. */}
+          <Route path="/account" element={<CustomerPortal />} />
+
+          {/* Role-policy sign page — unlinked, admin-generated links only */}
+          <Route path="/policy-sign/:token" element={<PolicySignPage />} />
+
+          {/* Shareable quick-booking form — unlisted, noindex */}
+          <Route path="/quick-book" element={<QuickBookPage />} />
+
+          {/* Catch-all 404 — must be the LAST route */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

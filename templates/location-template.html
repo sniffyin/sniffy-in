@@ -1,4 +1,10 @@
 <!doctype html>
+<!--
+  Reference scaffold only — this file is NOT read at build time.
+  scripts/generateLocationPages.ts inlines its own copy of this markup; that
+  generator is the source of truth. Keep this in sync when the generator changes,
+  or delete it. Rating numbers come from src/data/reputation.ts.
+-->
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -42,11 +48,12 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "PetGrooming",
+        "@type": "LocalBusiness",
         "@id": "https://sniffy.in/dog-grooming-in-pune/{{SLUG}}#petgrooming",
         "name": "Sniffy Dog Grooming — {{LOCALITY}}",
         "url": "https://sniffy.in/dog-grooming-in-pune/{{SLUG}}",
-        "image": "https://sniffy.in/sniffy-logo.png",
+        "image": "https://sniffy.in/images/grooming-session-1.jpg",
+        "logo": "https://sniffy.in/sniffy-logo.png",
         "telephone": "+918971313003",
         "email": "care@sniffy.in",
 
@@ -66,12 +73,16 @@
 
         "areaServed": {{AREA_SERVED}},
 
-        "serviceType": "Dog Grooming at Home",
+        "knowsAbout": "Dog grooming at home",
+
+        "hasOfferCatalog": {{OFFER_CATALOG}},
 
         "priceRange": "₹799 - ₹1299",
 
         "paymentAccepted": "Cash, UPI",
         "currenciesAccepted": "INR",
+
+        "aggregateRating": {{AGGREGATE_RATING}},
 
         "openingHoursSpecification": {
           "@type": "OpeningHoursSpecification",
@@ -83,7 +94,8 @@
         },
 
         "sameAs": [
-          "https://www.instagram.com/sniffy.in"
+          "https://www.instagram.com/sniffy.in",
+          "https://g.page/r/CdJR67bjxy_gEBI"
         ]
       }
     </script>

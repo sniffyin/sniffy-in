@@ -1,39 +1,48 @@
-import { motion } from "framer-motion";
 import type { LocationConfig } from "./LocationHero";
+import { localityLinkPrefix } from "../../data/puneLocalities";
 
 interface LocationCitiesProps {
   location: LocationConfig;
+}
+
+/**
+ * The keyword part of the anchor text ("Dog grooming in "), hidden visually so
+ * 32 pills don't become a wall of text but still read by crawlers and screen
+ * readers. The static generator emits the same markup — see localityPillsHtml
+ * in scripts/prerenderLocationBody.ts — because that HTML is what a crawler
+ * that does not run JS sees. Keep the two in step.
+ */
+function PillLabel({ slug, name }: { slug: string; name: string }) {
+  const prefix = localityLinkPrefix(slug);
+  return (
+    <>
+      {prefix && <span className="sr-only">{prefix}</span>}
+      {name}
+    </>
+  );
 }
 
 export default function LocationCities({ location }: LocationCitiesProps) {
   const cities = [...location.otherCities].sort((a, b) => a.name.localeCompare(b.name));
   const firstFive = cities.slice(0, 5);
   const rest = cities.slice(5);
+  const petLabel = location.slug.startsWith("cat-grooming-in-pune/") ? "Cat" : "Dog";
 
   return (
     <section className="bg-gray-50 py-10 md:py-16 px-4">
       <div className="max-w-7xl mx-auto text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
+        <div>
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-            Pet Grooming Across Pune
+            {petLabel} grooming in other Pune areas
           </h2>
           <p className="text-gray-500 mb-7 text-sm md:text-base">
             We bring home grooming to all major localities in Pune
           </p>
-        </motion.div>
+        </div>
 
         {/* Desktop - all pills */}
-        <motion.div
+        <div
           className="hidden md:flex flex-wrap justify-center gap-3"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
         >
           {cities.map((city) => (
             <a
@@ -41,10 +50,10 @@ export default function LocationCities({ location }: LocationCitiesProps) {
               href={"/" + city.slug}
               className="px-5 py-2 rounded-full text-sm font-semibold text-sniffy-purple border border-sniffy-purple/30 bg-sniffy-purple/5 hover:bg-sniffy-purple hover:text-white transition-all duration-200"
             >
-              {city.name}
+              <PillLabel slug={city.slug} name={city.name} />
             </a>
           ))}
-        </motion.div>
+        </div>
 
         {/* Mobile - first 5 + expandable */}
         <div className="md:hidden">
@@ -55,7 +64,7 @@ export default function LocationCities({ location }: LocationCitiesProps) {
                 href={"/" + city.slug}
                 className="px-4 py-1.5 rounded-full text-xs font-semibold text-sniffy-purple border border-sniffy-purple/30 bg-sniffy-purple/5"
               >
-                {city.name}
+                <PillLabel slug={city.slug} name={city.name} />
               </a>
             ))}
           </div>
@@ -71,7 +80,7 @@ export default function LocationCities({ location }: LocationCitiesProps) {
                     href={"/" + city.slug}
                     className="px-4 py-1.5 rounded-full text-xs font-semibold text-sniffy-purple border border-sniffy-purple/30 bg-sniffy-purple/5"
                   >
-                    {city.name}
+                    <PillLabel slug={city.slug} name={city.name} />
                   </a>
                 ))}
               </div>

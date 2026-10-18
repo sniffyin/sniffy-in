@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { MoveHorizontal } from 'lucide-react';
 
 const pairs = [
   {
@@ -44,22 +44,22 @@ function SliderCard({ before, after, label }: { before: string; after: string; l
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-1.5 sm:gap-2.5">
       <div
         ref={containerRef}
-        className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden select-none cursor-ew-resize"
+        className="relative w-full aspect-[4/5] sm:aspect-[16/10] rounded-xl sm:rounded-2xl overflow-hidden select-none cursor-ew-resize shadow-md sm:shadow-lg shadow-sniffy-purple/10 ring-1 ring-black/5"
         style={{ userSelect: 'none' }}
       >
         {/* Before */}
-        <img src={before} alt="Before" className="absolute inset-0 w-full h-full object-cover" draggable={false} />
-        <span className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
+        <img src={before} alt="Before" className="absolute inset-0 w-full h-full object-cover" draggable={false} loading="lazy" decoding="async" />
+        <span className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 bg-black/60 backdrop-blur-sm text-white text-[9px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-full">
           BEFORE
         </span>
 
         {/* After */}
         <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
-          <img src={after} alt="After" className="absolute inset-0 w-full h-full object-cover" draggable={false} />
-          <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-gray-800 text-xs font-bold px-3 py-1 rounded-full">
+          <img src={after} alt="After" className="absolute inset-0 w-full h-full object-cover" draggable={false} loading="lazy" decoding="async" />
+          <span className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 bg-white/90 backdrop-blur-sm text-gray-800 text-[9px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-full">
             AFTER
           </span>
         </div>
@@ -77,8 +77,8 @@ function SliderCard({ before, after, label }: { before: string; after: string; l
           onMouseDown={onMouseDown}
           onTouchStart={onTouchStart}
         >
-          <div className={`w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center transition-transform ${dragging ? 'scale-110' : 'scale-100'}`}>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white shadow-lg flex items-center justify-center transition-transform ${dragging ? 'scale-110' : 'scale-100'}`}>
+            <svg viewBox="0 0 18 18" fill="none" className="w-3 h-3 sm:w-[15px] sm:h-[15px]">
               <path d="M6 4L2 9L6 14" stroke="#451a8b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M12 4L16 9L12 14" stroke="#451a8b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
@@ -87,44 +87,37 @@ function SliderCard({ before, after, label }: { before: string; after: string; l
       </div>
 
       {/* Label */}
-      <p className="text-center text-sm font-semibold text-gray-500">{label}</p>
+      <span className="mx-auto inline-flex items-center gap-1 sm:gap-1.5 rounded-full bg-sniffy-purple/5 ring-1 ring-sniffy-purple/10 px-2 sm:px-3 py-0.5 text-[10px] sm:text-xs font-bold text-sniffy-purple">
+        🐾 {label}
+      </span>
     </div>
   );
 }
 
 export default function BeforeAfterSlider() {
   return (
-    <section className="py-14 px-4 bg-white">
-      <div className="max-w-4xl mx-auto">
+    <section className="py-6 md:py-12 px-4 bg-gradient-to-b from-white via-purple-50/40 to-white">
+      <div className="max-w-3xl mx-auto">
 
         {/* Header */}
-        <motion.div
-          className="text-center mb-10"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <p className="text-xs uppercase tracking-widest text-sniffy-purple font-bold mb-2">Real results</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+        <div className="text-center mb-4 md:mb-8">
+          <p className="text-[10px] md:text-[11px] uppercase tracking-widest text-sniffy-purple font-bold mb-1">Real results</p>
+          <h2 className="text-xl md:text-3xl font-bold text-gray-900">
             Before & After{' '}
             <span className="text-sniffy-yellow">Transformation</span>
           </h2>
-          <p className="text-gray-400 text-sm mt-3">Drag the slider to compare</p>
-        </motion.div>
+          <p className="mt-2 md:mt-3 inline-flex items-center gap-1.5 rounded-full bg-white ring-1 ring-black/5 shadow-sm px-2.5 py-0.5 md:px-3 md:py-1 text-[11px] md:text-xs font-medium text-gray-500">
+            <MoveHorizontal size={13} className="text-sniffy-purple" />
+            Drag the slider to compare
+          </p>
+        </div>
 
         {/* Sliders grid */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
+        <div className="grid grid-cols-2 gap-3 md:gap-5">
           {pairs.map((pair) => (
             <SliderCard key={pair.label} {...pair} />
           ))}
-        </motion.div>
+        </div>
 
       </div>
     </section>
