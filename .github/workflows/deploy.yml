@@ -1,0 +1,58 @@
+name: Build & deploy to cPanel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # Locality pages are committed, so we don't regenerate them here.
+      # Mirrors the tail of `npm run deploy` (minus check-prices and preview).
+      - name: Build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_TELEGRAM_BOT_TOKEN: ${{ secrets.VITE_TELEGRAM_BOT_TOKEN }}
+          VITE_TELEGRAM_CHAT_ID: ${{ secrets.VITE_TELEGRAM_CHAT_ID }}
+          VITE_PASS_JITENDRA: ${{ secrets.VITE_PASS_JITENDRA }}
+          VITE_PASS_PRIYA: ${{ secrets.VITE_PASS_PRIYA }}
+          VITE_GROOMER_PASS_HEMANT: ${{ secrets.VITE_GROOMER_PASS_HEMANT }}
+          VITE_GROOMER_PASS_SIDHARTH: ${{ secrets.VITE_GROOMER_PASS_SIDHARTH }}
+          VITE_COMMIT_SHA: ${{ github.sha }}
+        run: |
+          npm run build
+          npm run prerender-spa
+          npm run generate-sitemap
+
+      # Vite doesn't emit these; Apache needs them next to the built site.
+      - name: Add .htaccess and robots.txt
+        run: cp .htaccess dist/.htaccess && cp -n robots.txt dist/robots.txt || true
+
+      - name: Upload to cPanel
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.CPANEL_FTP_HOST }}
+          username: ${{ secrets.CPANEL_FTP_USER }}
+          password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./dist/
+          server-dir: ${{ secrets.CPANEL_FTP_DIR }}
+          # Only removes files this action previously uploaded (tracked in
+          # .ftp-deploy-sync-state.json); server-only files are left alone.
