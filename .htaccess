@@ -215,3 +215,11 @@ RewriteRule ^(admin|groomer|account|quick-book)(/.*)?$ /index.html [L]
 # Reached when nothing above matched and no file exists. Serves the prerendered
 # error page from scripts/prerenderSpa.ts with a real 404 status.
 ErrorDocument 404 /404.html
+
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php82” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php82 .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
