@@ -25,7 +25,7 @@ import {
   reviews as hubReviews,
   faqs as hubFaqs,
 } from '../src/data/catPuneHubContent.ts'
-import { prerenderHubBody, offerCatalogJson } from './prerenderLocationBody.ts'
+import { heroImagePreloadTag, prerenderHubBody, offerCatalogJson } from './prerenderLocationBody.ts'
 import { clampDescription } from './seoText.ts'
 // One business, one Google Business Profile, one rating — the cat hub used to
 // claim its own separate "4.9 from 85", which was invented. See reputation.ts.
@@ -109,6 +109,7 @@ const html = `<!doctype html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    ${heroImagePreloadTag()}
 
     <title>Cat Grooming at Home in Pune | All Areas Covered | Sniffy</title>
 

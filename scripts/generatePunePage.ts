@@ -27,7 +27,7 @@ import {
   faqs as hubFaqs,
   reviews as hubReviews,
 } from '../src/data/puneHubContent.ts'
-import { prerenderHubBody, offerCatalogJson } from './prerenderLocationBody.ts'
+import { heroImagePreloadTag, prerenderHubBody, offerCatalogJson } from './prerenderLocationBody.ts'
 import { clampDescription } from './seoText.ts'
 // The rating below is real, sourced from the Google Business Profile, and is
 // rendered in the page body by prerenderHubBody() — all three of which are
@@ -101,6 +101,7 @@ const html = `<!doctype html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    ${heroImagePreloadTag()}
 
     <title>Dog Grooming at Home in Pune | All Areas Covered | Sniffy</title>
 

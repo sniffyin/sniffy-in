@@ -245,9 +245,13 @@ export function storyImageHtml(
   // 1600w original for an image they never display. Keep in sync with
   // <UniformImage /> in src/components/HomeStories.tsx.
   const small = src.replace(/\.jpg$/, '-800.jpg');
-  const loading = eager
-    ? 'loading="eager" fetchpriority="high"'
-    : 'loading="lazy" fetchpriority="low"';
+  // Never eager/high: on phones this <img> is display:none (sizes="1px") and
+  // is discarded when React mounts, yet fetchpriority=high made it download a
+  // ~46 KB jpg at top priority, competing with the real LCP image (the React
+  // hero's .webp). Lazy keeps it out of the way; `eager` is now a no-op kept
+  // for call-site compatibility.
+  void eager;
+  const loading = 'loading="lazy" fetchpriority="low"';
 
   return `<div class="w-full max-w-md aspect-[4/3] overflow-hidden bg-gray-100 shadow-sm mx-auto" style="border-radius:50px">
             <img src="${src}" srcset="${small} 800w, ${src} 1600w" sizes="(min-width: 768px) 320px, 1px"
@@ -733,4 +737,20 @@ ${JSON.stringify(schema, null, 2)
   .map((l) => `      ${l}`)
   .join('\n')}
     </script>`;
+}
+
+/**
+ * <link rel="preload"> for the hero's LCP image.
+ *
+ * The hero <img> is rendered by React (HeroCarousel), so without this the
+ * browser cannot discover it until the JS bundle has downloaded, parsed and
+ * executed. The preload makes it start in parallel with the HTML parse.
+ * srcset/sizes/type must mirror heroWebpSrcSet() + HERO_SIZES in
+ * src/components/heroSlides.tsx, otherwise the browser preloads a candidate the
+ * <picture> then doesn't use (a wasted request, not a speed-up).
+ */
+export function heroImagePreloadTag(): string {
+  return `<link rel="preload" as="image" type="image/webp" fetchpriority="high"
+          imagesrcset="/images/grooming-session-1-800.webp 800w, /images/grooming-session-1.webp 1600w"
+          imagesizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1319px) calc(100vw - 44px), 1236px" />`;
 }

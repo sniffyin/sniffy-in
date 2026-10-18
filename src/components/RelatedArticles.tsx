@@ -18,7 +18,10 @@
  * scripts/prerenderSpa.ts (home). Links that only exist after React mounts are
  * invisible to crawlers that do not execute JS, which defeats the purpose.
  */
-import { blogPosts, type BlogAudience } from '../data/blogPosts';
+// blogIndex (metadata only), NOT blogPosts: this component ships on every
+// locality/hub page and blogPosts is ~370 KB of article bodies.
+import { blogIndex as blogPosts } from '../data/blogIndex';
+import type { BlogAudience } from '../data/blogPosts';
 
 /**
  * Mirrors headingForAudience() in scripts/prerenderLocationBody.ts — the static

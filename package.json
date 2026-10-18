@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "generate-blog-index": "tsx scripts/generateBlogIndex.ts",
+    "build": "npm run generate-blog-index && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
@@ -17,7 +18,7 @@
     "generate-sitemap": "tsx scripts/generate-sitemap.ts",
     "check-prices": "npx tsx scripts/checkPrices.ts",
     "prerender-spa": "tsx scripts/prerenderSpa.ts",
-    "generate-all": "npm run generate-pages && npm run generate-pune && npm run generate-cat-pages && npm run generate-cat-pune",
+    "generate-all": "npm run generate-blog-index && npm run generate-pages && npm run generate-pune && npm run generate-cat-pages && npm run generate-cat-pune",
     "deploy": "npm run check-prices && npm run generate-all && npm run build && npm run prerender-spa && npm run generate-sitemap && npm run preview"
   },
   "dependencies": {

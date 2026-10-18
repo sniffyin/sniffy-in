@@ -1,5 +1,4 @@
 import { Suspense, lazy, useEffect, useRef } from 'react';
-import { LOTTIE_DOG_CONFIRM } from '../lib/lottieAssets';
 
 /**
  * The lottie player is ~360 KB and this toast is mounted on the home page at all
@@ -8,9 +7,9 @@ import { LOTTIE_DOG_CONFIRM } from '../lib/lottieAssets';
  * had triggered yet. Loading it lazily keeps it off the initial download and
  * fetches it only once a booking actually succeeds.
  */
-const DotLottieReact = lazy(() =>
-  import('@lottiefiles/dotlottie-react').then((m) => ({ default: m.DotLottieReact }))
-);
+// ToastLottie also owns the 54 KB inlined lottie data URI, so neither it nor
+// the player is fetched until a booking succeeds.
+const ToastLottie = lazy(() => import('./ToastLottie'));
 
 interface ToastProps {
   message: string;
@@ -78,12 +77,7 @@ export default function Toast({ message, isVisible, onClose }: ToastProps) {
                 120x120 box so the message below does not jump when it loads. */}
             <div style={{ width: 120, height: 120 }}>
               <Suspense fallback={null}>
-                <DotLottieReact
-                  src={LOTTIE_DOG_CONFIRM}
-                  autoplay
-                  loop
-                  style={{ width: '100%', height: '100%' }}
-                />
+                <ToastLottie />
               </Suspense>
             </div>
 

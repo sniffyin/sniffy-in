@@ -2,7 +2,7 @@ import fs from "fs"
 import path from "path"
 import { catLocationsSEO } from '../src/data/catLocationsSEO.ts'
 import { CAT_LOCATION_CONTENT } from '../src/data/catLocationRegistry.ts'
-import { prerenderLocationBody, faqSchemaTag, offerCatalogJson, locationDataScript } from './prerenderLocationBody.ts'
+import { heroImagePreloadTag, prerenderLocationBody, faqSchemaTag, offerCatalogJson, locationDataScript } from './prerenderLocationBody.ts'
 import { clampDescription } from './seoText.ts'
 // Safe to emit here because prerenderLocationBody() renders the same rating in
 // the page body (ratingSummaryHtml). Don't add it to a page that doesn't.
@@ -45,6 +45,7 @@ catLocationsSEO.forEach((loc) => {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    ${heroImagePreloadTag()}
 
     <title>${loc.title}</title>
 
