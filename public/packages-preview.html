@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>TEMP – Mobile packages preview</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: { colors: { 'sniffy-purple': '#451a8b', 'sniffy-yellow': '#f6ac0a' } } } };
+</script>
+<style>
+  body { font-family: Inter, system-ui, sans-serif; }
+  details > summary { list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] .chev { transform: rotate(180deg); }
+  .chev { transition: transform .2s; }
+  @keyframes nudge { 0%,100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
+  .nudge { animation: nudge 1.2s ease-in-out infinite; }
+</style>
+</head>
+<body class="bg-white">
+<div id="wrap" class="mx-auto max-w-md px-4 pb-16 pt-6 lg:max-w-6xl">
+
+  <div class="mb-4 rounded-xl bg-amber-50 p-3 text-[11px] text-amber-900 ring-1 ring-amber-200">
+    <b>TEMP PREVIEW</b> – not part of the site. Last 2 packages (Pet-Care Plus, Signature Groom) are made-up placeholders.
+    Pick a layout:
+    <div class="mt-2 inline-flex rounded-full bg-white p-1 ring-1 ring-amber-200">
+      <button id="bA" class="rounded-full px-3 py-1 text-xs font-bold">A · Full cards</button>
+      <button id="bB" class="rounded-full px-3 py-1 text-xs font-bold">B · Compact + expand</button>
+      <button id="bC" class="rounded-full px-3 py-1 text-xs font-bold">C · 3 swipe stacks</button>
+      <button id="bD" class="rounded-full px-3 py-1 text-xs font-bold hidden lg:inline">D1 · Desktop 5 across</button>
+      <button id="bE" class="rounded-full px-3 py-1 text-xs font-bold hidden lg:inline">D2 · Desktop 3 stacks</button>
+    </div>
+  </div>
+
+  <h2 class="mb-3 text-center text-[1.575rem] font-bold"><span class="text-sniffy-purple">Our Grooming</span> <span class="text-sniffy-yellow">Packages</span></h2>
+  <div class="mb-5 flex justify-center">
+    <div class="inline-flex rounded-full bg-gray-100 p-1.5 shadow-lg">
+      <span class="rounded-full bg-sniffy-purple px-5 py-2 text-sm font-semibold text-white">🐶 Dog</span>
+      <span class="px-5 py-2 text-sm font-semibold text-gray-600">🐱 Cat</span>
+    </div>
+  </div>
+
+  <div id="list" class="space-y-4"></div>
+
+  <p class="mt-8 text-center text-xl font-bold text-sniffy-purple">Special Add-Ons</p>
+</div>
+
+<script>
+const IMG = { bath: '/images/grooming-session-1-800.jpg', cut: '/images/grooming-session-4-800.jpg', combo: '/images/grooming-session-3-800.jpg' };
+const PKGS = [
+  { title: 'SPA BATH', price: 799, no: ['Sanitary Trim'], orig: 999, theme: 'bath',
+    items: ['Bath With Premium Shampoo','Nourishing Coat Conditioner','Blow Dry'],
+    free: ['Combing/ Brushing','Nail Clipping','Eye & Ear Cleaning','Paw Massage','Mouth Spray','Spritz of Perfume'] },
+  { title: 'HAIR CUT', price: 999, no: ['Paw Massage'], orig: 1199, theme: 'cut',
+    items: ['Full Body Trimming/ Full Body Haircut','Trim Length of Your Choice','Loose Hair Blow-Out'],
+    free: ['Combing/ Brushing','Nail Clipping','Eye & Ear Cleaning','Mouth Spray','Spritz of Perfume'] },
+  { title: 'SPA BATH + HAIR CUT', price: 1299, orig: 1499, theme: 'combo',
+    items: ['Bath With Shampoo & Conditioner','Full Body Trimming/ Full Body Haircut','Blow Dry'],
+    free: ['Combing/ Brushing','Nail Clipping','Eye & Ear Cleaning','Sanitary Trim','Under Paw Trim','Paw Massage','Mouth Spray','Spritz of Perfume'] },
+  { title: 'PET-CARE PLUS', price: 1499, no: ['Sanitary Trim'], orig: 1799, theme: 'bath', tag: 'NEW',
+    items: ['Spa Bath With Medicated Shampoo','De-Shedding Treatment','Blow Dry'],
+    free: ['Combing/ Brushing','Nail Clipping','Eye & Ear Cleaning','Paw Massage','Mouth Spray'] },
+  { title: 'SIGNATURE GROOM', price: 1799, orig: 2099, theme: 'combo', featured: true,
+    items: ['Spa Bath + Full Haircut','Tick & Flea Treatment','Teeth Cleaning'],
+    free: ['Combing/ Brushing','Nail Clipping','Eye & Ear Cleaning','Sanitary Trim','Paw Massage','Spritz of Perfume'] },
+];
+
+const check = (f, cls) => `<li class="flex items-start gap-2"><svg class="mt-0.5 h-3.5 w-3.5 flex-shrink-0 ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="text-[13px] font-medium leading-snug">${f}</span></li>`;
+const dot = (f, cls) => `<li class="flex items-start gap-1.5"><span class="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full ${cls}"></span><span class="text-xs font-medium leading-snug">${f}</span></li>`;
+const pct = p => Math.round((p.orig - p.price) / p.orig * 100);
+
+function priceRow(p, f) {
+  return `<div class="flex flex-wrap items-center gap-2">
+    <span class="text-3xl font-black tracking-tight ${f ? 'text-white' : 'text-gray-900'}">₹${p.price}</span>
+    <span class="text-base font-semibold line-through ${f ? 'text-white/60' : 'text-gray-400'}">₹${p.orig}</span>
+    ${p.hideBadge ? '' : `<span class="rounded-full bg-sniffy-yellow px-2.5 py-1 text-[11px] font-extrabold uppercase text-sniffy-purple">${pct(p)}% OFF</span>`}
+  </div>`;
+}
+const badge = p => p.featured
+  ? `<span class="absolute -top-3 left-5 z-20 whitespace-nowrap rounded-full bg-sniffy-yellow px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide text-sniffy-purple shadow-md ring-2 ring-white/60">★ Most Popular</span>`
+  : p.tag ? `<span class="absolute -top-3 left-5 z-20 rounded-full bg-green-500 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide text-white shadow-md ring-2 ring-white/60">${p.tag}</span>` : '';
+
+// Variant A — same card content as today, one per row, two-column body to keep height down
+function cardA(p) {
+  const f = !!p.featured;
+  const wash = f ? 'linear-gradient(to bottom, rgba(36,16,70,0), rgba(36,16,70,.8) 40%)' : 'linear-gradient(to bottom, rgba(250,243,227,0), rgba(250,243,227,.85) 40%)';
+  return `<div class="relative rounded-3xl p-5 ${f ? 'bg-gradient-to-b from-[#3a1a6b] to-[#241046] text-white shadow-xl ring-1 ring-white/10' : 'bg-[#faf3e3] text-gray-900 shadow-sm ring-1 ring-black/5'} overflow-hidden" style="overflow:visible">
+    ${badge(p)}
+    <div aria-hidden class="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 overflow-hidden rounded-b-3xl">
+      <div class="absolute inset-0" style="background:url(${IMG[p.theme]}) center/cover;opacity:${f ? .7 : .85};-webkit-mask-image:linear-gradient(to bottom,transparent,black);mask-image:linear-gradient(to bottom,transparent,black)"></div>
+      <div class="absolute inset-0" style="background:${wash}"></div>
+    </div>
+    <div class="relative z-10">
+      <h3 class="text-base font-extrabold uppercase tracking-wide ${f ? 'text-white/90' : 'text-sniffy-purple'}">${p.title}</h3>
+      <div class="mt-1.5">${priceRow(p, f)}</div>
+      <p class="mt-1.5 text-xs font-bold ${f ? 'text-sniffy-yellow' : 'text-green-600'}">You save ₹${p.orig - p.price}</p>
+      <div class="my-3 h-px ${f ? 'bg-white/15' : 'bg-black/10'}"></div>
+      <ul class="space-y-2 ${f ? 'text-white/95' : 'text-gray-700'}">${p.items.map(i => check(i, f ? 'text-sniffy-yellow' : 'text-sniffy-purple')).join('')}</ul>
+      <div class="mt-3 border-t border-dashed pt-3 ${f ? 'border-white/25' : 'border-black/15'}">
+        <p class="mb-2 text-xs font-extrabold uppercase tracking-wide ${f ? 'text-sniffy-yellow' : 'text-sniffy-purple'}">🎁 Free Add-Ons</p>
+        <ul class="grid grid-cols-2 gap-x-3 gap-y-1.5 ${f ? 'text-white/90' : 'text-gray-700'}">${p.free.map(i => dot(i, f ? 'bg-sniffy-yellow' : 'bg-sniffy-purple')).join('')}</ul>
+      </div>
+    </div></div>`;
+}
+
+// Variant B — compact row (name, price, save) that expands to show inclusions
+function cardB(p, i) {
+  const f = !!p.featured;
+  return `<details ${i === 2 ? 'open' : ''} class="relative rounded-2xl ${f ? 'bg-gradient-to-b from-[#3a1a6b] to-[#241046] text-white shadow-xl' : 'bg-[#faf3e3] text-gray-900 shadow-sm ring-1 ring-black/5'}">
+    ${badge(p)}
+    <summary class="flex cursor-pointer items-center gap-3 p-4">
+      <div class="h-14 w-14 flex-shrink-0 rounded-xl" style="background:url(${IMG[p.theme]}) center/cover"></div>
+      <div class="min-w-0 flex-1">
+        <h3 class="truncate text-[13px] font-extrabold uppercase tracking-wide ${f ? 'text-white/90' : 'text-sniffy-purple'}">${p.title}</h3>
+        <div class="flex items-baseline gap-2">
+          <span class="text-2xl font-black">₹${p.price}</span>
+          <span class="text-sm line-through ${f ? 'text-white/60' : 'text-gray-400'}">₹${p.orig}</span>
+        </div>
+        <p class="text-[11px] font-bold ${f ? 'text-sniffy-yellow' : 'text-green-600'}">Save ₹${p.orig - p.price}</p>
+      </div>
+      <svg class="chev h-5 w-5 flex-shrink-0 ${f ? 'text-sniffy-yellow' : 'text-sniffy-purple'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+    </summary>
+    <div class="px-4 pb-4">
+      <div class="mb-3 h-px ${f ? 'bg-white/15' : 'bg-black/10'}"></div>
+      <ul class="space-y-2 ${f ? 'text-white/95' : 'text-gray-700'}">${p.items.map(x => check(x, f ? 'text-sniffy-yellow' : 'text-sniffy-purple')).join('')}</ul>
+      <p class="mb-2 mt-3 text-xs font-extrabold uppercase tracking-wide ${f ? 'text-sniffy-yellow' : 'text-sniffy-purple'}">🎁 Free Add-Ons</p>
+      <ul class="grid grid-cols-2 gap-x-3 gap-y-1.5 ${f ? 'text-white/90' : 'text-gray-700'}">${p.free.map(x => dot(x, f ? 'bg-sniffy-yellow' : 'bg-sniffy-purple')).join('')}</ul>
+    </div></details>`;
+}
+
+
+// Variant C — 3 swipe slides: [pair] [pair] [premium]. Each pair stacks two compact cards.
+const POS = { bath: '2% -14%', cut: '18% -30%', combo: '55% 0%' };
+const GIFT = '<svg class="h-3.5 w-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>';
+function cardC(p, premium, book) {
+  const f = !!p.featured || premium;
+  const wash = premium ? 'linear-gradient(to bottom, rgba(36,16,70,0) 0%, rgba(36,16,70,0) 22%, rgba(36,16,70,.92) 52%, #241046 70%)' : f ? 'linear-gradient(to bottom right, #2a1252 0%, rgba(42,18,82,.97) 45%, rgba(42,18,82,.6) 75%, rgba(42,18,82,.12) 100%)' : 'linear-gradient(to bottom right, #faf3e3 0%, rgba(250,243,227,.97) 45%, rgba(250,243,227,.6) 75%, rgba(250,243,227,.08) 100%)';
+  const chip = x => `<span class="whitespace-nowrap rounded-full px-2 py-[5px] text-[10px] font-semibold leading-none ${f ? 'bg-white/10 text-white/90 ring-1 ring-white/20' : 'bg-white/80 text-gray-700 ring-1 ring-black/[.07]'}">${x}</span>`;
+  const X = '<svg class="h-2.5 w-2.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+  const noChip = x => `<span class="inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-dashed px-2 py-[4px] text-[10px] font-semibold leading-none ${f ? 'border-rose-300/50 bg-rose-400/10 text-rose-200' : 'border-rose-400/70 bg-white/70 text-rose-600'}">${X}<span>No ${x}</span></span>`;
+  const sub = f ? 'text-sniffy-yellow' : 'text-sniffy-purple';
+  return `<div class="relative flex flex-1 flex-col ${premium ? 'justify-end' : 'justify-center'} rounded-2xl px-3.5 py-3 ${f ? 'bg-gradient-to-b from-[#3a1a6b] to-[#241046] text-white shadow-xl ring-1 ring-white/10' : 'bg-[#faf3e3] text-gray-900 shadow-sm ring-1 ring-black/5'}">
+    ${badge(p)}
+    <div aria-hidden class="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+      ${premium
+        ? `<div class="absolute inset-x-0 top-0" style="height:250px;background:url(${IMG.bath}) 40% 35%/cover no-repeat;-webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 55%,transparent 100%)"></div>
+           <div class="absolute inset-x-0 top-0 h-20" style="background:linear-gradient(to bottom, rgba(36,16,70,.45), transparent)"></div>`
+        : `<div class="absolute inset-0" style="background:url(${IMG[p.theme]}) ${POS[p.theme]}/170% auto no-repeat;opacity:${f ? .8 : .85}"></div>
+           <div class="absolute inset-0" style="background:${wash}"></div>`}
+    </div>
+    <div class="relative z-10">
+      <h3 class="text-[16px] font-black uppercase leading-tight tracking-wide ${f ? 'text-white' : 'text-sniffy-purple'}">${p.title}</h3>
+      <div class="mt-1 flex items-center justify-between gap-2">
+        <div class="flex items-baseline gap-2">
+          <span class="text-[26px] font-black leading-none tracking-tight ${f ? 'text-white' : 'text-gray-900'}">₹${p.price}</span>
+          <span class="text-[13px] font-medium leading-none line-through ${f ? 'text-white/50' : 'text-gray-400'}">₹${p.orig}</span>
+        </div>
+        <span class="whitespace-nowrap rounded-full bg-sniffy-yellow px-2 py-[3px] text-[10px] font-extrabold uppercase leading-none tracking-wide text-sniffy-purple">Save ₹${p.orig - p.price}</span>
+      </div>
+      <div class="my-2 h-px ${f ? 'bg-white/15' : 'bg-black/10'}"></div>
+      <ul class="space-y-1 ${f ? 'text-white/95' : 'text-gray-800'}">${p.items.map(i => `<li class="flex items-start gap-2"><svg class="mt-[3px] h-3 w-3 flex-shrink-0 ${sub}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="text-[12px] font-medium leading-snug">${i}</span></li>`).join('')}</ul>
+      <p class="mb-1.5 mt-2.5 flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-[.1em] ${sub}">${GIFT}<span>Free add-ons</span></p>
+      ${premium
+        ? `<ul class="space-y-1.5">${p.free.map(x => `<li class="flex items-center gap-2 text-[12px] font-medium text-white/90"><span class="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-sniffy-yellow"></span>${x}</li>`).join('')}</ul>`
+        : `<div class="flex flex-wrap gap-1">${p.free.map(chip).join('')}${(p.no || []).map(noChip).join('')}</div>`}
+    </div></div>`;
+}
+function slidesC() {
+  const cell = (i, col, row, span) => `<div class="flex snap-center pt-3" style="grid-column:${col};grid-row:${row}${span ? ' / span 2' : ''}">${cardC(PKGS[i], i === 4)}</div>`;
+  const cells = [cell(0, 1, 1), cell(1, 1, 2), cell(2, 2, 1), cell(3, 2, 2), cell(4, 3, 1, true)].join('');
+  return `<div class="-mx-4 grid snap-x snap-mandatory gap-x-3 gap-y-2 overflow-x-auto px-4 pb-3" style="grid-template-rows:1fr 1fr;grid-auto-columns:78%;scrollbar-width:none;scroll-padding:0 1rem">${cells}</div>
+    <div class="mt-1 flex items-center justify-between px-1">
+      <span id="cnt" class="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-bold text-gray-600">Plans 1–2 of 5</span>
+      <div id="dots" class="flex gap-1.5"><span class="h-1.5 w-5 rounded-full bg-sniffy-purple"></span><span class="h-1.5 w-1.5 rounded-full bg-gray-300"></span><span class="h-1.5 w-1.5 rounded-full bg-gray-300"></span></div>
+      <span id="hint" class="flex items-center gap-1 text-[11px] font-bold text-sniffy-purple">Swipe <svg class="nudge h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </div>`;
+}
+function desktopD() {
+  const order = [0, 1, 2, 3, 4];
+  return `<div class="mx-auto grid max-w-6xl grid-cols-5 items-stretch gap-4 pt-4">${order.map(i => `<div class="flex ${i === 4 ? 'lg:scale-[1.04]' : ''}">${cardC(PKGS[i], i === 4, true)}</div>`).join('')}</div>`;
+}
+function desktopE() {
+  const groups = [[0, 1], [2, 3], [4]];
+  return `<div class="mx-auto grid max-w-4xl grid-cols-3 items-stretch gap-5 pt-4">${groups.map(g => `<div class="flex flex-col gap-5">${g.map(i => cardC(PKGS[i], g.length === 1, true)).join('')}</div>`).join('')}</div>`;
+}
+
+const list = document.getElementById('list');
+function render(v) {
+  list.className = v === 'A' ? 'space-y-6 pt-3' : v === 'B' ? 'space-y-4 pt-3' : 'pt-3';
+  list.innerHTML = v === 'D' ? desktopD() : v === 'E' ? desktopE() : v === 'C' ? slidesC() : PKGS.map((p, i) => v === 'A' ? cardA(p) : cardB(p, i)).join('');
+  ['A','B','C','D','E'].forEach(k => {
+    document.getElementById('b' + k).className = 'rounded-full px-3 py-1 text-xs font-bold ' + (v === k ? 'bg-sniffy-purple text-white' : 'text-gray-600');
+  });
+  if (v === 'C') wireC();
+  try { location.hash = v; } catch (e) {}
+}
+function wireC() {
+  const sc = list.firstElementChild, cnt = document.getElementById('cnt'), dots = document.getElementById('dots').children, hint = document.getElementById('hint');
+  const labels = ['Plans 1–2 of 5', 'Plans 3–4 of 5', 'Plan 5 of 5'];
+  sc.addEventListener('scroll', () => {
+    const slideW = sc.firstElementChild.getBoundingClientRect().width + 12;
+    const i = Math.min(2, Math.round(sc.scrollLeft / slideW));
+    cnt.textContent = labels[i];
+    [...dots].forEach((d, k) => { d.className = 'h-1.5 rounded-full ' + (k === i ? 'w-5 bg-sniffy-purple' : 'w-1.5 bg-gray-300'); });
+    hint.style.opacity = i === 2 ? 0 : 1;
+  }, { passive: true });
+}
+['A','B','C','D','E'].forEach(k => { document.getElementById('b' + k).onclick = () => render(k); });
+render(['#B','#C','#D','#E'].includes(location.hash) ? location.hash[1] : 'A');
+</script>
+</body>
+</html>

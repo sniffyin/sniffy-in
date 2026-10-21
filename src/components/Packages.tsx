@@ -19,25 +19,27 @@ import {
 // homepage's critical bundle.
 const AddOnModal = lazy(() => import('./AddOnModal'));
 
-// The -800 variants, deliberately — these are CSS `background-image`s, and a
+// Small variants, deliberately — these are CSS `background-image`s, and a
 // background cannot carry a `srcset`, so whatever is named here is what every
 // device downloads at full size. The card art window is a few hundred CSS px
 // wide, so the 1600w originals were ~368 KB of pixels no phone could use.
 //
-// The 800w files are the same ones the hero carousel already requests, so on the
-// home page these resolve from cache and cost nothing at all.
+// Dedicated art (640px wide, pre-cropped) per package — bath, trim, finished-and-fluffy.
 const PACKAGE_IMAGE: Record<PackageTheme, string> = {
-  bath: '/images/grooming-session-1-800.jpg',
-  cut: '/images/grooming-session-4-800.jpg',
-  combo: '/images/grooming-session-3-800.jpg',
+  bath: '/images/package-bath-640.jpg',
+  cut: '/images/package-cut-640.jpg',
+  combo: '/images/package-combo-640.jpg',
 };
 
-// Vertical crop bias per photo (the `background-position-y`). ~50% is centered;
-// each photo is nudged so the subject fills the visible bottom band of the card.
+// Crop bias per photo (`background-position`). The art is pre-cropped so the
+// subject's face sits ~3/4 of the way down — the top of the window is masked
+// out, so only the lower band really shows. X steers which part of the photo
+// survives the sideways crop on tall, narrow phone cards (cover fits by
+// height there); Y keeps the lower part of the photo on wide cards.
 const PACKAGE_IMAGE_POSITION: Record<PackageTheme, string> = {
-  bath: 'center 55%',
-  cut: 'center 40%',
-  combo: 'center 30%',
+  bath: '55% 70%',
+  cut: '82% 70%',
+  combo: '55% 70%',
 };
 
 // All three use `cover` so the photo fills the art window edge-to-edge — a zoom

@@ -185,6 +185,7 @@ export const DOG_ADD_ONS: DisplayAddOn[] = [
   { name: 'Destress Massage', detail: 'Coconut / neem oil',     price: '₹299',   emoji: '💆', tint: '#e6f7ec', image: '/images/addons/destressing-massage.jpg' },
   { name: 'Hygiene Hair Cut', detail: 'Face & sanitary',        price: '₹299',   emoji: '✂️', tint: '#f3e9ff', image: '/images/addons/hygiene-haircut.jpg' },
   { name: 'Medicated Bath',   detail: 'Fungal / bacterial skin', price: '₹299',  emoji: '🧴', tint: '#e3f0ff', image: '/images/addons/medicated-bath.jpg' },
+  { name: 'Special Handling',  detail: 'Extra patience, extra hands', price: '+ ₹199', emoji: '🤝', tint: '#ffe9e3', image: '/images/addons/special-handling.jpg' },
 ];
 
 export const CAT_ADD_ONS: DisplayAddOn[] = [

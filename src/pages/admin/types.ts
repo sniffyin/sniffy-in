@@ -543,6 +543,7 @@ export const ADD_ONS: AddOnOption[] = [
   { label: 'Destressing Massage',          price: 299, note: 'coconut / neem oil' },
   { label: 'Hygiene Hair Cut',             price: 299, note: 'face & sanitary' },
   { label: 'Deworming',                    price: 299 },
+  { label: 'Special Handling',              price: 199, note: 'senior / strong / reactive dogs' },
 ];
 
 // ─── Follow-up options ────────────────────────────────────────

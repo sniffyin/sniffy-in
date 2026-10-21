@@ -57,6 +57,12 @@ export interface HeroSlide {
   action?: SlideAction;
   /** Tailwind gradient classes for the overlay (banner variant). */
   overlayClass?: string;
+  /** CSS object-position for the photo, e.g. "15% 50%". The card is as narrow as
+   *  ~1.15:1 on small phones, so object-cover trims the 21:9 art from both sides;
+   *  this keeps the people on the side the copy isn't covering. Only the
+   *  horizontal value matters — it is a no-op once the card is wide enough that
+   *  nothing is cropped sideways. */
+  objectPosition?: string;
 
   // ── hero-variant extras ──────────────────────────────────────────────────
   /** Overlapping round avatar image paths. */
@@ -311,6 +317,7 @@ function Card({
                 width={1600}
                 height={1067}
                 className="absolute inset-0 w-full h-full object-cover"
+                style={slide.objectPosition ? { objectPosition: slide.objectPosition } : undefined}
                 loading={eager ? "eager" : "lazy"}
                 // react-dom 18.3 doesn't map camelCase fetchPriority; use the
                 // lowercase HTML attribute so the browser gets the LCP hint
@@ -329,18 +336,18 @@ function Card({
             }`}
           />
           <div
-            className={`relative z-20 h-full flex flex-col justify-center px-6 sm:px-8 max-w-[88%] sm:max-w-[78%] ${colAlign}`}
+            className={`relative z-20 h-full flex flex-col justify-end pb-5 sm:pb-6 px-5 sm:px-7 max-w-[84%] sm:max-w-[64%] ${colAlign} [text-shadow:0_1px_10px_rgba(20,5,45,0.55)]`}
           >
             {slide.eyebrow && (
               <span className="text-[10px] sm:text-xs font-bold tracking-widest text-sniffy-yellow uppercase mb-1.5">
                 {slide.eyebrow}
               </span>
             )}
-            <h1 className="text-xl sm:text-2xl md:text-[1.7rem] font-bold text-white leading-[1.12] mb-2 line-clamp-3">
+            <h1 className="text-xl sm:text-[1.4rem] md:text-2xl font-bold text-white leading-[1.12] mb-2 line-clamp-3">
               {slide.title}
             </h1>
             {slide.subtitle && (
-              <p className="text-white/85 text-xs sm:text-sm leading-snug mb-3.5 max-w-md line-clamp-2">
+              <p className="text-white/90 text-xs sm:text-[13px] leading-snug mb-3 max-w-md line-clamp-3">
                 {slide.subtitle}
               </p>
             )}
@@ -370,6 +377,7 @@ function Card({
                 width={1600}
                 height={1067}
                 className="absolute inset-0 w-full h-full object-cover"
+                style={slide.objectPosition ? { objectPosition: slide.objectPosition } : undefined}
                 loading={eager ? "eager" : "lazy"}
                 {...(eager ? { fetchpriority: "high" } : {})}
                 decoding="async"
@@ -384,24 +392,34 @@ function Card({
               "from-sniffy-purple/95 via-sniffy-purple/70 to-transparent"
             }`}
           />
+          {/* Corner scrim: darkens only the bottom corner behind the copy so the
+              small text stays legible while the rest of the photo stays bright. */}
           <div
-            className={`relative z-20 pointer-events-none h-full flex flex-col justify-center px-6 sm:px-8 max-w-[82%] sm:max-w-[80%] ${colAlign}`}
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(ellipse 90% 85% at ${
+                alignRight ? "100%" : "0%"
+              } 100%, rgba(28,8,66,0.9) 0%, rgba(28,8,66,0.72) 35%, rgba(28,8,66,0.35) 65%, rgba(28,8,66,0) 100%)`,
+            }}
+          />
+          <div
+            className={`relative z-20 pointer-events-none h-full flex flex-col justify-end pb-5 sm:pb-6 px-5 sm:px-7 max-w-[80%] sm:max-w-[62%] ${colAlign} [text-shadow:0_1px_10px_rgba(20,5,45,0.55)]`}
           >
             {slide.eyebrow && (
               <span className="text-[10px] sm:text-xs font-bold tracking-widest text-sniffy-yellow uppercase mb-1.5">
                 {slide.eyebrow}
               </span>
             )}
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white leading-tight">
+            <h2 className="text-lg sm:text-lg md:text-xl font-bold text-white leading-tight">
               {slide.title}
             </h2>
             {slide.subtitle && (
-              <p className="text-white/85 text-xs sm:text-sm mt-1.5 line-clamp-2">
+              <p className="text-white/90 text-xs sm:text-[13px] mt-1.5 line-clamp-2">
                 {slide.subtitle}
               </p>
             )}
             {slide.ctaLabel && (
-              <span className="mt-3 inline-flex items-center bg-sniffy-yellow text-sniffy-purple px-4 sm:px-5 py-2 rounded-full font-bold text-xs sm:text-sm shadow-md">
+              <span className="mt-2.5 inline-flex items-center bg-sniffy-yellow text-sniffy-purple px-4 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-xs sm:text-[13px] shadow-md [text-shadow:none]">
                 {slide.ctaLabel}
               </span>
             )}
@@ -409,7 +427,7 @@ function Card({
           {slide.action && (
             <button
               type="button"
-              aria-label={slide.ctaLabel ?? "Open"}
+              aria-label={slide.ctaLabel ?? (typeof slide.title === "string" ? slide.title : "Open")}
               onClick={() => {
                 if (swipedRef.current) {
                   swipedRef.current = false;

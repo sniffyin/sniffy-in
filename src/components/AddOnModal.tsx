@@ -4,7 +4,15 @@ import type { DisplayAddOn as AddOn } from '../data/packages';
 
 // Detail copy for the add-on popup, keyed by add-on name so dog + cat lists share it.
 // `problem` = why a pet parent needs it; `solution` = what the groomer actually does.
-const ADDON_INFO: Record<string, { problem: string; solution: string }> = {
+const ADDON_INFO: Record<string, { problem: string; solution: string; note?: string }> = {
+  'Special Handling': {
+    problem:
+      'Some dogs need more than a standard slot — senior dogs with stiff joints, anxious or rescue pets, and strong, large or reactive dogs who don’t enjoy being handled. Rushing them is stressful and unsafe for everyone.',
+    solution:
+      'We give your pet a longer, slower session with a second trained handler, frequent breaks, a calm voice and gentle handling to build trust — using safety equipment only where needed, and never force. We never hurt a pet; if a session can’t be done safely, we stop and talk to you.',
+    note:
+      'Flat ₹199 on top of your package. Tell us when booking and we’ll add it and send the right team. If our groomer finds on arrival that your pet needs extra handling (for example a very large, strong or reactive dog), Special Handling applies — we’ll explain why before starting.',
+  },
   'Tick & Flea Care': {
     problem:
       'Ticks and fleas are more than an itch — they cause constant scratching, hair loss and skin infections, and can carry diseases that spread to your pet and even to your family at home.',
@@ -130,6 +138,17 @@ export default function AddOnModal({ addon, onClose, onBookNow }: AddOnModalProp
                   {ADDON_INFO[addon.name]?.solution ?? ''}
                 </p>
               </div>
+
+              {ADDON_INFO[addon.name]?.note && (
+                <div className="rounded-xl bg-sniffy-yellow/15 px-3.5 py-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wide text-sniffy-purple">
+                    Pricing
+                  </h4>
+                  <p className="mt-1 text-sm leading-relaxed text-gray-700">
+                    {ADDON_INFO[addon.name].note}
+                  </p>
+                </div>
+              )}
 
               <button
                 type="button"

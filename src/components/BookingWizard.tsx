@@ -3,16 +3,47 @@ import { X } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "../lib/supabase";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { LOTTIE_DOG, LOTTIE_CAT, LOTTIE_LOCATION } from "../lib/lottieAssets";
+import { LOTTIE_LOCATION } from "../lib/lottieAssets";
+
+/* ── Pet picker art ──
+ * Plain compressed images (was a Lottie animation that loaded slowly). Falls back
+ * to an emoji if the file is missing so the picker never shows a broken image. */
+function PetArt({ src, alt, emoji }: { src: string; alt: string; emoji: string }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <div style={{ width: "100%", flex: "1 1 auto", minHeight: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      {failed ? (
+        <span style={{ fontSize: "3.5rem", lineHeight: 1 }} aria-hidden>{emoji}</span>
+      ) : (
+        <img
+          src={src}
+          alt={alt}
+          width={400}
+          height={444}
+          decoding="async"
+          draggable={false}
+          onError={() => setFailed(true)}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center top",
+            // studio shots are cropped mid-chest — fade the cut edge into the card
+            WebkitMaskImage: "linear-gradient(to bottom, #000 68%, transparent 100%)",
+            maskImage: "linear-gradient(to bottom, #000 68%, transparent 100%)",
+          }}
+        />
+      )}
+    </div>
+  );
+}
 
 /* ── Dog Button ── */
 function DogButton({ onClick }: { onClick: () => void }) {
   const [hovered, setHovered] = useState(false);
   const btnStyle: React.CSSProperties = {
     borderColor: hovered ? "#6B2FA0" : "#e5e7eb",
-    background: hovered
-      ? "linear-gradient(145deg, #faf5ff 0%, #f3e8ff 100%)"
-      : "linear-gradient(145deg, #ffffff 0%, #fafafa 100%)",
+    background: "#ffffff",
     boxShadow: hovered
       ? "0 8px 30px rgba(107,47,160,0.18), 0 2px 8px rgba(0,0,0,0.06)"
       : "0 2px 8px rgba(0,0,0,0.06)",
@@ -25,22 +56,15 @@ function DogButton({ onClick }: { onClick: () => void }) {
       onHoverEnd={() => setHovered(false)}
       onTouchStart={() => setHovered(true)}
       onTouchEnd={() => setHovered(false)}
-      className="relative flex flex-col items-center justify-center gap-2 border-2 rounded-2xl overflow-hidden w-full"
+      className="relative flex flex-col items-center justify-start border-2 rounded-2xl overflow-hidden w-full"
       style={btnStyle}
       animate={hovered ? { y: -3 } : { y: 0 }}
       whileTap={{ scale: 0.94 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
-      <div style={{ width: "100%", height: "78%", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <DotLottieReact
-          src={LOTTIE_DOG}
-          autoplay
-          loop
-          style={{ width: "160%", height: "160%", marginTop: "8%" }}
-        />
-      </div>
-      <span className="font-bold text-sm tracking-wider uppercase"
-        style={{ color: hovered ? "#6B2FA0" : "#374151", letterSpacing: "0.08em", marginTop: "-4%" }}>
+      <PetArt src="/images/pet-dog.webp" alt="Dog" emoji="🐶" />
+      <span className="font-extrabold text-sm tracking-wider uppercase pt-1 pb-3"
+        style={{ color: hovered ? "#6B2FA0" : "#374151", letterSpacing: "0.1em" }}>
         Dog
       </span>
     </motion.button>
@@ -52,9 +76,7 @@ function CatButton({ onClick }: { onClick: () => void }) {
   const [hovered, setHovered] = useState(false);
   const btnStyle: React.CSSProperties = {
     borderColor: hovered ? "#6B2FA0" : "#e5e7eb",
-    background: hovered
-      ? "linear-gradient(145deg, #faf5ff 0%, #f3e8ff 100%)"
-      : "linear-gradient(145deg, #ffffff 0%, #fafafa 100%)",
+    background: "#ffffff",
     boxShadow: hovered
       ? "0 8px 30px rgba(107,47,160,0.18), 0 2px 8px rgba(0,0,0,0.06)"
       : "0 2px 8px rgba(0,0,0,0.06)",
@@ -67,22 +89,15 @@ function CatButton({ onClick }: { onClick: () => void }) {
       onHoverEnd={() => setHovered(false)}
       onTouchStart={() => setHovered(true)}
       onTouchEnd={() => setHovered(false)}
-      className="relative flex flex-col items-center justify-center gap-2 border-2 rounded-2xl overflow-hidden w-full"
+      className="relative flex flex-col items-center justify-start border-2 rounded-2xl overflow-hidden w-full"
       style={btnStyle}
       animate={hovered ? { y: -3 } : { y: 0 }}
       whileTap={{ scale: 0.94 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
-      <div style={{ width: "100%", height: "78%", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <DotLottieReact
-          src={LOTTIE_CAT}
-          autoplay
-          loop
-          style={{ width: "160%", height: "160%", marginTop: "-5%" }}
-        />
-      </div>
-      <span className="font-bold text-sm tracking-wider uppercase"
-        style={{ color: hovered ? "#6B2FA0" : "#374151", letterSpacing: "0.08em", marginTop: "-4%" }}>
+      <PetArt src="/images/pet-cat.webp" alt="Cat" emoji="🐱" />
+      <span className="font-extrabold text-sm tracking-wider uppercase pt-1 pb-3"
+        style={{ color: hovered ? "#6B2FA0" : "#374151", letterSpacing: "0.1em" }}>
         Cat
       </span>
     </motion.button>
@@ -608,9 +623,12 @@ export default function BookingWizard({ open, onClose, onSuccess }: BookingWizar
 
             <div>
 
-              <h4 className="font-semibold text-lg mb-5">
-                What service do you need?
+              <h4 className="font-semibold text-lg">
+                Which pet are we grooming today?
               </h4>
+              <p className="text-sm text-gray-500 mt-1 mb-5">
+                Pick one to get started. Takes about a minute.
+              </p>
 
               <div className="grid grid-cols-2 gap-4">
                 <DogButton onClick={() => { setForm({...form, service:"Dog Grooming"}); next(); }} />

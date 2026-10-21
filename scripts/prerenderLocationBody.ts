@@ -751,6 +751,6 @@ ${JSON.stringify(schema, null, 2)
  */
 export function heroImagePreloadTag(): string {
   return `<link rel="preload" as="image" type="image/webp" fetchpriority="high"
-          imagesrcset="/images/grooming-session-1-800.webp 800w, /images/grooming-session-1.webp 1600w"
+          imagesrcset="/images/hero-lead-800.webp 800w, /images/hero-lead.webp 1200w"
           imagesizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1319px) calc(100vw - 44px), 1236px" />`;
 }
