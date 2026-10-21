@@ -347,7 +347,7 @@ function Card({
               {slide.title}
             </h1>
             {slide.subtitle && (
-              <p className="text-white/90 text-xs sm:text-[13px] leading-snug mb-3 max-w-md line-clamp-3">
+              <p className={`text-white/90 text-xs sm:text-[13px] leading-snug max-w-md line-clamp-3 ${slide.avatars?.length || slide.rating != null ? "mb-3" : ""}`}>
                 {slide.subtitle}
               </p>
             )}
@@ -410,7 +410,7 @@ function Card({
                 {slide.eyebrow}
               </span>
             )}
-            <h2 className="text-lg sm:text-lg md:text-xl font-bold text-white leading-tight">
+            <h2 className="text-lg sm:text-lg md:text-xl font-bold text-white leading-tight whitespace-pre-line">
               {slide.title}
             </h2>
             {slide.subtitle && (
@@ -419,7 +419,7 @@ function Card({
               </p>
             )}
             {slide.ctaLabel && (
-              <span className="mt-2.5 inline-flex items-center bg-sniffy-yellow text-sniffy-purple px-4 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-xs sm:text-[13px] shadow-md [text-shadow:none]">
+              <span className="mt-2.5 inline-flex items-center border-[1.5px] border-white/80 bg-white/10 text-white backdrop-blur-sm px-4 py-1.5 sm:py-2 rounded-full font-semibold text-xs sm:text-[13px] [text-shadow:none]">
                 {slide.ctaLabel}
               </span>
             )}

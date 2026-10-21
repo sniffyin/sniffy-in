@@ -14,6 +14,10 @@ import { GOOGLE_REVIEW_URL } from '../data/siteLinks';
 // One source for the rating everywhere it appears — see src/data/reputation.ts.
 import { RATING_VALUE, RATING_DISPLAY, REVIEW_COUNT } from '../data/reputation';
 
+/** Avatars + star rating under the lead card's copy. Hidden for now — flip to
+ *  true to bring the block back on every page that renders the hero. */
+const SHOW_HERO_RATING = false;
+
 const AVATARS = [
   "/images/review-1.jpg",
   "/images/review-2.jpg",
@@ -108,10 +112,14 @@ export function buildHeroSlides(lead: HeroLead, opts: BuildHeroOptions = {}): He
       title: lead.title,
       imageAlt: lead.imageAlt ?? 'Pet grooming at home in Pune',
       subtitle: lead.subtitle,
-      avatars: AVATARS,
-      rating: RATING_VALUE,
-      ratingLabel: `${RATING_DISPLAY} rating · ${REVIEW_COUNT} Google reviews`,
-      ratingHref: GOOGLE_REVIEW_URL,
+      ...(SHOW_HERO_RATING
+        ? {
+            avatars: AVATARS,
+            rating: RATING_VALUE,
+            ratingLabel: `${RATING_DISPLAY} rating · ${REVIEW_COUNT} Google reviews`,
+            ratingHref: GOOGLE_REVIEW_URL,
+          }
+        : {}),
       overlayClass: "from-sniffy-purple/90 from-0% via-sniffy-purple/55 via-40% to-transparent to-75%",
     },
     {
@@ -142,6 +150,7 @@ export function buildHeroSlides(lead: HeroLead, opts: BuildHeroOptions = {}): He
       title: "Booked in 60 Seconds",
       imageAlt: 'Pet parent booking an at-home grooming slot with Sniffy',
       subtitle: "Pick a slot, we come to you — same-day possible.",
+      ctaLabel: "See How It Works",
       action: { type: "link", href: "/how-it-works" },
       overlayClass: "from-[#2a0f52]/55 from-0% via-[#3d1a6e]/20 via-40% to-transparent to-75%",
     },
@@ -154,7 +163,7 @@ export function buildHeroSlides(lead: HeroLead, opts: BuildHeroOptions = {}): He
       webpSrcSet: heroWebpSrcSet("/images/hero-guarantee.jpg"),
       sizes: HERO_SIZES,
       eyebrow: "SATISFACTION GUARANTEE",
-      title: "Find Better? Your Next One's On Us",
+      title: "Find Better?\nYour Next One's On Us",
       imageAlt: 'Groomer finishing an at-home dog grooming session in Pune',
       subtitle: "Trained groomers • 9 AM–9 PM daily.",
       action: { type: "book" },
