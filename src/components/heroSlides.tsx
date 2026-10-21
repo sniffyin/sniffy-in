@@ -100,7 +100,7 @@ export function buildHeroSlides(lead: HeroLead, opts: BuildHeroOptions = {}): He
       variant: "hero",
       align: "left",
       image: leadImage,
-      objectPosition: "55% 50%",
+      objectPosition: "65% 50%",
       srcSet: heroSrcSet(leadImage),
       webpSrcSet: heroWebpSrcSet(leadImage),
       sizes: HERO_SIZES,
