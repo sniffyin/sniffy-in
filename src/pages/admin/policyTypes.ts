@@ -16,6 +16,7 @@
  */
 
 import { supabase } from '../../lib/supabase';
+import { buildOfferLetterContent, type OfferLetterData } from './offerLetterTemplate';
 
 export type PolicyRole = 'groomer' | 'coordinator' | 'founder';
 
@@ -43,8 +44,14 @@ export interface RolePolicy {
 
 export type AckStatus = 'pending' | 'signed';
 
+/** 'policy' = role responsibilities acknowledgment; 'offer_letter' = groomer
+ *  offer letter (content in policy_sections, letter fields in offer_data). */
+export type AckKind = 'policy' | 'offer_letter';
+
 export interface PolicyAcknowledgment {
   id:              string;
+  kind:            AckKind;
+  offer_data:      OfferLetterData | null;
   role:            PolicyRole;
   signer_name:     string;
   groomer_id:      string | null;
@@ -152,6 +159,38 @@ export async function createAcknowledgmentLink(opts: {
       status:          'pending',
       policy_title:    opts.policy.title,
       policy_sections: opts.policy.sections,
+      created_by:      opts.createdBy,
+    })
+    .select('*')
+    .single();
+  if (error) throw error;
+  return data as PolicyAcknowledgment;
+}
+
+export async function createOfferLetterLink(opts: {
+  signerName:    string;
+  groomerId?:    string | null;
+  createdBy:     string;
+  letterDate:    string;
+  effectiveDate: string;
+}): Promise<PolicyAcknowledgment> {
+  const letter = buildOfferLetterContent({
+    employeeName: opts.signerName,
+    letterDate: opts.letterDate,
+    effectiveDate: opts.effectiveDate,
+  });
+  const { data, error } = await supabase
+    .from('policy_acknowledgments')
+    .insert({
+      kind:            'offer_letter',
+      offer_data:      letter.data,
+      role:            'groomer',
+      signer_name:     opts.signerName,
+      groomer_id:      opts.groomerId ?? null,
+      token:           randomToken(),
+      status:          'pending',
+      policy_title:    letter.title,
+      policy_sections: letter.sections,
       created_by:      opts.createdBy,
     })
     .select('*')

@@ -27,6 +27,8 @@ import {
   uploadSignedPolicyPdf, getSignedPolicyPdfUrl, errMsg,
 } from './admin/policyTypes';
 import { buildPolicyAckPdfBlob } from './admin/policyAckPdf';
+import { buildOfferLetterPdfBlob, loadOfferLetterAssets } from './admin/offerLetterPdf';
+import { fmtLetterDate, parseBold } from './admin/offerLetterTemplate';
 
 type Stage = 'loading' | 'not-found' | 'already-signed' | 'reading' | 'signing' | 'submitting' | 'success' | 'submit-error';
 
@@ -97,7 +99,9 @@ export default function PolicySignPage() {
     setStage('submitting');
     try {
       const signedAt = new Date().toISOString();
-      const blob = await buildPolicyAckPdfBlob({ ack, intro: null, signatureDataUrl, signedAt });
+      const blob = ack.kind === 'offer_letter'
+        ? await buildOfferLetterPdfBlob({ ack, assets: await loadOfferLetterAssets(), signatureDataUrl, signedAt })
+        : await buildPolicyAckPdfBlob({ ack, intro: null, signatureDataUrl, signedAt });
       const path = await uploadSignedPolicyPdf(token, blob);
       await markAcknowledgmentSigned(token, path);
       setPdfUrl(getSignedPolicyPdfUrl(path));
@@ -134,7 +138,7 @@ export default function PolicySignPage() {
             <CheckCircle2 size={32} className="mx-auto text-green-500"/>
             <p className="font-bold text-gray-900 text-lg">Already signed</p>
             <p className="text-sm text-gray-500">
-              {ack.signer_name} signed the {POLICY_ROLE_LABEL[ack.role]} acknowledgment
+              {ack.signer_name} signed the {ack.kind === 'offer_letter' ? 'offer letter' : `${POLICY_ROLE_LABEL[ack.role]} acknowledgment`}
               {ack.signed_at ? ` on ${new Date(ack.signed_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}` : ''}.
             </p>
             {pdfUrl && (
@@ -146,8 +150,9 @@ export default function PolicySignPage() {
           </div>
         )}
 
-        {stage === 'reading' && ack && (
-          <ReadingView ack={ack} onProceed={() => setStage('signing')} />
+        {stage === 'reading' && ack && (ack.kind === 'offer_letter'
+          ? <OfferLetterReadingView ack={ack} onProceed={() => setStage('signing')} />
+          : <ReadingView ack={ack} onProceed={() => setStage('signing')} />
         )}
 
         {(stage === 'signing' || stage === 'submitting') && ack && (
@@ -171,7 +176,9 @@ export default function PolicySignPage() {
           <div className="bg-white rounded-[20px] border-2 border-sniffy-yellow/20 p-8 text-center space-y-3">
             <CheckCircle2 size={32} className="mx-auto text-green-500"/>
             <p className="font-bold text-gray-900 text-lg">Thanks, {ack.signer_name}!</p>
-            <p className="text-sm text-gray-500">Your acknowledgment has been recorded.</p>
+            <p className="text-sm text-gray-500">
+              {ack.kind === 'offer_letter' ? 'Your signed offer letter has been recorded.' : 'Your acknowledgment has been recorded.'}
+            </p>
             {pdfUrl && (
               <a href={pdfUrl} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 mt-2 px-5 py-2.5 rounded-full bg-sniffy-purple text-white text-sm font-semibold">
@@ -217,6 +224,59 @@ function ReadingView({ ack, onProceed }: { ack: PolicyAcknowledgment; onProceed:
         <button onClick={onProceed}
           className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-sniffy-purple text-white font-semibold hover:bg-sniffy-purple/90 transition">
           <PenLine size={17}/> I've read this — proceed to sign
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Offer letter reading view ──────────────────────────────────────
+
+function RichText({ text }: { text: string }) {
+  return (
+    <>
+      {parseBold(text).map((seg, i) =>
+        seg.bold ? <strong key={i} className="font-bold text-gray-900">{seg.text}</strong> : <span key={i}>{seg.text}</span>,
+      )}
+    </>
+  );
+}
+
+function OfferLetterReadingView({ ack, onProceed }: { ack: PolicyAcknowledgment; onProceed: () => void }) {
+  const [agreed, setAgreed] = useState(false);
+  const sections = (ack.policy_sections ?? []) as RolePolicySection[];
+  const data = ack.offer_data;
+  return (
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+      className="bg-[#fbf7ea] rounded-[20px] border-2 border-sniffy-yellow/30 p-6 sm:p-9 space-y-5">
+      <h1 className="text-base sm:text-lg font-extrabold text-gray-900 text-center tracking-wide">{ack.policy_title}</h1>
+
+      {data && (
+        <div className="space-y-3 text-sm text-gray-800 leading-relaxed">
+          <p>Date: <strong>{fmtLetterDate(data.letter_date)}</strong></p>
+          <p>Dear <strong>{ack.signer_name}</strong>,</p>
+          {data.preamble.map((p, i) => <p key={i}><RichText text={p}/></p>)}
+        </div>
+      )}
+
+      {sections.map((s, i) => (
+        <div key={i} className="space-y-2">
+          <h2 className="text-sm font-bold text-gray-900">{s.heading}</h2>
+          {s.items.map((p, j) => (
+            <p key={j} className="text-sm text-gray-800 leading-relaxed"><RichText text={p}/></p>
+          ))}
+        </div>
+      ))}
+
+      <div className="pt-4 border-t border-gray-200 space-y-4">
+        <label className="flex items-start gap-3 text-sm text-gray-700 cursor-pointer">
+          <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)}
+            className="mt-0.5 h-4 w-4 accent-[#451a8b]"/>
+          <span>I, {ack.signer_name}, have read and understood this offer letter and accept all its terms.</span>
+        </label>
+        <button onClick={onProceed} disabled={!agreed}
+          className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-sniffy-purple text-white font-semibold hover:bg-sniffy-purple/90 transition disabled:opacity-40">
+          <PenLine size={17}/> Proceed to sign
         </button>
       </div>
     </motion.div>

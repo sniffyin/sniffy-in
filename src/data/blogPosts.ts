@@ -5690,4 +5690,339 @@ export const blogPosts: BlogPost[] = [
     ],
   },
 
+  // ── Post 53 ─────────────────────────────────────────────────────────────────
+  {
+    slug: 'puppy-kitten-vaccination-schedule-india-what-when-why',
+    title: 'Puppy and Kitten Vaccination Schedule in India: What to Give, When, and What to Skip Worrying About',
+    excerpt: "Core shots, the rabies question, boosters, deworming and when your baby can finally go outside. A plain-language vaccination timeline for new Indian pet parents, with the questions to ask your vet.",
+    coverImage: '/images/grooming-session-1.jpg',
+    category: 'New Pet Parents',
+    readTime: '8 min read',
+    date: 'October 2026',
+    audience: 'all',
+    blocks: [
+      {
+        type: 'p',
+        text: "You have just brought home a puppy or kitten, someone has said \"get the vaccines done\", and now you are googling at midnight. How many shots? Which ones are compulsory? When can the baby step outside? When is a bath safe? This guide answers those questions in plain language so you walk into the vet's clinic knowing what to ask.",
+      },
+      {
+        type: 'callout',
+        text: "This is general information, not veterinary advice. Schedules vary with your pet's age when you got them, their health, the vaccine brand and local disease risk. Your vet's schedule always overrides this page.",
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'Why babies need a series of shots, not just one' },
+      {
+        type: 'p',
+        text: "Puppies and kittens get temporary protection from their mother's milk. That protection fades at different times in different babies, and while it lasts it can also block a vaccine from working. Because nobody can tell exactly when the gap opens, vets give the core vaccine as a series a few weeks apart. The final dose in the series is the one that gives dependable protection, which is why the course is not \"done\" until your vet says so.",
+      },
+      { type: 'h2', text: 'A typical timeline for puppies' },
+      {
+        type: 'ul',
+        items: [
+          '6 to 8 weeks: first core vaccine. In India this is usually a combination shot (often called DHPPi or a 5-in-1) that covers distemper, hepatitis, parvovirus, parainfluenza and related diseases.',
+          '10 to 12 weeks: second dose of the core combination.',
+          'Around 12 weeks: rabies vaccine, with a yearly booster. Rabies is present across India, and the vaccine protects your family as well as your dog.',
+          '14 to 16 weeks: third dose of the core combination, so the series finishes after maternal protection has worn off.',
+          'About 1 year: first booster. After that your vet will set boosters yearly or every few years, depending on the vaccine.',
+        ],
+      },
+      {
+        type: 'p',
+        text: "If you adopted an older puppy or an adult Indie with no history, the vet will usually start the series from scratch with a shorter gap between doses. Do not assume a dog is protected because someone said it was vaccinated. Ask for the card.",
+      },
+      { type: 'h2', text: 'A typical timeline for kittens' },
+      {
+        type: 'ul',
+        items: [
+          '8 weeks: first core vaccine, usually a combination for feline panleukopenia, calicivirus and herpesvirus (often called FVRCP or a tricat).',
+          '12 weeks: second dose, and the rabies vaccine can usually be given from around this age.',
+          '16 weeks: third dose of the core combination.',
+          'About 1 year: booster, then as your vet advises.',
+        ],
+      },
+      {
+        type: 'p',
+        text: "Indoor-only cats still need vaccines. Viruses can travel in on shoes and clothes, and many cats in India slip out of a balcony or door at least once.",
+      },
+      { type: 'h2', text: 'Optional vaccines: ask, do not guess' },
+      {
+        type: 'ul',
+        items: [
+          'Leptospirosis (dogs): spread through contaminated water and rodent urine, so the risk goes up in the monsoon and for dogs who walk through puddles. Ask your vet if it makes sense for your area.',
+          'Kennel cough (dogs): worth discussing if your dog will visit boarding, daycare or a busy park.',
+          'Feline leukaemia (cats): mainly for cats who go outdoors or live with cats of unknown status.',
+        ],
+      },
+      { type: 'h2', text: 'Deworming and tick-flea control run alongside' },
+      {
+        type: 'p',
+        text: "Vaccines protect against viruses. Worms, ticks and fleas need their own plan. Young animals are usually dewormed repeatedly in their first months and then at intervals your vet will set. Tick and flea control is a year-round job in Pune, not just a monsoon one, and our guide on [ticks in Pune and what actually works](/blogs/ticks-in-pune-what-actually-works) explains the options.",
+      },
+      { type: 'h2', text: 'When can my puppy or kitten go outside?' },
+      {
+        type: 'p',
+        text: "Most vets recommend keeping a baby away from public spaces, other people's dogs and unknown floors until the core series is complete, usually around 16 weeks. That does not mean no socialisation. You can carry your pet, let friends with healthy, vaccinated pets visit, and expose them to household noises, car rides in your lap and different surfaces at home. This window matters a lot for confidence, so use it.",
+      },
+      { type: 'h2', text: 'When is the first bath safe?' },
+      {
+        type: 'p',
+        text: "Many vets are comfortable with a gentle bath once the baby is healthy, warm and dried well, but the exact timing depends on the vaccine date and the pet. A bath should not happen on the day of a vaccine, and a pet that is unwell or off food should wait. Until your vet gives the okay, spot cleaning with a damp cloth is enough. Our guide on [when to start grooming a puppy or kitten](/blogs/puppy-kitten-first-grooming-when-to-start) covers the rest, and we always check vaccination status before booking a very young pet.",
+      },
+      { type: 'h2', text: 'After the shot: what is normal and what is not' },
+      {
+        type: 'ul',
+        items: [
+          'Normal: a quiet day, a little less appetite, mild soreness or a small lump at the injection site for a few days.',
+          'Call the vet: repeated vomiting, facial swelling, hives, difficulty breathing, collapse, or a lump that keeps growing. These are rare, but they are urgent.',
+        ],
+      },
+      { type: 'h2', text: 'Keep the card, take a photo, set reminders' },
+      {
+        type: 'p',
+        text: "Ask the clinic to stamp the vaccine card with the date, brand and next due date. Photograph it and keep it on your phone, since groomers, boarding places and housing societies often ask for it. Set a calendar reminder for the next dose before you leave the clinic. A missed booster is the most common gap we see.",
+      },
+      { type: 'h2', text: 'Questions worth asking at the first visit' },
+      {
+        type: 'ul',
+        items: [
+          'Which vaccines will my pet get, and on which dates?',
+          'When exactly will the core series be complete?',
+          'Do you recommend any optional vaccines for where we live?',
+          'What deworming and tick plan should we follow?',
+          'When can I bathe and groom my pet, and when can they meet other animals?',
+        ],
+      },
+      {
+        type: 'callout',
+        text: "Core shots in a series, rabies around 12 weeks, finish the course before the outdoors, and keep the card safe. When in doubt, ask your vet. They know your pet.",
+      },
+    ],
+  },
+
+  // ── Post 54 ─────────────────────────────────────────────────────────────────
+  {
+    slug: 'bringing-home-a-puppy-first-week-checklist-india',
+    title: 'Bringing Home a Puppy in India: The First-Week Checklist for New Dog Parents',
+    excerpt: "What to buy, how to set up your flat, how to handle the first night, potty training basics and the mistakes almost every first-time puppy parent makes. A calm, practical first-week plan.",
+    coverImage: '/images/dog-portrait.webp',
+    category: 'New Pet Parents',
+    readTime: '9 min read',
+    date: 'October 2026',
+    audience: 'dog',
+    blocks: [
+      {
+        type: 'p',
+        text: "The puppy is in the carrier, the car is moving, and it suddenly hits you that you are responsible for a tiny living creature. Take a breath. A puppy does not need a perfect home, only a predictable one. This checklist covers the first week: what to buy, how to set up, and what to do (and not do) from the first hour.",
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'Before the puppy arrives: the shopping list' },
+      {
+        type: 'ul',
+        items: [
+          'Two steel or ceramic bowls, one for water and one for food. Steel is easy to clean and hard to chew.',
+          'The same food the breeder or shelter has been feeding. Switching brands on day one often causes loose motions.',
+          'A soft bed or a crate with a blanket. A crate used gently gives a puppy a safe den and helps with toilet training.',
+          'A lightweight collar or harness and an ID tag with your phone number. Fit it so two fingers slide under.',
+          'A few chew toys of different textures, since teething starts early.',
+          'Old towels, paper towels and an enzymatic cleaner for accidents. Ordinary floor cleaner leaves a smell that invites repeat accidents.',
+          'A soft brush and a damp cloth. See our note on grooming below.',
+          'Puppy-safe treats for training, in tiny pieces.',
+        ],
+      },
+      { type: 'h2', text: 'Puppy-proof the house in 20 minutes' },
+      {
+        type: 'ul',
+        items: [
+          'Hide or cover loose wires and chargers. Puppies chew what is at mouth height.',
+          'Shut balcony doors, and check balcony grills and gaps. Puppies can squeeze through spaces that look too small.',
+          'Move shoes, slippers and socks out of reach. They are a favourite and a choking risk.',
+          'Keep medicines, chocolates, mosquito repellents, floor cleaners and pooja items (agarbatti, camphor) away from the floor.',
+          'Block off stairs and keep the toilet lid down.',
+          'Put a mat or rug on slippery tiles. Puppies slipping on polished floors can strain their joints as they grow.',
+        ],
+      },
+      { type: 'h2', text: 'The first 24 hours' },
+      {
+        type: 'p',
+        text: "Bring the puppy in, take them straight to the spot you want them to use as a toilet, and let them sniff. Then let them explore one room at a time. Resist the urge to invite everyone you know. A puppy who meets twelve relatives on day one is exhausted, overwhelmed and more likely to be nervy later. Quiet and calm beats excited and loud.",
+      },
+      {
+        type: 'p',
+        text: "Offer water, then a small meal. If the puppy refuses food on the first day, that is common with a new environment, but if it lasts more than a day, or they seem unwell, call your vet.",
+      },
+      { type: 'h2', text: 'Feeding: simple rules that work' },
+      {
+        type: 'ul',
+        items: [
+          'Young puppies usually eat three to four small meals a day. Your vet will tell you the right amount for the breed and weight.',
+          'Stick to one good-quality puppy food. Any change should be gradual over about a week, mixing old and new.',
+          'Fresh water should always be available.',
+          'Avoid table scraps, especially biryani, sweets, fried food and anything with onion or garlic. See our guide on [foods dogs and cats should never eat](/blogs/foods-dogs-cats-should-never-eat-india-kitchen-guide).',
+        ],
+      },
+      { type: 'h2', text: 'Toilet training basics' },
+      {
+        type: 'p',
+        text: "A puppy has to go: after waking up, after eating, after playing, and roughly every one to two hours at first. Take them to the same spot every time, wait quietly, and the moment they finish, praise and give a tiny treat. Accidents will happen. Clean them with an enzymatic cleaner and never rub a puppy's nose in it or scold them afterwards. They cannot connect the telling-off to something that happened minutes ago, and you only teach them to hide.",
+      },
+      {
+        type: 'p',
+        text: "If you live in a flat, you can start with a paper or pad area near the door and slowly move it outside once vaccinations allow. Check your society's rules about where dogs can go early on, so you are not caught off guard.",
+      },
+      { type: 'h2', text: 'The first night' },
+      {
+        type: 'p',
+        text: "Expect crying. The puppy has just left their mother and siblings. Place the bed near yours, add a warm (not hot) hot-water bottle wrapped in a towel and a soft toy, and keep the room quiet and dim. A short toilet break before sleep and one in the middle of the night will help. It gets better within a week or two. Puppies sleep 18 to 20 hours a day, and that is normal.",
+      },
+      { type: 'h2', text: 'Vet visit and vaccines in week one' },
+      {
+        type: 'p',
+        text: "Book a vet visit within the first few days for a health check, weight, deworming plan and vaccine schedule. Carry the puppy rather than putting them on the ground at the clinic. Our guide to the [puppy and kitten vaccination schedule in India](/blogs/puppy-kitten-vaccination-schedule-india-what-when-why) lays out what to expect, and ask your vet when your puppy can go outside.",
+      },
+      { type: 'h2', text: 'Socialisation without risk' },
+      {
+        type: 'p',
+        text: "The first weeks are the most important window for confidence. Before the vaccine course ends, you can carry your puppy to see the world from your arms, play different household sounds at low volume, let them walk on different surfaces at home, handle their paws, ears and mouth gently, and introduce them to calm, healthy, vaccinated dogs in a safe setting. Keep the experiences short and happy.",
+      },
+      { type: 'h2', text: 'Grooming and baths in the first weeks' },
+      {
+        type: 'p',
+        text: "Brush gently for a minute or two each day, and touch paws, ears and tail so handling feels normal. Skip the full bath until your vet says it is safe, and use a damp cloth for messes. When it is time, read [what to expect at a first grooming session](/blogs/first-grooming-session-what-to-expect) and [when to start grooming a puppy](/blogs/puppy-kitten-first-grooming-when-to-start). Starting gently now prevents a dog who hates grooming later.",
+      },
+      { type: 'h2', text: 'Mistakes almost every first-time puppy parent makes' },
+      {
+        type: 'ul',
+        items: [
+          'Too much too soon: visitors, long walks, long play sessions. Puppies tire fast.',
+          'Skipping rest. Let the puppy nap undisturbed, especially if there are children at home.',
+          'Letting a habit slide today that you do not want in an adult dog, like jumping on guests or sleeping on the sofa.',
+          'Punishing instead of redirecting. Give them a toy when they chew the wrong thing.',
+          'Taking the puppy to a park or footpath before the vaccine course is done.',
+          'Forgetting the heat. Walks on hot pavement burn paws. In Pune summers, go out early or late.',
+        ],
+      },
+      { type: 'h2', text: 'A simple first-week plan' },
+      {
+        type: 'ul',
+        items: [
+          'Day 1: quiet settling, toilet spot, first meal, bedtime routine.',
+          'Days 2 to 3: vet visit, food and toilet schedule, gentle handling.',
+          'Days 4 to 5: short training sessions (name, sit), chew toys, safe social visits.',
+          'Days 6 to 7: review what is working, note questions for the vet, set vaccine reminders.',
+        ],
+      },
+      {
+        type: 'callout',
+        text: "Calm home, steady routine, small meals, patient toilet training and no rushing the outdoors. The first week is about trust, not tricks.",
+      },
+    ],
+  },
+
+  // ── Post 55 ─────────────────────────────────────────────────────────────────
+  {
+    slug: 'foods-dogs-cats-should-never-eat-india-kitchen-guide',
+    title: 'Foods Your Dog or Cat Should Never Eat: The Indian Kitchen Edition',
+    excerpt: "Onion in the dal, raisins in the kheer, chai, paan, chocolate mithai. A plain guide to the toxic foods hiding in Indian homes, what is safe to share instead, and what to do if your pet already ate something.",
+    coverImage: '/images/grooming-session-3.jpg',
+    category: 'New Pet Parents',
+    readTime: '8 min read',
+    date: 'October 2026',
+    audience: 'all',
+    blocks: [
+      {
+        type: 'p',
+        text: "Most food advice for pets is written for kitchens abroad. Indian homes have their own risks: onion and garlic in nearly every curry, dry fruits in festive sweets, sugar-free gum in handbags, the leftover roti and dal that feels harmless. This guide lists the foods that can hurt dogs and cats, explains why, and gives you safer swaps.",
+      },
+      {
+        type: 'callout',
+        text: "General information, not veterinary advice. If your pet has eaten something worrying, call your vet right away. Do not wait for symptoms.",
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The big ones to remember' },
+      {
+        type: 'ul',
+        items: [
+          'Onion and garlic (raw, cooked or powdered): damage red blood cells, and cats are especially sensitive. The amount in a regular curry can add up over time. This is why sharing your dinner is not safe.',
+          'Grapes, raisins and sultanas (kishmish): can cause kidney failure in dogs, sometimes from small amounts. Watch kheer, halwa, pulao and cakes.',
+          'Chocolate and cocoa: contains theobromine, which is toxic to dogs and cats. Dark chocolate is the worst. Check mithai, brownies and chocolate-coated dry fruits.',
+          'Xylitol: a sweetener in sugar-free gum, mints and some peanut butters and baked goods. It can cause a sudden drop in blood sugar and liver damage in dogs. Read labels before sharing any "sugar-free" food.',
+          'Cooked bones, especially chicken bones: they splinter and can pierce the gut or choke. Raw feeding is a separate debate to have with your vet.',
+          'Macadamia nuts: can cause weakness, tremors and vomiting in dogs.',
+          'Alcohol and anything containing it: even small amounts are dangerous to small pets. Includes fermented batter and raw dough.',
+          'Caffeine: chai, coffee, cola and energy drinks. Can cause restlessness, fast heart rate and seizures.',
+          'Paan, supari, tobacco and gutkha: toxic and often swallowed from the floor or a dustbin.',
+        ],
+      },
+      { type: 'h2', text: 'Foods that cause trouble more quietly' },
+      {
+        type: 'ul',
+        items: [
+          'Fried, oily and spicy food (samosas, pakoras, biryani): a common trigger for stomach upset and for pancreatitis, a painful and serious condition.',
+          'Very salty food (chips, namkeen, pickles): too much salt can cause vomiting and, in large amounts, serious problems.',
+          'Milk and dairy: many adult dogs and most cats cannot digest lactose well and get loose stools. A spoon of plain curd is fine for many dogs, but cats do not need milk.',
+          'Avocado: contains persin, which is a risk especially for birds and can upset dogs and cats.',
+          'Mango seeds, peach and plum stones, corn cobs: choking and gut blockage risks. Mango flesh in small amounts is fine for dogs.',
+          'Raw dough: expands in the stomach and produces alcohol as it ferments.',
+          'Nutmeg and heavy spices: can upset the stomach and affect the nervous system in large amounts.',
+          'Sweets and sugary treats: a few bites will not harm, but a habit leads to obesity, dental trouble and diabetes risk.',
+        ],
+      },
+      { type: 'h2', text: 'Cats have a few extra rules' },
+      {
+        type: 'p',
+        text: "Cats are strict carnivores and more fragile than they look. Besides onion and garlic, keep dog food away from them, since it lacks nutrients cats need, and never give a cat tuna-only meals every day. Lilies are one of the most dangerous plants for cats. Even pollen or the water from the vase can cause kidney failure, so keep them out of the house. If your cat will not eat their usual food for more than a day, see a vet rather than tempting them with human food.",
+      },
+      { type: 'h2', text: 'Safe things you can share, in small amounts' },
+      {
+        type: 'ul',
+        items: [
+          'Plain boiled chicken or egg, no salt, no spices, no bones.',
+          'Plain cooked rice, and sweet potato or pumpkin, boiled and cooled.',
+          'Carrot, cucumber, apple (no seeds or core) and banana, as occasional treats for dogs.',
+          'Plain curd in a spoonful for many dogs.',
+          'For cats: a small piece of plain cooked chicken or fish without bones, now and then.',
+        ],
+      },
+      {
+        type: 'p',
+        text: "Treats should make up only a small share of the day's food. Introduce any new food slowly and in a tiny amount, because even safe foods can upset a stomach that is not used to them. If your pet has allergies or a medical condition, check with your vet first.",
+      },
+      { type: 'h2', text: 'Festival season needs extra care' },
+      {
+        type: 'p',
+        text: "Diwali, Holi, Ganesh Chaturthi and weddings put sweets, dry fruits, chocolates and leftovers within easy reach. Keep plates off low tables, tie up dustbins and tell guests not to feed your pet. If you are also worried about noise, our guide on [Diwali pet safety and firework anxiety](/blogs/diwali-pet-safety-firework-anxiety-pune) has a full plan.",
+      },
+      { type: 'h2', text: 'If your pet has already eaten something toxic' },
+      {
+        type: 'ul',
+        items: [
+          'Stay calm and remove any remaining food from reach.',
+          'Note what was eaten, roughly how much, when, and your pet\'s weight. Keep the packaging.',
+          'Call your vet or a 24-hour clinic right away and follow their instructions.',
+          'Do not try to make your pet vomit unless a vet tells you to. Some substances do more harm coming back up, and home methods like salt water are dangerous.',
+          'Do not wait for symptoms. With some toxins, signs appear hours or days later, when treatment is harder.',
+        ],
+      },
+      {
+        type: 'p',
+        text: "Keep a first-aid kit and your vet's number handy. We have a guide to the [pet first-aid kit every Pune home needs](/blogs/pet-first-aid-kit-india-what-to-keep-and-what-never-to-use), including what to avoid doing at home.",
+      },
+      { type: 'h2', text: 'Quick answers' },
+      {
+        type: 'ul',
+        items: [
+          'Can dogs eat roti? A small piece of plain roti is usually fine, but it is not a balanced meal and should not replace dog food.',
+          'Can dogs eat biscuits? Plain, unsweetened biscuits in small amounts will not harm most dogs, but avoid ones with chocolate, raisins or xylitol.',
+          'Is ghee safe? A tiny amount is generally okay, but fat in excess can trigger pancreatitis.',
+          'Can cats drink milk? Many cannot digest it. Fresh water is the best drink.',
+          'Is coconut safe? Small amounts of plain coconut are usually fine. Too much causes loose stools.',
+        ],
+      },
+      {
+        type: 'callout',
+        text: "No onion, garlic, grapes, chocolate, xylitol, cooked bones, chai or paan. When unsure, keep it off the plate and ask your vet.",
+      },
+    ],
+  },
+
 ];

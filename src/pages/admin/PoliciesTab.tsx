@@ -27,13 +27,23 @@ import {
   POLICY_ROLES, POLICY_ROLE_LABEL, type PolicyRole, type RolePolicy, type RolePolicySection,
   type PolicyAcknowledgment,
   fetchRolePolicies, fetchRolePolicy, saveRolePolicy,
-  fetchAcknowledgments, createAcknowledgmentLink, buildPolicyLinkUrl, getSignedPolicyPdfUrl,
+  fetchAcknowledgments, createAcknowledgmentLink, createOfferLetterLink, buildPolicyLinkUrl, getSignedPolicyPdfUrl,
   errMsg,
 } from './policyTypes';
+import { buildOfferLetterContent } from './offerLetterTemplate';
+import { buildOfferLetterPdf, loadOfferLetterAssets } from './offerLetterPdf';
 
 type SubView = 'generate' | 'content' | 'records';
 
 interface GroomerOption { id: string; name: string; }
+
+type DocType = 'policy' | 'offer_letter';
+
+function todayIso(): string {
+  const d = new Date();
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
 
 function fmtDate(iso: string | null | undefined): string {
   if (!iso) return '—';
@@ -120,10 +130,15 @@ export default function PoliciesTab({ user }: { user: AdminUser }) {
 function GenerateLinkPanel({
   policyByRole, createdBy,
 }: { policyByRole: Map<PolicyRole, RolePolicy>; createdBy: string }) {
+  const [docType, setDocType] = useState<DocType>('policy');
   const [role, setRole] = useState<PolicyRole>('groomer');
   const [name, setName] = useState('');
+  const [letterDate, setLetterDate] = useState(todayIso);
+  const [effectiveDate, setEffectiveDate] = useState('');
   const [groomerId, setGroomerId] = useState<string | null>(null);
   const [groomers, setGroomers] = useState<GroomerOption[]>([]);
+  const [previewing, setPreviewing] = useState(false);
+  const isOffer = docType === 'offer_letter';
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ url: string; ack: PolicyAcknowledgment } | null>(null);
@@ -143,8 +158,14 @@ function GenerateLinkPanel({
   async function handleGenerate() {
     const signerName = name.trim();
     if (!signerName) { setError('Enter a name.'); return; }
+    if (isOffer && (!letterDate || !effectiveDate)) { setError('Set the letter date and the joining (effective) date.'); return; }
     setSubmitting(true); setError(null);
     try {
+      if (isOffer) {
+        const ack = await createOfferLetterLink({ signerName, groomerId, createdBy, letterDate, effectiveDate });
+        setResult({ url: buildPolicyLinkUrl(ack.token), ack });
+        return;
+      }
       // Fetch fresh (not the possibly-stale copy the parent loaded on mount)
       // so the link always snapshots the current master text.
       const policy = await fetchRolePolicy(role) ?? policyByRole.get(role);
@@ -154,6 +175,28 @@ function GenerateLinkPanel({
     } catch (err) {
       setError(errMsg(err));
     } finally { setSubmitting(false); }
+  }
+
+  /** Unsigned PDF (company signature only) — to eyeball or send before the groomer signs. */
+  async function handlePreview() {
+    const signerName = name.trim();
+    if (!signerName || !letterDate || !effectiveDate) { setError('Fill in the name and both dates first.'); return; }
+    setPreviewing(true); setError(null);
+    try {
+      const letter = buildOfferLetterContent({ employeeName: signerName, letterDate, effectiveDate });
+      const doc = await buildOfferLetterPdf({
+        ack: {
+          id: 'preview', kind: 'offer_letter', offer_data: letter.data, role: 'groomer',
+          signer_name: signerName, groomer_id: null, token: '', status: 'pending',
+          policy_title: letter.title, policy_sections: letter.sections,
+          pdf_path: null, signed_at: null, created_by: createdBy, created_at: new Date().toISOString(),
+        },
+        assets: await loadOfferLetterAssets(),
+      });
+      doc.save(`Offer_Letter_${signerName.replace(/\s+/g, '_')}_Sniffy.pdf`);
+    } catch (err) {
+      setError(errMsg(err));
+    } finally { setPreviewing(false); }
   }
 
   async function copyLink() {
@@ -169,7 +212,8 @@ function GenerateLinkPanel({
     return (
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
         <div className="flex items-center gap-2 text-green-700 bg-green-50 border border-green-100 rounded-xl px-4 py-3 text-sm font-medium">
-          <Check size={16}/> Link created for {result.ack.signer_name} ({POLICY_ROLE_LABEL[result.ack.role]}).
+          <Check size={16}/> {result.ack.kind === 'offer_letter' ? 'Offer letter link' : 'Link'} created for {result.ack.signer_name}
+          {result.ack.kind === 'offer_letter' ? '' : ` (${POLICY_ROLE_LABEL[result.ack.role]})`}.
         </div>
         <div className="flex items-center gap-2">
           <input readOnly value={result.url}
@@ -193,6 +237,20 @@ function GenerateLinkPanel({
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5 max-w-lg">
       <div>
+        <label className="text-xs font-bold uppercase tracking-wide text-gray-500">Document</label>
+        <div className="flex gap-2 mt-2">
+          {([['policy', 'Role policy'], ['offer_letter', 'Offer letter']] as [DocType, string][]).map(([id, label]) => (
+            <button key={id} onClick={() => { setDocType(id); if (id === 'offer_letter') setRole('groomer'); setGroomerId(null); setError(null); }}
+              className={['px-4 py-2 rounded-xl text-sm font-semibold transition-all',
+                docType === id ? 'bg-sniffy-purple text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'].join(' ')}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {!isOffer && (
+      <div>
         <label className="text-xs font-bold uppercase tracking-wide text-gray-500">Role</label>
         <div className="flex gap-2 mt-2">
           {POLICY_ROLES.map(r => (
@@ -204,6 +262,7 @@ function GenerateLinkPanel({
           ))}
         </div>
       </div>
+      )}
 
       {role === 'groomer' && groomers.length > 0 && (
         <div>
@@ -233,17 +292,41 @@ function GenerateLinkPanel({
           className="mt-2 w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5"/>
       </div>
 
+      {isOffer && (
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-xs font-bold uppercase tracking-wide text-gray-500">Letter date</label>
+            <input type="date" value={letterDate} onChange={e => setLetterDate(e.target.value)}
+              className="mt-2 w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5"/>
+          </div>
+          <div>
+            <label className="text-xs font-bold uppercase tracking-wide text-gray-500">Joining date</label>
+            <input type="date" value={effectiveDate} onChange={e => setEffectiveDate(e.target.value)}
+              className="mt-2 w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5"/>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 border border-red-100 rounded-xl px-3 py-2.5">
           <AlertCircle size={15}/> {error}
         </div>
       )}
 
-      <button onClick={handleGenerate} disabled={submitting}
-        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sniffy-purple text-white text-sm font-semibold hover:bg-sniffy-purple/90 disabled:opacity-50">
-        {submitting ? <Loader2 size={15} className="animate-spin"/> : <LinkIcon size={15}/>}
-        Generate Link
-      </button>
+      <div className="flex gap-2 flex-wrap">
+        <button onClick={handleGenerate} disabled={submitting}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sniffy-purple text-white text-sm font-semibold hover:bg-sniffy-purple/90 disabled:opacity-50">
+          {submitting ? <Loader2 size={15} className="animate-spin"/> : <LinkIcon size={15}/>}
+          Generate Link
+        </button>
+        {isOffer && (
+          <button onClick={handlePreview} disabled={previewing}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200 disabled:opacity-50">
+            {previewing ? <Loader2 size={15} className="animate-spin"/> : <Download size={15}/>}
+            Preview PDF
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -430,7 +513,7 @@ function RecordsPanel() {
           <div className="flex-1 min-w-[180px]">
             <p className="font-semibold text-gray-900">{ack.signer_name}</p>
             <p className="text-xs text-gray-400">
-              {POLICY_ROLE_LABEL[ack.role]} · created {fmtDate(ack.created_at)}
+              {ack.kind === 'offer_letter' ? 'Offer letter' : POLICY_ROLE_LABEL[ack.role]} · created {fmtDate(ack.created_at)}
               {ack.signed_at ? ` · signed ${fmtDate(ack.signed_at)}` : ''}
             </p>
           </div>

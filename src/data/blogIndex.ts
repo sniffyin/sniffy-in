@@ -374,5 +374,26 @@ export const blogIndex: BlogIndexEntry[] = [
     "category": "Home & Lifestyle",
     "readTime": "9 min read",
     "audience": "all"
+  },
+  {
+    "slug": "puppy-kitten-vaccination-schedule-india-what-when-why",
+    "title": "Puppy and Kitten Vaccination Schedule in India: What to Give, When, and What to Skip Worrying About",
+    "category": "New Pet Parents",
+    "readTime": "8 min read",
+    "audience": "all"
+  },
+  {
+    "slug": "bringing-home-a-puppy-first-week-checklist-india",
+    "title": "Bringing Home a Puppy in India: The First-Week Checklist for New Dog Parents",
+    "category": "New Pet Parents",
+    "readTime": "9 min read",
+    "audience": "dog"
+  },
+  {
+    "slug": "foods-dogs-cats-should-never-eat-india-kitchen-guide",
+    "title": "Foods Your Dog or Cat Should Never Eat: The Indian Kitchen Edition",
+    "category": "New Pet Parents",
+    "readTime": "8 min read",
+    "audience": "all"
   }
 ]
