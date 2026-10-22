@@ -97,3 +97,22 @@
 .animate-toast-panel-in {
   animation: toastPanelIn 0.25s ease-out forwards;
 }
+
+/* How It Works step photos: one glint of sunlight sweeps across a photo when it first
+   appears. Transform/opacity only; disabled for prefers-reduced-motion. */
+@keyframes howSheen {
+  0% { transform: translateX(-160%) skewX(-14deg); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateX(520%) skewX(-14deg); opacity: 0; }
+}
+.how-sheen {
+  opacity: 0;
+}
+.how-sheen.is-run {
+  animation: howSheen 1.9s ease-out 0.5s 1 both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .how-sheen.is-run {
+    animation: none;
+  }
+}
