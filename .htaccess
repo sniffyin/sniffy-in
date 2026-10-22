@@ -203,17 +203,21 @@ RewriteRule ^assets/ - [R=404,L]
 # a real .html file for every info route and blog post, and the four page
 # generators emit one per locality, so rule 3 above already serves all of them
 # from disk. The ONLY routes in src/App.tsx with no file behind them are the
-# three app surfaces, which are client-rendered behind a login gate and are
-# `noindex` by nature:
+# app surfaces, which are client-rendered behind a login gate (or an unguessable
+# token link) and are `noindex` by nature:
 #
-#   /admin  /groomer  /account
+#   /admin  /groomer  /account  /quick-book  /policy-sign/<token>
+#
+# /policy-sign was missing from this list, so every offer-letter / policy link
+# was answered with HTTP 404 + the "Page not found" shell and only turned into
+# the real page once the JS bundle loaded (long on slow phones).
 #
 # Anything else now falls through to a genuine 404 (see ErrorDocument below).
 # If you add a new React route, either prerender it in prerenderSpa.ts (preferred
 # — it gets a real <title>, canonical and body for crawlers) or add it here.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(admin|groomer|account|quick-book)(/.*)?$ /index.html [L]
+RewriteRule ^(admin|groomer|account|quick-book|policy-sign)(/.*)?$ /index.html [L]
 
 # ─── 5. 404 ──────────────────────────────────────────────────────────────────
 # Reached when nothing above matched and no file exists. Serves the prerendered
