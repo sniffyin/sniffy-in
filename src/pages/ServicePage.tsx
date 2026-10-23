@@ -19,6 +19,8 @@ import Footer from '../components/Footer';
 import Toast from '../components/Toast';
 import Packages from '../components/Packages';
 import EliteMembership from '../components/EliteMembership';
+import PageMetaStrip from '../components/PageMetaStrip';
+import { pageLastModified } from '../data/pageDates';
 import HeroSlider, { type HeroChip } from '../components/HeroSlider';
 import { buildHeroSlides } from '../components/heroSlides';
 import ServiceFaqList from '../components/ServiceFaqList';
@@ -270,6 +272,7 @@ export default function ServicePage({ service }: { service: ServicePageData }) {
         />
 
         <EliteMembership />
+        <PageMetaStrip updated={pageLastModified(`services/${service.slug}`)} />
 
         {/* ── Story sections ── */}
         <section id="details" className="bg-gray-50 pt-12 pb-4 px-4 scroll-mt-20">
@@ -287,8 +290,6 @@ export default function ServicePage({ service }: { service: ServicePageData }) {
             section={section}
             index={i}
             onBookNow={openWizard}
-            ctaLabel="Book a Session"
-            mobileCta
           />
         ))}
 

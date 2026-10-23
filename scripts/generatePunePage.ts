@@ -18,9 +18,8 @@
 import fs from 'fs'
 import path from 'path'
 import { ALL_PUNE_CITIES } from '../src/data/locationData.ts'
-// Aliased: this generator already declares its own local `faqs` for the
-// FAQPage schema below. These are the page component's arrays, used so the
-// prerendered body matches exactly what React renders on top of it.
+// The page component's arrays, used for both the prerendered body and the
+// FAQPage schema (via hubSeo.ts), so markup, schema and React stay identical.
 import {
   stats as hubStats,
   whySections as hubWhySections,
@@ -29,6 +28,8 @@ import {
 } from '../src/data/puneHubContent.ts'
 import { heroImagePreloadTag, prerenderHubBody, offerCatalogJson } from './prerenderLocationBody.ts'
 import { clampDescription } from './seoText.ts'
+import { stampPage, flushPageDates, LM_ISO } from './pageDates.ts'
+import { areaServedJson, hubFaqSchemaTag, localityItemListTag } from './hubSeo.ts'
 // The rating below is real, sourced from the Google Business Profile, and is
 // rendered in the page body by prerenderHubBody() — all three of which are
 // required for it to be legitimate markup. See src/data/reputation.ts.
@@ -41,50 +42,28 @@ if (!fs.existsSync(outputRoot)) {
   fs.mkdirSync(outputRoot, { recursive: true })
 }
 
-// FAQ content — keep in sync with PunePage.tsx faqs array
-const faqs = [
-  {
-    q: 'Do you cover all areas of Pune?',
-    a: 'Our services are available across Pune, covering areas such as Wakad, Wagholi, Kothrud, Shivajinagar, Kondhwa, NIBM, Dhanori and Pimpri-Chinchwad.',
-  },
-  {
-    q: 'What does a standard session include?',
-    a: 'Bath with shampoo and conditioner, blow dry, brushing, nail clipping, eye and ear cleaning, paw massage, mouth spray, and a light perfume spritz.',
-  },
-  {
-    q: 'How long does a session take?',
-    a: 'Between 1.5 and 3 hours depending on breed, coat type and temperament.',
-  },
-  {
-    q: 'What if my dog is anxious or has never been groomed before?',
-    a: 'Tell us when you book. We send a groomer experienced with anxious dogs and allow extra time. First sessions are always slower — we let the dog settle and take breaks when needed.',
-  },
-  {
-    q: 'How is this different from a salon?',
-    a: 'At a salon your dog is caged between steps, surrounded by other animals. At home there is no travel stress, no cage, no other animals, and one groomer focused entirely on your dog.',
-  },
-  {
-    q: 'How often should I book?',
-    a: 'Short-haired dogs every 6–8 weeks. Medium coats like Goldens every 4–6 weeks. Double-coated breeds every 3–4 weeks. Continuously growing coats every 3–4 weeks for a bath, haircut every 6–8 weeks.',
-  },
-]
+// Reviews are the ones rendered in the page body (hubReviews), nothing extra.
+const reviewJson = JSON.stringify(
+  hubReviews.map((r) => ({
+    '@type': 'Review',
+    author: { '@type': 'Person', name: r.name },
+    reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 },
+    reviewBody: r.text,
+  })),
+  null,
+  2
+)
+  .split('\n')
+  .map((l, i) => (i === 0 ? l : '        ' + l))
+  .join('\n')
 
-const faqSchema = faqs
-  .map(
-    (f) => `{
-        "@type": "Question",
-        "name": "${f.q.replace(/"/g, '\\"')}",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "${f.a.replace(/"/g, '\\"')}"
-        }
-      }`
-  )
-  .join(',\n      ')
+const faqSchema = hubFaqSchemaTag(hubFaqs)
+const localityList = localityItemListTag(ALL_PUNE_CITIES, 'dog-grooming-in-pune', 'Dog Grooming in Pune')
+const areaServed = areaServedJson(ALL_PUNE_CITIES)
 
 const prerenderedBody = prerenderHubBody({
   h1: 'Dog Grooming at Home Across Pune',
-  intro: 'Doorstep pet grooming services across Pune. Trained groomers visit your home — fully equipped, on time, no salon stress.',
+  intro: 'Book dog grooming at home across Pune — bath, haircut, nail and ear care by a trained groomer who visits your door. Fixed prices from ₹799, no travel fee, no salon stress.',
   stats: hubStats,
   whySections: hubWhySections,
   reviews: hubReviews,
@@ -103,7 +82,7 @@ const html = `<!doctype html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     ${heroImagePreloadTag()}
 
-    <title>Dog Grooming at Home in Pune | All Areas Covered | Sniffy</title>
+    <title>Dog Grooming at Home in Pune from ₹799 | 33 Areas | Sniffy</title>
 
     <!-- Rewritten from a 222-char version that Google cut mid-list, and that
          opened by promising "dog and cat grooming" on the DOG hub. Locality
@@ -129,17 +108,19 @@ const html = `<!doctype html>
 
     <!-- OpenGraph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Dog Grooming at Home in Pune | All Areas | Sniffy" />
-    <meta property="og:description" content="Professional in-home dog grooming across Pune. Trained groomers come to your doorstep for bath, trim, nail care and more. Starting at ₹799." />
+    <meta property="og:title" content="Dog Grooming at Home in Pune from ₹799 | Sniffy" />
+    <meta property="og:description" content="Professional in-home dog grooming across 33 Pune localities. Trained groomers come to your doorstep for bath, trim, nail care and more. From ₹799." />
     <meta property="og:url" content="https://sniffy.in/dog-grooming-in-pune" />
-    <meta property="og:image" content="https://sniffy.in/sniffy-logo.png" />
+    <meta property="og:image" content="https://sniffy.in/images/grooming-session-1.jpg" />
+    <meta property="og:image:alt" content="Sniffy groomer grooming a dog at home in Pune" />
     <meta property="og:site_name" content="Sniffy" />
     <meta property="og:locale" content="en_IN" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://sniffy.in/images/grooming-session-1.jpg" />
     <meta name="twitter:title" content="Dog Grooming at Home in Pune | Sniffy" />
-    <meta name="twitter:description" content="In-home dog grooming across Wakad, Wagholi, Kothrud, Shivajinagar, Kondhwa, NIBM, Dhanori and Pimpri-Chinchwad. From ₹799." />
+    <meta name="twitter:description" content="In-home dog grooming across 33 Pune localities — bath, haircut, nail and ear care by trained groomers. From ₹799." />
 
     <!-- LocalBusiness Schema — city-level, areaServed lists all localities -->
     <script type="application/ld+json">
@@ -148,6 +129,7 @@ const html = `<!doctype html>
         "@type": "LocalBusiness",
         "@id": "https://sniffy.in/dog-grooming-in-pune#petgrooming",
         "name": "Sniffy — Dog Grooming at Home in Pune",
+        "parentOrganization": { "@id": "https://sniffy.in/#petgrooming" },
         "url": "https://sniffy.in/dog-grooming-in-pune",
         "image": "https://sniffy.in/images/grooming-session-1.jpg",
         "logo": "https://sniffy.in/sniffy-logo.png",
@@ -164,16 +146,7 @@ const html = `<!doctype html>
           "latitude": 18.5204,
           "longitude": 73.8567
         },
-        "areaServed": [
-          { "@type": "Place", "name": "Wakad, Pune" },
-          { "@type": "Place", "name": "Wagholi, Pune" },
-          { "@type": "Place", "name": "Kothrud, Pune" },
-          { "@type": "Place", "name": "Shivajinagar, Pune" },
-          { "@type": "Place", "name": "Kondhwa, Pune" },
-          { "@type": "Place", "name": "NIBM, Pune" },
-          { "@type": "Place", "name": "Dhanori, Pune" },
-          { "@type": "Place", "name": "Pimpri-Chinchwad, Pune" }
-        ],
+        "areaServed": ${areaServed},
         "knowsAbout": "Dog grooming at home",
         "hasOfferCatalog": ${offerCatalog},
 
@@ -181,6 +154,7 @@ const html = `<!doctype html>
         "paymentAccepted": "Cash, UPI",
         "currenciesAccepted": "INR",
         "aggregateRating": ${aggregateRatingJson()},
+        "review": ${reviewJson},
         "openingHoursSpecification": {
           "@type": "OpeningHoursSpecification",
           "dayOfWeek": [
@@ -219,13 +193,23 @@ const html = `<!doctype html>
     </script>
 
     <!-- FAQPage Schema -->
+    ${faqSchema}
+
+    ${localityList}
+
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-      ${faqSchema}
-        ]
+        "@type": "CollectionPage",
+        "@id": "https://sniffy.in/dog-grooming-in-pune#webpage",
+        "url": "https://sniffy.in/dog-grooming-in-pune",
+        "name": "Dog Grooming at Home in Pune",
+        "inLanguage": "en-IN",
+        "dateModified": "${LM_ISO}",
+        "isPartOf": { "@id": "https://sniffy.in/#website" },
+        "about": { "@id": "https://sniffy.in/#dog-grooming" },
+        "primaryImageOfPage": { "@type": "ImageObject", "url": "https://sniffy.in/images/grooming-session-1.jpg" },
+        "publisher": { "@id": "https://sniffy.in/#petgrooming" }
       }
     </script>
 
@@ -244,5 +228,6 @@ ${prerenderedBody}
 </html>`
 
 const filePath = path.join(outputRoot, 'index.html')
-fs.writeFileSync(filePath, html.trim())
+fs.writeFileSync(filePath, stampPage('dog-grooming-in-pune', html.trim()))
+flushPageDates()
 console.log('Generated: dog-grooming-in-pune/index.html')

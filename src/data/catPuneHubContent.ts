@@ -3,6 +3,7 @@
  * See src/data/puneHubContent.ts for why this is a separate data-only module.
  */
 
+import { ALL_CAT_PUNE_CITIES } from './puneLocalities';
 import { RATING_DISPLAY, REVIEW_COUNT } from './reputation';
 
 // ─── Stats ──────────────────────────────────────────────────────────────────
@@ -10,7 +11,7 @@ import { RATING_DISPLAY, REVIEW_COUNT } from './reputation';
 export const stats = [
   { number: '800+',  label: 'Cat grooming sessions in Pune' },
   { number: RATING_DISPLAY, label: `Average of ${REVIEW_COUNT} Google reviews` },
-  { number: '29',    label: 'Areas covered across Pune' },
+  { number: String(ALL_CAT_PUNE_CITIES.length), label: 'Areas covered across Pune' },
   { number: '₹799',  label: 'Starting price per session' },
 ];
 

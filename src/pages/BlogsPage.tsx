@@ -16,6 +16,8 @@ import Footer from '../components/Footer';
 import { blogPosts, parseInline, type Block, type BlogPost } from '../data/blogPosts';
 import { useSeo, clampDescription } from '../lib/useSeo';
 import { SEO_ROUTES } from '../data/seoRoutes';
+import { blogHubLinks } from '../data/hubMeta';
+import { formatPageDate } from '../data/pageDates';
 
 // ─── Block renderer ───────────────────────────────────────────────────────────
 
@@ -468,6 +470,9 @@ export function BlogPostPage({ slug }: BlogPostPageProps) {
               <span className="text-xs font-bold text-sniffy-purple bg-purple-50 px-3 py-1 rounded-full">{post.category}</span>
               <span className="text-xs text-gray-400 flex items-center gap-1"><Clock size={12} />{post.readTime}</span>
               <span className="text-xs text-gray-400">{post.date}</span>
+              {post.updated && (
+                <span className="text-xs text-gray-400">Updated {formatPageDate(post.updated)}</span>
+              )}
             </div>
             <h1 className="text-2xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
               {post.title}
@@ -489,6 +494,17 @@ export function BlogPostPage({ slug }: BlogPostPageProps) {
             <RenderBlock key={i} block={block} />
           ))}
         </article>
+
+        <section className="px-4 pb-8 bg-white">
+          <div className="max-w-2xl mx-auto rounded-2xl border border-sniffy-purple/15 bg-sniffy-purple/5 px-5 py-4">
+            <p className="text-xs text-gray-500 mb-1">Want this done for you? Fixed prices from ₹799, no travel fee.</p>
+            {blogHubLinks(post.audience).map((l) => (
+              <a key={l.href} href={l.href} className="block text-[15px] font-semibold text-sniffy-purple hover:underline">
+                {l.label} →
+              </a>
+            ))}
+          </div>
+        </section>
 
         <section className="bg-sniffy-purple px-4 py-14 text-center">
           <div className="max-w-xl mx-auto">

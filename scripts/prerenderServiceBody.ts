@@ -11,7 +11,8 @@ import { blogIndex } from '../src/data/blogIndex.ts';
 import { SERVICES } from '../src/data/services/index.ts';
 import { SERVICE_NAV } from '../src/data/services/nav.ts';
 import type { ServicePageData } from '../src/data/services/types.ts';
-import { pricingBlockHtml, siteNavHtml, storySectionHtml } from './prerenderLocationBody.ts';
+import { serviceHeroHtml, servicesIndexHeroHtml } from './prerenderHero.tsx';
+import { pageMetaStripHtml, pricingBlockHtml, siteNavHtml, storySectionHtml } from './prerenderLocationBody.ts';
 import { SERVICES_INDEX_FAQS, SERVICES_INDEX_INTRO } from '../src/data/services/indexContent.ts';
 
 function esc(text: string): string {
@@ -73,12 +74,13 @@ export function prerenderServiceBody(s: ServicePageData): string {
     })
     .join('\n            ');
 
-  return `      <section class="px-4 py-10 bg-white">
+  // The hero (see prerenderHero.tsx) carries the <h1> and subtitle, as in React.
+  return `${serviceHeroHtml(s)}
+
+      <section class="px-4 py-6 bg-white">
         <div class="max-w-4xl mx-auto">
           <nav aria-label="Breadcrumb" class="text-xs text-gray-500 mb-3"><ol class="flex flex-wrap items-center gap-1"><li><a href="/">Home</a></li><li aria-hidden="true">›</li><li><a href="/services">Services</a></li><li aria-hidden="true">›</li><li>${esc(s.shortName)}</li></ol></nav>
-          <h1 class="text-2xl md:text-4xl font-bold text-gray-900 leading-tight">${esc(s.h1Line1)} ${esc(s.h1Accent)}</h1>
-          <p class="mt-3 text-gray-600 text-base md:text-lg">${esc(s.heroSubtitle)}</p>
-          <div class="mt-6 rounded-3xl border border-gray-200 p-5">
+          <div class="rounded-3xl border border-gray-200 p-5">
             <p class="text-xs uppercase tracking-widest font-bold text-sniffy-purple">The short answer</p>
             <p class="mt-2 text-gray-800">${esc(s.quickAnswer)}</p>
             <ul class="mt-3 list-disc pl-5 text-sm text-gray-700">
@@ -120,6 +122,8 @@ ${prices}
       </section>
 
 ${pricingBlockHtml(s.pets === 'cat' ? 'cat' : 'dog', 'Pune')}
+
+${pageMetaStripHtml(null)}
 
       <section id="details" class="bg-gray-50 pt-10 pb-2 px-4">
         <div class="max-w-6xl mx-auto text-center">
@@ -178,11 +182,11 @@ export function prerenderServicesIndexBody(): string {
 
   const intro = SERVICES_INDEX_INTRO.paragraphs.map((p) => `<p class="mt-3 text-gray-600">${esc(p)}</p>`).join('\n          ');
 
-  return `      <section class="px-4 py-10 bg-white">
+  return `${servicesIndexHeroHtml(SERVICES_INDEX_INTRO.hero)}
+
+      <section class="px-4 py-6 bg-white">
         <div class="max-w-4xl mx-auto">
           <nav aria-label="Breadcrumb" class="text-xs text-gray-500 mb-3"><ol class="flex flex-wrap items-center gap-1"><li><a href="/">Home</a></li><li aria-hidden="true">›</li><li>Services</li></ol></nav>
-          <h1 class="text-2xl md:text-4xl font-bold text-gray-900 leading-tight">Pet Grooming Services at Home in Pune</h1>
-          <p class="mt-3 text-gray-600 text-base md:text-lg">${esc(SERVICES_INDEX_INTRO.hero)}</p>
           <h2 class="mt-8 text-2xl font-bold text-gray-900">${esc(SERVICES_INDEX_INTRO.heading)}</h2>
           ${intro}
         </div>
@@ -199,6 +203,8 @@ ${cards}
       </section>
 
 ${pricingBlockHtml('dog', 'Pune')}
+
+${pageMetaStripHtml(null)}
 
       <section class="px-4 py-10 bg-white">
         <div class="max-w-7xl mx-auto">

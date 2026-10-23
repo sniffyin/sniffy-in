@@ -12,6 +12,8 @@ import Footer from '../components/Footer';
 import Toast from '../components/Toast';
 import Packages from '../components/Packages';
 import EliteMembership from '../components/EliteMembership';
+import PageMetaStrip from '../components/PageMetaStrip';
+import { pageLastModified } from '../data/pageDates';
 import HeroSlider, { type HeroChip } from '../components/HeroSlider';
 import { buildHeroSlides } from '../components/heroSlides';
 import ServiceFaqList from '../components/ServiceFaqList';
@@ -177,6 +179,7 @@ export default function ServicesIndexPage() {
 
         <Packages onBookNow={openWizard} showToggle placeName="Pune" petType="dog" />
         <EliteMembership />
+        <PageMetaStrip updated={pageLastModified('services')} />
 
         <ServiceFaqList heading="Grooming services, answered." faqs={SERVICES_INDEX_FAQS} />
 

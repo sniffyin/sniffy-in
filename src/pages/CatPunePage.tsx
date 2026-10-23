@@ -15,6 +15,9 @@ import { MapPin, Star, ChevronDown, ChevronUp, ShieldCheck, Clock } from 'lucide
 // into the hub chunk for a list of 33 names.
 import { ALL_CAT_PUNE_CITIES } from '../data/puneLocalities';
 import Navbar from '../components/Navbar';
+import { HUB_SIBLING } from '../data/hubMeta';
+import { pageLastModified } from '../data/pageDates';
+import PageMetaStrip from '../components/PageMetaStrip';
 import Footer from '../components/Footer';
 import Toast from '../components/Toast';
 import Packages from '../components/Packages';
@@ -116,6 +119,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 const BookingWizard = lazy(() => import('../components/BookingWizard'));
 
 export default function CatPunePage() {
+  const hubUpdated = pageLastModified('cat-grooming-in-pune');
   const [isModalOpen, setIsModalOpen] = useState(false);
   /** Latches true on first open so the lazy wizard chunk is fetched only once. */
   const [wizardMounted, setWizardMounted] = useState(false);
@@ -217,6 +221,8 @@ export default function CatPunePage() {
 
         {/* ── Elite Membership (same as home) ── */}
         <EliteMembership />
+
+        <PageMetaStrip sibling={HUB_SIBLING.cat} updated={hubUpdated} />
 
         {/* ── Localities grid ── */}
         <section className="px-4 py-10 md:py-14 bg-white">
@@ -343,8 +349,6 @@ export default function CatPunePage() {
             section={section}
             index={i}
             onBookNow={() => openWizard()}
-            ctaLabel="Book a Session"
-            mobileCta
           />
         ))}
 

@@ -34,7 +34,7 @@ export default function HeroSlider({
   onBook,
   chips = [],
   hideChipsOnMobile = false,
-  sectionClassName = "bg-gradient-to-b from-purple-50 to-white pt-4 pb-3 md:pb-5 relative overflow-hidden",
+  sectionClassName = "bg-gradient-to-b from-purple-200/70 via-purple-100/60 to-white pt-4 pb-3 md:pb-5 relative overflow-hidden",
 }: HeroSliderProps) {
   return (
     <section className={sectionClassName}>

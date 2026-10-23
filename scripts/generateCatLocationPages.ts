@@ -3,6 +3,7 @@ import path from "path"
 import { catLocationsSEO } from '../src/data/catLocationsSEO.ts'
 import { CAT_LOCATION_CONTENT } from '../src/data/catLocationRegistry.ts'
 import { heroImagePreloadTag, prerenderLocationBody, faqSchemaTag, offerCatalogJson, locationDataScript } from './prerenderLocationBody.ts'
+import { stampPage, flushPageDates, LM_ISO } from './pageDates.ts'
 import { clampDescription } from './seoText.ts'
 // Safe to emit here because prerenderLocationBody() renders the same rating in
 // the page body (ratingSummaryHtml). Don't add it to a page that doesn't.
@@ -141,6 +142,18 @@ catLocationsSEO.forEach((loc) => {
       }
     </script>
 
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "@id": "https://sniffy.in/cat-grooming-in-pune/${loc.slug}#webpage",
+        "url": "https://sniffy.in/cat-grooming-in-pune/${loc.slug}",
+        "inLanguage": "en-IN",
+        "isPartOf": { "@id": "https://sniffy.in/#website" },
+        "dateModified": "${LM_ISO}"
+      }
+    </script>
+
     <!-- Breadcrumb Schema -->
     <script type="application/ld+json">
       {
@@ -195,8 +208,9 @@ ${locationDataScript(content.location, content.reviews, content.faqs)}
 
 const filePath = path.join(outputRoot, `${loc.slug}.html`)
 
-fs.writeFileSync(filePath, html.trim())
+fs.writeFileSync(filePath, stampPage(`cat-grooming-in-pune/${loc.slug}`, html.trim()))
 
 console.log("Generated:", loc.slug)
 
 })
+flushPageDates()

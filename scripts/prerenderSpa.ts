@@ -42,7 +42,11 @@ import { WHY_SNIFFY_FAQS } from '../src/data/whySniffyFaqs.ts';
 import { HOME_STORY_SECTIONS } from '../src/data/homeStories.ts';
 import { HOME_FAQS } from '../src/data/homeFaqs.ts';
 import { HOME_TESTIMONIALS } from '../src/data/homeTestimonials.ts';
-import { blogPosts, parseInline, type Block } from '../src/data/blogPosts.ts';
+import { blogPosts, parseInline, postPublishedIso, postModifiedIso, type Block } from '../src/data/blogPosts.ts';
+import { blogHubLinks } from '../src/data/hubMeta.ts';
+import { homeHeroHtml } from './prerenderHero.tsx';
+import { formatPageDate } from '../src/data/pageDates.ts';
+import { stampDate, flushPageDates } from './pageDates.ts';
 import {
   relatedArticlesHtml,
   ratingSummaryHtml,
@@ -237,14 +241,14 @@ function areasWeServeHtml(): string {
           <p class="text-gray-600 mb-8 max-w-3xl">We groom at home across ${ALL_PUNE_CITIES.length} Pune and Pimpri-Chinchwad localities, seven days a week between 9 AM and 9 PM. Same fixed prices everywhere — no doorstep charge and no distance surcharge.</p>
           <div class="grid gap-9 md:grid-cols-2">
             <div>
-              <h3 class="text-base md:text-lg font-bold text-gray-900">Dog grooming in Pune by locality</h3>
+              <h3 class="text-base md:text-lg font-bold text-gray-900"><a href="/dog-grooming-in-pune" class="hover:text-sniffy-purple hover:underline underline-offset-2">Dog grooming in Pune by locality</a></h3>
               <p class="text-sm text-gray-500 mt-1 mb-4">At-home dog grooming — bath, haircut, deshedding, tick &amp; flea care.</p>
               <div class="flex flex-wrap gap-2">
               ${pills(ALL_PUNE_CITIES)}
               </div>
             </div>
             <div>
-              <h3 class="text-base md:text-lg font-bold text-gray-900">Cat grooming in Pune by locality</h3>
+              <h3 class="text-base md:text-lg font-bold text-gray-900"><a href="/cat-grooming-in-pune" class="hover:text-sniffy-purple hover:underline underline-offset-2">Cat grooming in Pune by locality</a></h3>
               <p class="text-sm text-gray-500 mt-1 mb-4">At-home cat grooming — cat-formulated products, low-restraint handling.</p>
               <div class="flex flex-wrap gap-2">
               ${pills(ALL_CAT_PUNE_CITIES)}
@@ -287,10 +291,12 @@ function homeBody(): string {
           </div>`
   ).join('\n');
 
-  return `      <section class="px-4 py-10 bg-white">
+  // The hero (see prerenderHero.tsx) carries the <h1>; the longer copy stays below it.
+  return `${homeHeroHtml()}
+
+      <section class="px-4 py-6 bg-white">
         <div class="max-w-7xl mx-auto">
-          <h1 class="text-2xl md:text-4xl font-bold text-gray-900 leading-tight">Dog &amp; Cat Grooming at Home in Pune</h1>
-          <p class="mt-3 text-gray-600 text-base md:text-lg max-w-3xl">Professional dog grooming and cat grooming at your doorstep across Pune and Pimpri-Chinchwad. A trained groomer comes to your home with all equipment and finishes in one visit — no salon, no travel, no cage time. Dog grooming at home starts at ₹799, and the same three packages cover cats. Open 9 AM to 9 PM, seven days a week.</p>
+          <p class="text-gray-600 text-base md:text-lg max-w-3xl">Professional dog grooming and cat grooming at your doorstep across Pune and Pimpri-Chinchwad. A trained groomer comes to your home with all equipment and finishes in one visit — no salon, no travel, no cage time. Dog grooming at home starts at ₹799, and the same three packages cover cats. Open 9 AM to 9 PM, seven days a week.</p>
         </div>
       </section>
 
@@ -396,6 +402,18 @@ ${cards}
 ${commonLinks()}`;
 }
 
+function blogHubCalloutHtml(audience: 'dog' | 'cat' | 'all'): string {
+  const links = blogHubLinks(audience)
+    .map((l) => `<a href="${l.href}" class="block text-[15px] font-semibold text-sniffy-purple hover:underline">${esc(l.label)} →</a>`)
+    .join('\n            ');
+  return `      <section class="px-4 pb-8 bg-white">
+        <div class="max-w-2xl mx-auto rounded-2xl border border-sniffy-purple/15 bg-sniffy-purple/5 px-5 py-4">
+          <p class="text-xs text-gray-500 mb-1">Want this done for you? Fixed prices from ₹799, no travel fee.</p>
+            ${links}
+        </div>
+      </section>`;
+}
+
 function blogPostBody(post: (typeof blogPosts)[number]): string {
   // Same-species first — mirrors otherPosts in src/pages/BlogsPage.tsx.
   const rest = blogPosts.filter((p) => p.slug !== post.slug);
@@ -408,12 +426,14 @@ function blogPostBody(post: (typeof blogPosts)[number]): string {
 
   return `      <article class="px-4 py-10 bg-white">
         <div class="max-w-3xl mx-auto">
-          <p class="text-xs text-gray-400 mb-2">${esc(post.category)} · ${esc(post.readTime)} · ${esc(post.date)}</p>
+          <p class="text-xs text-gray-400 mb-2">${esc(post.category)} · ${esc(post.readTime)} · ${esc(post.date)}${post.updated ? ` · Updated ${esc(formatPageDate(post.updated))}` : ''}</p>
           <h1 class="text-2xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">${esc(post.title)}</h1>
           <p class="text-gray-500 text-base md:text-lg leading-relaxed mb-8 border-l-4 border-sniffy-yellow pl-4">${esc(post.excerpt)}</p>
 ${post.blocks.map(renderBlock).join('\n')}
         </div>
       </article>
+
+${blogHubCalloutHtml(post.audience)}
 
       <section class="px-4 py-10 bg-gray-50">
         <div class="max-w-3xl mx-auto">
@@ -663,24 +683,9 @@ for (const key of Object.keys(SEO_ROUTES) as (keyof typeof SEO_ROUTES)[]) {
   );
 }
 
-// Mirrors the ISO conversion in pages/BlogsPage.tsx — posts carry month
-// precision ("February 2026"), and an unrecognised format omits the field
-// rather than publishing an invalid date.
-const MONTHS = [
-  'january', 'february', 'march', 'april', 'may', 'june',
-  'july', 'august', 'september', 'october', 'november', 'december',
-];
-
-function toIsoDate(human: string): string | null {
-  const match = /^([A-Za-z]+)\s+(\d{4})$/.exec(human.trim());
-  if (!match) return null;
-  const month = MONTHS.indexOf(match[1].toLowerCase());
-  if (month === -1) return null;
-  return `${match[2]}-${String(month + 1).padStart(2, '0')}-01`;
-}
-
 for (const post of blogPosts) {
-  const isoDate = toIsoDate(post.date);
+  const isoPublished = postPublishedIso(post);
+  const isoModified = postModifiedIso(post);
 
   written.push(
     write(
@@ -705,7 +710,9 @@ for (const post of blogPosts) {
           description: post.excerpt,
           image: `${ORIGIN}${post.coverImage}`,
           articleSection: post.category,
-          ...(isoDate ? { datePublished: isoDate, dateModified: isoDate } : {}),
+          ...(isoPublished ? { datePublished: isoPublished, dateModified: isoModified ?? isoPublished } : {}),
+          inLanguage: 'en-IN',
+          wordCount: post.blocks.map((b) => JSON.stringify(b)).join(' ').split(/\s+/).length,
           author: { '@type': 'Organization', name: 'Sniffy', url: ORIGIN },
           publisher: {
             '@type': 'Organization',
@@ -750,8 +757,24 @@ written.push(
 
 // Home last — it overwrites dist/index.html, the shell every clone above reads.
 // No BreadcrumbList here: the trail would be a single self-referencing item.
+// Dated by what the home page actually says (body + FAQ), not by the shell.
+const homeHtml = homeBody();
+const homeModified = stampDate('home', homeHtml + JSON.stringify(HOME_FAQS));
+flushPageDates();
+
 written.push(
-  write('/', HOME_SEO, homeBody(), [
+  write('/', HOME_SEO, homeHtml, [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      '@id': `${ORIGIN}/#webpage`,
+      url: `${ORIGIN}/`,
+      name: HOME_SEO.title,
+      inLanguage: 'en-IN',
+      isPartOf: { '@id': `${ORIGIN}/#website` },
+      about: { '@id': `${ORIGIN}/#petgrooming` },
+      dateModified: homeModified,
+    },
     {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',

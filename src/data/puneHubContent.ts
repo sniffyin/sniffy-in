@@ -9,6 +9,7 @@
  * PunePage.tsx and the generator both read from here — they cannot drift.
  */
 
+import { ALL_PUNE_CITIES } from './puneLocalities';
 import { RATING_DISPLAY, REVIEW_COUNT } from './reputation';
 
 // ─── Stats ──────────────────────────────────────────────────────────────────
@@ -16,7 +17,7 @@ import { RATING_DISPLAY, REVIEW_COUNT } from './reputation';
 export const stats = [
   { number: '1,500+', label: 'Sessions done in Pune' },
   { number: RATING_DISPLAY, label: `Average of ${REVIEW_COUNT} Google reviews` },
-  { number: '8',      label: 'Areas covered across Pune' },
+  { number: String(ALL_PUNE_CITIES.length), label: 'Areas covered across Pune' },
   { number: '₹799',   label: 'Starting price per session' },
 ];
 
@@ -179,7 +180,7 @@ export const whySections = [
 export const faqs = [
   {
     q: 'Do you cover all areas of Pune?',
-    a: "We offer doorstep dog grooming across Pune, including Wakad, Wagholi, Kothrud, Shivajinagar, Kondhwa, NIBM, Dhanori and Pimpri-Chinchwad. We're adding more areas regularly — if you're not in our coverage zone yet, you can still fill the form and we'll let you know when we reach you.",
+    a: "We offer doorstep dog grooming across 33 Pune and Pimpri-Chinchwad localities, including Wakad, Baner, Kothrud, Kharadi, Viman Nagar, Hinjewadi, Hadapsar, Kondhwa, NIBM, Shivajinagar and Pimple Saudagar — pick your area on this page for its own page. We're adding more areas regularly — if you're not in our coverage zone yet, you can still fill the form and we'll let you know when we reach you.",
   },
   {
     q: 'What does a standard session include?',

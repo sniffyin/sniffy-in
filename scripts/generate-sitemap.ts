@@ -18,6 +18,8 @@ import { ALL_CAT_PUNE_CITIES } from "../src/data/catLocationData.ts";
 import { SERVICES } from "../src/data/services/index.ts";
 import { blogPosts } from "../src/data/blogPosts.ts";
 import { SEO_ROUTES } from "../src/data/seoRoutes.ts";
+import { pageLastModified } from "../src/data/pageDates.ts";
+import { postModifiedIso } from "../src/data/blogPosts.ts";
 
 const BASE_URL = "https://sniffy.in";
 
@@ -27,6 +29,14 @@ interface SitemapUrl {
   changefreq: string;
   /** Path whose last modification dates this URL. See lastmodOf(). */
   source: string;
+  /**
+   * PAGE_DATES key (scripts/pageDates.ts). When the page has one, its <lastmod>
+   * is that date — the same value the page shows and puts in dateModified, so
+   * the sitemap and the page can never disagree.
+   */
+  pageKey?: string;
+  /** Explicit ISO lastmod, for URLs dated by their own content (blog posts). */
+  isoDate?: string;
 }
 
 // ─── lastmod ─────────────────────────────────────────────────────────────────
@@ -144,9 +154,9 @@ function lastmodOf(sourcePath: string): string {
 const urls: SitemapUrl[] = [
   // The home page is assembled from several data modules; date it by the most
   // recently touched of them rather than picking one arbitrarily.
-  { loc: BASE_URL, priority: "1.0", changefreq: "weekly", source: "src/data/homeStories.ts" },
-  { loc: `${BASE_URL}/dog-grooming-in-pune`, priority: "0.9", changefreq: "weekly", source: "src/data/puneHubContent.ts" },
-  { loc: `${BASE_URL}/cat-grooming-in-pune`, priority: "0.9", changefreq: "weekly", source: "src/data/catPuneHubContent.ts" },
+  { loc: BASE_URL, priority: "1.0", changefreq: "weekly", source: "src/data/homeStories.ts", pageKey: "home" },
+  { loc: `${BASE_URL}/dog-grooming-in-pune`, priority: "0.9", changefreq: "weekly", source: "src/data/puneHubContent.ts", pageKey: "dog-grooming-in-pune" },
+  { loc: `${BASE_URL}/cat-grooming-in-pune`, priority: "0.9", changefreq: "weekly", source: "src/data/catPuneHubContent.ts", pageKey: "cat-grooming-in-pune" },
 ];
 
 // ─── Generated locality pages ────────────────────────────────────────────────
@@ -159,6 +169,7 @@ for (const city of ALL_PUNE_CITIES) {
     priority: "0.8",
     changefreq: "weekly",
     source: `${city.slug}.html`,
+    pageKey: city.slug,
   });
 }
 
@@ -168,14 +179,15 @@ for (const city of ALL_CAT_PUNE_CITIES) {
     priority: "0.8",
     changefreq: "weekly",
     source: `${city.slug}.html`,
+    pageKey: city.slug,
   });
 }
 
 // ─── Service pages ───────────────────────────────────────────────────────────
 // Generated and committed, so each page's own git history dates it.
-urls.push({ loc: `${BASE_URL}/services`, priority: "0.8", changefreq: "monthly", source: "services/index.html" });
+urls.push({ loc: `${BASE_URL}/services`, priority: "0.8", changefreq: "monthly", source: "services/index.html", pageKey: "services" });
 for (const s of SERVICES) {
-  urls.push({ loc: `${BASE_URL}/services/${s.slug}`, priority: "0.8", changefreq: "monthly", source: `services/${s.slug}.html` });
+  urls.push({ loc: `${BASE_URL}/services/${s.slug}`, priority: "0.8", changefreq: "monthly", source: `services/${s.slug}.html`, pageKey: `services/${s.slug}` });
 }
 
 // ─── Blog posts ──────────────────────────────────────────────────────────────
@@ -190,6 +202,9 @@ for (const post of blogPosts) {
     priority: "0.7",
     changefreq: "monthly",
     source: "src/data/blogPosts.ts",
+    // The post's own date, not the shared data file's: one edit to blogPosts.ts
+    // would otherwise re-date all 55 posts. Matches BlogPosting.dateModified.
+    isoDate: postModifiedIso(post) ?? undefined,
   });
 }
 
@@ -248,10 +263,10 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
   .map(
-    ({ loc, changefreq, priority, source }) => `
+    ({ loc, changefreq, priority, source, pageKey, isoDate }) => `
   <url>
     <loc>${loc}</loc>
-    <lastmod>${lastmodOf(source)}</lastmod>
+    <lastmod>${isoDate || (pageKey && pageLastModified(pageKey)) || lastmodOf(source)}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`

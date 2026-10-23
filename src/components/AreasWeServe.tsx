@@ -47,9 +47,11 @@ interface CityGroupProps {
   heading: string;
   blurb: string;
   cities: { name: string; slug: string }[];
+  /** The species hub this group's heading links to. */
+  href: string;
 }
 
-function CityGroup({ heading, blurb, cities }: CityGroupProps) {
+function CityGroup({ heading, blurb, cities, href }: CityGroupProps) {
   const [expanded, setExpanded] = useState(false);
 
   // Alphabetical so a visitor can actually find their locality, rather than the
@@ -58,7 +60,11 @@ function CityGroup({ heading, blurb, cities }: CityGroupProps) {
 
   return (
     <div>
-      <h3 className="text-base md:text-lg font-bold text-gray-900">{heading}</h3>
+      <h3 className="text-base md:text-lg font-bold text-gray-900">
+        <a href={href} className="hover:text-sniffy-purple hover:underline underline-offset-2">
+          {heading}
+        </a>
+      </h3>
       <p className="text-sm text-gray-500 mt-1 mb-4">{blurb}</p>
 
       {/* Desktop: every locality, always visible — this is the whole point. */}
@@ -127,11 +133,13 @@ export default function AreasWeServe() {
             heading="Dog grooming in Pune by locality"
             blurb="At-home dog grooming — bath, haircut, deshedding, tick &amp; flea care."
             cities={ALL_PUNE_CITIES}
+            href="/dog-grooming-in-pune"
           />
           <CityGroup
             heading="Cat grooming in Pune by locality"
             blurb="At-home cat grooming — cat-formulated products, low-restraint handling."
             cities={ALL_CAT_PUNE_CITIES}
+            href="/cat-grooming-in-pune"
           />
         </div>
       </div>

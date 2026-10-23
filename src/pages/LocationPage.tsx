@@ -87,12 +87,12 @@ export default function LocationPage({ location, reviews, faqs }: LocationPagePr
         placeName={location.name}
         petType={petType}
       />
-      {/* Sits below the pricing block, not above it: between the hero and the
+      {/* Sits below the pricing and Elite blocks, not above them: between the hero and the
           prices it interrupted the path from "what is this" to "what does it
           cost". Mirrors the same line in the prerendered HTML — see the
           component, and keep the two in the same position. */}
-      <LocationSiblingLink slug={location.slug} />
       <EliteMembership />
+      <LocationSiblingLink slug={location.slug} />
       <LocationStories location={location} onBookNow={() => handleOpenModal()} />
       <LocationReviews location={location} reviews={reviews} />
       <LocationCities location={location} />

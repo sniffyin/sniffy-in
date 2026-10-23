@@ -71,9 +71,39 @@ export type BlogPost = {
   category: string;
   readTime: string;
   date: string;
+  /**
+   * ISO date (YYYY-MM-DD) of the last real edit to the post. Leave unset until
+   * a post is genuinely revised: dateModified then equals the published date,
+   * which is the honest answer. Shown on the page and used in BlogPosting
+   * schema and the sitemap.
+   */
+  updated?: string;
   audience: BlogAudience;
   blocks: Block[];
 };
+
+const MONTHS = [
+  'january', 'february', 'march', 'april', 'may', 'june',
+  'july', 'august', 'september', 'october', 'november', 'december',
+];
+
+/**
+ * Posts carry month precision ("February 2026"). Converts to ISO for schema and
+ * the sitemap; returns null for an unrecognised format rather than publishing
+ * an invalid date.
+ */
+export function postPublishedIso(post: BlogPost): string | null {
+  const match = /^([A-Za-z]+)\s+(\d{4})$/.exec(post.date.trim());
+  if (!match) return null;
+  const month = MONTHS.indexOf(match[1].toLowerCase());
+  if (month === -1) return null;
+  return `${match[2]}-${String(month + 1).padStart(2, '0')}-01`;
+}
+
+/** Last-modified ISO date: the explicit `updated`, else the published date. */
+export function postModifiedIso(post: BlogPost): string | null {
+  return post.updated ?? postPublishedIso(post);
+}
 
 export const blogPosts: BlogPost[] = [
 

@@ -27,6 +27,8 @@ import {
 } from '../src/data/catPuneHubContent.ts'
 import { heroImagePreloadTag, prerenderHubBody, offerCatalogJson } from './prerenderLocationBody.ts'
 import { clampDescription } from './seoText.ts'
+import { stampPage, flushPageDates, LM_ISO } from './pageDates.ts'
+import { areaServedJson, hubFaqSchemaTag, localityItemListTag } from './hubSeo.ts'
 // One business, one Google Business Profile, one rating — the cat hub used to
 // claim its own separate "4.9 from 85", which was invented. See reputation.ts.
 import { aggregateRatingJson } from '../src/data/reputation.ts'
@@ -38,61 +40,28 @@ if (!fs.existsSync(outputRoot)) {
   fs.mkdirSync(outputRoot, { recursive: true })
 }
 
-const faqs = [
-  {
-    q: 'Do you cover all areas of Pune for cat grooming?',
-    a: 'We cover 33 localities across Pune including Wakad, Wagholi, Kothrud, Shivajinagar, Kondhwa, NIBM, Dhanori, Pimpri-Chinchwad, Baner, Kharadi, Kalyani Nagar, Viman Nagar, Hadapsar, Koregaon Park, Camp, Wanowrie and more. Check the area listing on this page for the full list.',
-  },
-  {
-    q: 'What does a cat grooming session include?',
-    a: 'Bath with cat-specific shampoo and conditioner, blow-dry on low heat, brushing and de-matting, nail trimming (front and back), ear cleaning, eye area wipe, and a coat condition assessment. Haircuts like lion cuts are available as an add-on.',
-  },
-  {
-    q: 'How is cat grooming different from dog grooming?',
-    a: 'Cats require pH-balanced cat-specific shampoo (dog shampoo can be toxic to cats), low-restraint handling techniques, different drying approaches with lower heat, and significantly more patience with session pacing. Our groomers are trained specifically for cat handling.',
-  },
-  {
-    q: 'My cat has never been groomed professionally — will it go okay?',
-    a: 'First sessions are always slower and more exploratory. We let the cat investigate the groomer and tools at their own pace, take breaks when needed, and never rush any step. Each subsequent session goes more smoothly as the cat gets used to the process.',
-  },
-  {
-    q: 'My cat is aggressive with strangers — can you still groom them?',
-    a: 'We use low-restraint techniques and read cat body language carefully throughout the session. If a cat is genuinely distressed we pause, allow them to settle, and resume when ready. We never force a step. In some cases a complete session requires more than one visit.',
-  },
-  {
-    q: 'How often should I book cat grooming?',
-    a: 'Shorthair cats every 8–10 weeks. Longhair breeds like Persians and Maine Coons every 4–6 weeks to prevent matting. Outdoor cats every 4–6 weeks with a tick check at each session. During Pune\'s monsoon season, frequencies move slightly closer together as humidity accelerates coat problems.',
-  },
-  {
-    q: 'Can you do a lion cut for my Persian cat?',
-    a: 'Yes, lion cuts and other haircuts are available as add-ons to the standard grooming session. They are most recommended for heavily matted Persians or cats who are very mat-prone in Pune\'s humidity. Mention it when booking so we can plan enough session time.',
-  },
-]
+// Reviews are the ones rendered in the page body (hubReviews), nothing extra.
+const reviewJson = JSON.stringify(
+  hubReviews.map((r) => ({
+    '@type': 'Review',
+    author: { '@type': 'Person', name: r.name },
+    reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 },
+    reviewBody: r.text,
+  })),
+  null,
+  2
+)
+  .split('\n')
+  .map((l, i) => (i === 0 ? l : '        ' + l))
+  .join('\n')
 
-const faqSchema = faqs
-  .map(
-    (f) => `{
-        "@type": "Question",
-        "name": "${f.q.replace(/"/g, '\\"')}",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "${f.a.replace(/"/g, '\\"')}"
-        }
-      }`
-  )
-  .join(',\n      ')
-
-const areaServed = [
-  'Dhanori', 'Wagholi', 'Kalyani Nagar', 'Lohegaon', 'Kharadi', 'Viman Nagar',
-  'Mundwa', 'Koregaon Park', 'Kothrud', 'Shivajinagar', 'Dhayari', 'Karve Nagar',
-  'Ambegaon', 'Baner', 'Bavdhan', 'Wakad', 'Pimpri-Chinchwad', 'Khadki', 'Ravet',
-  'Aundh', 'Kalewadi', 'Kondhwa', 'NIBM', 'Katraj', 'Handewadi', 'Hadapsar',
-  'Bibewadi', 'Camp', 'Wanowrie'
-].map(a => `{ "@type": "Place", "name": "${a}, Pune" }`).join(',\n          ')
+const faqSchema = hubFaqSchemaTag(hubFaqs)
+const localityList = localityItemListTag(ALL_CAT_PUNE_CITIES, 'cat-grooming-in-pune', 'Cat Grooming in Pune')
+const areaServed = areaServedJson(ALL_CAT_PUNE_CITIES)
 
 const prerenderedBody = prerenderHubBody({
   h1: 'Cat Grooming at Home Across Pune',
-  intro: 'Professional in-home cat grooming across Pune. No carrier. No salon stress. A trained groomer comes to your home.',
+  intro: 'Professional in-home cat grooming across 33 areas in Pune. No carrier. No salon stress. A trained groomer comes to your home.',
   stats: hubStats,
   whySections: hubWhySections,
   reviews: hubReviews,
@@ -111,7 +80,7 @@ const html = `<!doctype html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     ${heroImagePreloadTag()}
 
-    <title>Cat Grooming at Home in Pune | All Areas Covered | Sniffy</title>
+    <title>Cat Grooming at Home in Pune from ₹799 | 33 Areas | Sniffy</title>
 
     <!-- Rewritten from a 230-char version whose locality list was cut off by
          Google. The areas are already linked on the page and in areaServed. -->
@@ -135,15 +104,17 @@ const html = `<!doctype html>
 
     <!-- OpenGraph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Cat Grooming at Home in Pune | All Areas | Sniffy" />
+    <meta property="og:title" content="Cat Grooming at Home in Pune from ₹799 | Sniffy" />
     <meta property="og:description" content="Professional in-home cat grooming across 33 areas in Pune. No carrier needed — trained groomers visit your door. Starting ₹799." />
     <meta property="og:url" content="https://sniffy.in/cat-grooming-in-pune" />
-    <meta property="og:image" content="https://sniffy.in/sniffy-logo.png" />
+    <meta property="og:image" content="https://sniffy.in/images/grooming-session-1.jpg" />
+    <meta property="og:image:alt" content="Sniffy groomer grooming a cat at home in Pune" />
     <meta property="og:site_name" content="Sniffy" />
     <meta property="og:locale" content="en_IN" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://sniffy.in/images/grooming-session-1.jpg" />
     <meta name="twitter:title" content="Cat Grooming at Home in Pune | Sniffy" />
     <meta name="twitter:description" content="In-home cat grooming across 33 Pune localities. Cat-trained groomers, no carrier needed. From ₹799." />
 
@@ -154,6 +125,7 @@ const html = `<!doctype html>
         "@type": "LocalBusiness",
         "@id": "https://sniffy.in/cat-grooming-in-pune#petgrooming",
         "name": "Sniffy — Cat Grooming at Home in Pune",
+        "parentOrganization": { "@id": "https://sniffy.in/#petgrooming" },
         "url": "https://sniffy.in/cat-grooming-in-pune",
         "image": "https://sniffy.in/images/grooming-session-1.jpg",
         "logo": "https://sniffy.in/sniffy-logo.png",
@@ -170,9 +142,7 @@ const html = `<!doctype html>
           "latitude": 18.5204,
           "longitude": 73.8567
         },
-        "areaServed": [
-          ${areaServed}
-        ],
+        "areaServed": ${areaServed},
         "knowsAbout": "Cat grooming at home",
         "hasOfferCatalog": ${offerCatalog},
 
@@ -180,6 +150,7 @@ const html = `<!doctype html>
         "paymentAccepted": "Cash, UPI",
         "currenciesAccepted": "INR",
         "aggregateRating": ${aggregateRatingJson()},
+        "review": ${reviewJson},
         "openingHoursSpecification": {
           "@type": "OpeningHoursSpecification",
           "dayOfWeek": [
@@ -218,13 +189,23 @@ const html = `<!doctype html>
     </script>
 
     <!-- FAQPage Schema -->
+    ${faqSchema}
+
+    ${localityList}
+
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-      ${faqSchema}
-        ]
+        "@type": "CollectionPage",
+        "@id": "https://sniffy.in/cat-grooming-in-pune#webpage",
+        "url": "https://sniffy.in/cat-grooming-in-pune",
+        "name": "Cat Grooming at Home in Pune",
+        "inLanguage": "en-IN",
+        "dateModified": "${LM_ISO}",
+        "isPartOf": { "@id": "https://sniffy.in/#website" },
+        "about": { "@id": "https://sniffy.in/#cat-grooming" },
+        "primaryImageOfPage": { "@type": "ImageObject", "url": "https://sniffy.in/images/grooming-session-1.jpg" },
+        "publisher": { "@id": "https://sniffy.in/#petgrooming" }
       }
     </script>
 
@@ -243,5 +224,6 @@ ${prerenderedBody}
 </html>`
 
 const filePath = path.join(outputRoot, 'index.html')
-fs.writeFileSync(filePath, html.trim())
+fs.writeFileSync(filePath, stampPage('cat-grooming-in-pune', html.trim()))
+flushPageDates()
 console.log('Generated: cat-grooming-in-pune/index.html')

@@ -21,7 +21,7 @@ import { PACKAGES, ADD_ONS } from '../src/pages/admin/types.ts';
 import { heroImagePreloadTag } from './prerenderLocationBody.ts';
 import { prerenderServiceBody, prerenderServicesIndexBody } from './prerenderServiceBody.ts';
 import { clampDescription } from './seoText.ts';
-import { lastEdited } from './gitDate.ts';
+import { stampPage, flushPageDates, LM_ISO } from './pageDates.ts';
 
 const ORIGIN = 'https://sniffy.in';
 const outDir = path.join(process.cwd(), 'services');
@@ -58,16 +58,6 @@ for (const s of SERVICES) {
     }
   }
 }
-
-const FILE_FOR: Record<string, string> = {
-  'deshedding-treatment-in-pune': 'deshedding.ts',
-  'dematting-and-coat-rescue-in-pune': 'dematting.ts',
-  'puppy-and-kitten-first-groom-in-pune': 'puppyKitten.ts',
-  'senior-pet-grooming-in-pune': 'senior.ts',
-  'tick-and-flea-treatment-in-pune': 'tickFlea.ts',
-  'anxious-and-nervous-pet-grooming-in-pune': 'anxious.ts',
-  'medicated-bath-in-pune': 'medicated.ts',
-};
 
 const provider = {
   '@type': 'LocalBusiness',
@@ -194,7 +184,6 @@ const faqSchema = (faqs: { q: string; a: string }[]) => ({
 // ── Individual service pages ────────────────────────────────────────────────
 for (const s of SERVICES) {
   const pagePath = `/services/${s.slug}`;
-  const modified = lastEdited([`src/data/services/${FILE_FOR[s.slug]}`, 'src/data/services/types.ts']);
 
   const schemas = [
     {
@@ -221,7 +210,7 @@ for (const s of SERVICES) {
       description: s.seoDescription,
       inLanguage: 'en-IN',
       about: { '@id': `${ORIGIN}${pagePath}#service` },
-      dateModified: modified,
+      dateModified: LM_ISO,
       primaryImageOfPage: { '@type': 'ImageObject', url: `${ORIGIN}/images/grooming-session-1.jpg` },
     },
     breadcrumb([{ name: 'Services', path: '/services' }, { name: s.shortName, path: pagePath }]),
@@ -236,7 +225,7 @@ for (const s of SERVICES) {
     '/src/entries/service.tsx',
     `    <script type="application/json" id="sniffy-service-data">${json}</script>`
   );
-  fs.writeFileSync(path.join(outDir, `${s.slug}.html`), html);
+  fs.writeFileSync(path.join(outDir, `${s.slug}.html`), stampPage(`services/${s.slug}`, html));
   console.log(`Generated: services/${s.slug}.html`);
 }
 
@@ -257,7 +246,7 @@ for (const s of SERVICES) {
       description,
       inLanguage: 'en-IN',
       about: provider,
-      dateModified: lastEdited(['src/data/services']),
+      dateModified: LM_ISO,
       mainEntity: {
         '@type': 'ItemList',
         numberOfItems: SERVICES.length,
@@ -277,6 +266,8 @@ for (const s of SERVICES) {
     prerenderServicesIndexBody(),
     '/src/entries/servicesIndex.tsx'
   );
-  fs.writeFileSync(path.join(outDir, 'index.html'), html);
+  fs.writeFileSync(path.join(outDir, 'index.html'), stampPage('services', html));
   console.log('Generated: services/index.html');
 }
+
+flushPageDates();

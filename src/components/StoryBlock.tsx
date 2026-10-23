@@ -20,9 +20,9 @@
  * covers booking on the pages that have one. Mobile: image dropped, body
  * collapsed into a "Read more" accordion inside a white card, with an icon +
  * eyebrow label for separation — five collapsed sections would otherwise be
- * identical bands. The `mobileCta` button is mobile-only now (see its prop
- * doc) — the two hub pages still need it there since they have no floating
- * booking button of their own.
+ * identical bands. Story sections carry no booking button on any screen size —
+ * booking lives in the hero, the pricing block and (where mounted) the
+ * floating speed-dial.
  *
  * Keep the markup here in step with `storySectionHtml()` in
  * scripts/prerenderLocationBody.ts, which emits the pre-mount static frame for
@@ -205,29 +205,13 @@ export interface StoryBlockProps {
   section: LocationStorySection;
   /** Position on the page — drives the alternating background and accent. */
   index: number;
-  onBookNow: () => void;
-  /** Hub pages say "Book a Session"; everywhere else "Book Now". */
-  ctaLabel?: string;
-  /**
-   * Render a CTA button, mobile-only. Off by default — the home and locality
-   * pages route through <FloatingActions />, which is always mounted there.
-   *
-   * The two hub pages set it. They are standalone static entries
-   * (src/entries/{cat,}pune.tsx render the page component directly, not through
-   * App.tsx), so FloatingActions never mounts there — their story cards were
-   * the only booking buttons between the locality grid and the reviews.
-   * There's no desktop button anywhere: the CTA row was the biggest
-   * contributor to scroll length on desktop.
-   */
-  mobileCta?: boolean;
+  /** Unused since the in-section CTA was removed; kept so existing callers still type-check. */
+  onBookNow?: () => void;
 }
 
 export default function StoryBlock({
   section,
   index,
-  onBookNow,
-  ctaLabel = 'Book Now',
-  mobileCta = false,
 }: StoryBlockProps) {
   const isEven = index % 2 === 0;
   // Desktop keeps the alternating bands; mobile is one flat strip so the white
@@ -333,16 +317,6 @@ export default function StoryBlock({
           </p>
         )}
       </MobileAccordion>
-
-      {/* CTA — mobile-only, and only on surfaces with no other mobile booking path */}
-      {mobileCta && (
-        <button
-          onClick={onBookNow}
-          className="md:hidden inline-block mt-4 px-6 py-2.5 text-sm bg-sniffy-purple text-white rounded-full font-semibold hover:opacity-90 transition-all"
-        >
-          {ctaLabel}
-        </button>
-      )}
     </div>
   );
 

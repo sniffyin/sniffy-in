@@ -22,6 +22,9 @@ import { ALL_PUNE_CITIES } from '../data/puneLocalities';
 // Hub copy lives in a data-only module so the page generator can prerender it.
 import { stats, whySections, faqs, reviews } from '../data/puneHubContent';
 import Navbar from '../components/Navbar';
+import { HUB_SIBLING } from '../data/hubMeta';
+import { pageLastModified } from '../data/pageDates';
+import PageMetaStrip from '../components/PageMetaStrip';
 import Footer from '../components/Footer';
 import Toast from '../components/Toast';
 import Packages from '../components/Packages';
@@ -125,6 +128,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 const BookingWizard = lazy(() => import('../components/BookingWizard'));
 
 export default function PunePage() {
+  const hubUpdated = pageLastModified('dog-grooming-in-pune');
   const [isModalOpen, setIsModalOpen] = useState(false);
   /** Latches true on first open so the lazy wizard chunk is fetched only once. */
   const [wizardMounted, setWizardMounted] = useState(false);
@@ -193,7 +197,7 @@ export default function PunePage() {
               </>
             ),
             subtitle:
-              'Doorstep pet grooming services across Pune. Trained groomers visit your home — fully equipped, on time, no salon stress.',
+              'Book dog grooming at home across Pune — bath, haircut, nail and ear care by a trained groomer who visits your door. Fixed prices from ₹799, no travel fee, no salon stress.',
           })}
           onBook={() => openWizard()}
           chips={heroChips}
@@ -227,6 +231,8 @@ export default function PunePage() {
 
         {/* ── Elite Membership (same as home) ── */}
         <EliteMembership />
+
+        <PageMetaStrip sibling={HUB_SIBLING.dog} updated={hubUpdated} />
 
         {/* ── Localities grid ── */}
         <section className="px-4 py-10 md:py-14 bg-white">
@@ -361,8 +367,6 @@ export default function PunePage() {
             section={section}
             index={i}
             onBookNow={() => openWizard()}
-            ctaLabel="Book a Session"
-            mobileCta
           />
         ))}
 

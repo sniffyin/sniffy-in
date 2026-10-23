@@ -29,6 +29,9 @@
  * is duplicated. If you restructure the story/review/FAQ components, update the
  * classes here too — or don't, and accept a slightly plainer pre-mount frame.
  */
+import { HUB_SIBLING } from '../src/data/hubMeta.ts';
+import { LM_ISO, LM_HUMAN } from './pageDates.ts';
+import { hubHeroHtml, locationHeroHtml } from './prerenderHero.tsx';
 import { SERVICE_NAV } from '../src/data/services/nav.ts';
 import type { LocationConfig, LocationStorySection } from '../src/components/location/LocationHero.ts';
 import { deriveStoryMeta } from '../src/data/storyMeta.ts';
@@ -149,20 +152,34 @@ ${items}
       </section>`;
 }
 
-/**
- * Static equivalent of src/components/location/LocationSiblingLink.tsx — the
- * link from this locality's page to the same locality's page for the other
- * species. See siblingLocality() in src/data/puneLocalities.ts for why both
- * surfaces have to render it; keep the wording here in step with that
- * component, since one of the two is what a given crawler sees.
- */
-export function siblingLocalityLinkHtml(slug: string): string {
+/** Sibling-species link for a locality page, shaped for pageMetaStripHtml. */
+function siblingLocalityCard(slug: string): { prompt: string; href: string; label: string } | null {
   const sibling = siblingLocality(slug);
-  if (!sibling) return '';
+  if (!sibling) return null;
+  return {
+    prompt: sibling.petType === 'cat' ? 'Have a cat too?' : 'Have a dog too?',
+    href: sibling.href,
+    label: sibling.label,
+  };
+}
 
-  const prompt = sibling.petType === 'cat' ? 'Have a cat too?' : 'Have a dog too?';
-
-  return `<p class="text-[15px] text-gray-600">${prompt} We groom both — see <a href="${sibling.href}" class="text-sniffy-purple font-semibold underline underline-offset-2">${esc(sibling.label)}</a>.</p>`;
+/**
+ * Static equivalent of src/components/PageMetaStrip.tsx: cross-link to the other
+ * species plus the last-updated date (placeholders resolved by stampPage()).
+ * Keep the markup in step with the component.
+ */
+export function pageMetaStripHtml(sibling: { prompt: string; href: string; label: string } | null): string {
+  const link = sibling
+    ? `<a href="${sibling.href}" class="group flex flex-1 items-center gap-3.5 px-4 py-4 sm:px-5 hover:bg-sniffy-purple/5 transition-colors"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sniffy-purple/10 text-sniffy-purple"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/></svg></span><span class="min-w-0"><span class="block text-xs text-gray-500">${esc(sibling.prompt)} We groom both.</span><span class="block text-[15px] font-semibold text-sniffy-purple group-hover:underline">${esc(sibling.label)} →</span></span></a>`
+    : '';
+  return `      <section class="px-4 py-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+          <div class="rounded-2xl border border-sniffy-purple/15 bg-white shadow-sm overflow-hidden flex flex-col sm:flex-row sm:divide-x divide-y sm:divide-y-0 divide-sniffy-purple/10">
+            ${link}
+            <div class="flex flex-1 items-center gap-3.5 px-4 py-4 sm:px-5"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sniffy-purple/10 text-sniffy-purple"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg></span><p class="min-w-0"><span class="block text-xs text-gray-500">Prices, coverage &amp; reviews last updated</span><time datetime="${LM_ISO}" class="block text-[15px] font-semibold text-gray-800">${LM_HUMAN}</time></p></div>
+          </div>
+        </div>
+      </section>`;
 }
 
 /**
@@ -498,21 +515,19 @@ export function prerenderLocationBody(
       ? `<p class="text-sm text-gray-600 mt-4">Also serving nearby: ${location.nearbyAreas.map(esc).join(', ')}.</p>`
       : '';
 
-  return `      <section class="px-4 py-10 bg-white">
+  // The hero (Navbar + carousel) carries this page's <h1> and subtext, exactly as
+  // React draws them, so they are not repeated in a text block below it.
+  return `${locationHeroHtml(location)}
+
+      <section class="px-4 py-6 bg-white">
         <div class="max-w-7xl mx-auto">
-          <h1 class="text-2xl md:text-4xl font-bold text-gray-900 leading-tight">${esc(location.heroH1)}</h1>
-          <p class="mt-3 text-gray-600 text-base md:text-lg max-w-3xl">${esc(location.heroSubtext)}</p>
           ${nearby}
         </div>
       </section>
 
 ${pricingBlockHtml(pet, location.name)}
 
-      <section class="px-4 pt-5 bg-white">
-        <div class="max-w-7xl mx-auto">
-          ${siblingLocalityLinkHtml(location.slug)}
-        </div>
-      </section>
+${pageMetaStripHtml(siblingLocalityCard(location.slug))}
 
 ${stories}
 
@@ -623,17 +638,21 @@ export function prerenderHubBody(content: HubContent, pet: PetType): string {
 
   const cityLinks = localityPillsHtml(content.cities);
 
-  return `      <section class="px-4 py-10 bg-white">
+  // The hero carries the <h1> and intro (see prerenderHero.tsx); only the stats
+  // list stays as a text block.
+  return `${hubHeroHtml(pet, content.intro)}
+
+      <section class="px-4 py-6 bg-white">
         <div class="max-w-7xl mx-auto">
-          <h1 class="text-2xl md:text-4xl font-bold text-gray-900 leading-tight">${esc(content.h1)}</h1>
-          <p class="mt-3 text-gray-600 text-base md:text-lg max-w-3xl">${esc(content.intro)}</p>
-          <ul class="mt-5 flex flex-wrap gap-x-8 gap-y-2 text-sm text-gray-700">
+          <ul class="flex flex-wrap gap-x-8 gap-y-2 text-sm text-gray-700">
             ${statItems}
           </ul>
         </div>
       </section>
 
 ${pricingBlockHtml(pet, 'Pune')}
+
+${pageMetaStripHtml(HUB_SIBLING[pet])}
 
       <section class="px-4 pt-10 pb-4 bg-gray-50">
         <div class="max-w-6xl mx-auto text-center">
