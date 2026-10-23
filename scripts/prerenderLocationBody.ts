@@ -31,6 +31,7 @@
  */
 import { HUB_SIBLING } from '../src/data/hubMeta.ts';
 import { LM_ISO, LM_HUMAN } from './pageDates.ts';
+import { guidesForLocality } from '../src/data/relatedPosts.ts';
 import { hubHeroHtml, locationHeroHtml } from './prerenderHero.tsx';
 import { SERVICE_NAV } from '../src/data/services/nav.ts';
 import type { LocationConfig, LocationStorySection } from '../src/components/location/LocationHero.ts';
@@ -124,14 +125,18 @@ export function ratingSummaryHtml(): string {
  */
 export function relatedArticlesHtml(
   audience: BlogAudience = 'all',
-  heading = headingForAudience(audience)
+  heading = headingForAudience(audience),
+  /** When set, show this locality's rotating selection instead of every guide. */
+  localitySlug?: string
 ): string {
   // Titles only, no excerpts — see the comment in RelatedArticles.tsx. Repeating
   // 228 words of excerpt prose on all 73 pages inflated page-to-page similarity
   // from ~0.4% to ~12.6% without adding any link value the titles don't already
   // carry. This must stay in step with the React component.
-  const items = blogPosts
-    .filter((p) => audience === 'all' || p.audience === 'all' || p.audience === audience)
+  const shown = localitySlug
+    ? guidesForLocality(blogPosts, audience, localitySlug)
+    : blogPosts.filter((p) => audience === 'all' || p.audience === 'all' || p.audience === audience);
+  const items = shown
     .map(
       (p) => `            <li>
               <a href="/blogs/${p.slug}" class="text-sniffy-purple font-semibold">${esc(p.title)}</a>
@@ -550,7 +555,7 @@ ${faqItems}
         </div>
       </section>
 
-${relatedArticlesHtml(pet)}
+${relatedArticlesHtml(pet, undefined, location.slug)}
 
       <section class="px-4 py-10 bg-gray-50">
         <div class="max-w-7xl mx-auto text-center">

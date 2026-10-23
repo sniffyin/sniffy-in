@@ -22,6 +22,7 @@
 // locality/hub page and blogPosts is ~370 KB of article bodies.
 import { blogIndex as blogPosts } from '../data/blogIndex';
 import type { BlogAudience } from '../data/blogPosts';
+import { guidesForLocality } from '../data/relatedPosts';
 
 /**
  * Mirrors headingForAudience() in scripts/prerenderLocationBody.ts — the static
@@ -45,6 +46,8 @@ interface RelatedArticlesProps {
   heading?: string;
   /** Cap the number shown. Defaults to all matching posts. */
   limit?: number;
+  /** Locality page slug: show that page's rotating selection (see relatedPosts.ts). */
+  localitySlug?: string;
 }
 
 export default function RelatedArticles({
@@ -52,11 +55,14 @@ export default function RelatedArticles({
   audience = 'all',
   heading = headingForAudience(audience),
   limit,
+  localitySlug,
 }: RelatedArticlesProps) {
-  const posts = blogPosts
-    .filter((p) => p.slug !== excludeSlug)
-    .filter((p) => audience === 'all' || p.audience === 'all' || p.audience === audience)
-    .slice(0, limit ?? blogPosts.length);
+  const posts = localitySlug
+    ? guidesForLocality(blogPosts, audience, localitySlug)
+    : blogPosts
+        .filter((p) => p.slug !== excludeSlug)
+        .filter((p) => audience === 'all' || p.audience === 'all' || p.audience === audience)
+        .slice(0, limit ?? blogPosts.length);
 
   if (posts.length === 0) return null;
 

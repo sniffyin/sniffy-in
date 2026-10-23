@@ -100,7 +100,7 @@ export default function LocationPage({ location, reviews, faqs }: LocationPagePr
         <LocationFAQs location={location} faqs={faqs} />
       </Suspense>
       {/* Species-filtered — a cat locality page must not link the Husky guide. */}
-      <RelatedArticles audience={petType} />
+      <RelatedArticles audience={petType} localitySlug={location.slug} />
       <Footer />
       {wizardMounted && (
         <Suspense fallback={null}>
