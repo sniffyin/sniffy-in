@@ -186,6 +186,8 @@ export const DOG_ADD_ONS: DisplayAddOn[] = [
   { name: 'Hygiene Hair Cut', detail: 'Face & sanitary',        price: '₹299',   emoji: '✂️', tint: '#f3e9ff', image: '/images/addons/hygiene-haircut.jpg' },
   { name: 'Medicated Bath',   detail: 'Fungal / bacterial skin', price: '₹299',  emoji: '🧴', tint: '#e3f0ff', image: '/images/addons/medicated-bath.jpg' },
   { name: 'Special Handling',  detail: 'Extra patience, extra hands', price: '+ ₹199', emoji: '🤝', tint: '#ffe9e3', image: '/images/addons/special-handling.jpg' },
+  { name: 'De-shedding',      detail: 'Undercoat removal',      price: '₹299',   emoji: '🪮', tint: '#e8eefc', image: '' },
+  { name: 'De-matting',       detail: 'Mats and tangles',       price: '₹299',   emoji: '🧶', tint: '#fdeaf0', image: '' },
 ];
 
 export const CAT_ADD_ONS: DisplayAddOn[] = [
@@ -193,6 +195,8 @@ export const CAT_ADD_ONS: DisplayAddOn[] = [
   { name: 'Deworming',        detail: 'Vet-grade dose',         price: '₹299',   emoji: '💊', tint: '#e0f7f4', image: '/images/addons/deworming.jpg' },
   { name: 'Hygiene Hair Cut', detail: 'Face & sanitary',        price: '₹299',   emoji: '✂️', tint: '#f3e9ff', image: '/images/addons/hygiene-haircut.jpg' },
   { name: 'Medicated Bath',   detail: 'Fungal / bacterial skin', price: '₹299',  emoji: '🧴', tint: '#e3f0ff', image: '/images/addons/medicated-bath.jpg' },
+  { name: 'De-shedding',      detail: 'Undercoat removal',      price: '₹299',   emoji: '🪮', tint: '#e8eefc', image: '' },
+  { name: 'De-matting',       detail: 'Mats and tangles',       price: '₹299',   emoji: '🧶', tint: '#fdeaf0', image: '' },
 ];
 
 // ─── Helpers shared by the React cards and the static prerender ──────────────

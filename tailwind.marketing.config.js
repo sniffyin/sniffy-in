@@ -20,6 +20,8 @@ export default {
     './src/pages/LocationPage.tsx',
     './src/pages/PunePage.tsx',
     './src/pages/CatPunePage.tsx',
+    './src/pages/ServicePage.tsx',
+    './src/pages/ServicesIndexPage.tsx',
     './scripts/**/*.{js,ts}',
     // Dashboard/PWA-only chrome — never imported by the public pages' graph.
     '!./src/components/{WeatherWidget,SessionChat,PWAInstallGate,NotificationsPanel,MobileTopBar,SideDrawer,DraggableAddSessionFAB,CompletionCodePill,ConfirmDialog,PaymentStatusBadge}.tsx',

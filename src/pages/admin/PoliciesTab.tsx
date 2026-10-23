@@ -30,7 +30,7 @@ import {
   fetchAcknowledgments, createAcknowledgmentLink, createOfferLetterLink, buildPolicyLinkUrl, getSignedPolicyPdfUrl,
   errMsg,
 } from './policyTypes';
-import { buildOfferLetterContent } from './offerLetterTemplate';
+import { buildOfferLetterContent, OFFER_POSITION_LABEL, type OfferLetterPosition } from './offerLetterTemplate';
 import { buildOfferLetterPdf, loadOfferLetterAssets } from './offerLetterPdf';
 
 type SubView = 'generate' | 'content' | 'records';
@@ -138,7 +138,10 @@ function GenerateLinkPanel({
   const [groomerId, setGroomerId] = useState<string | null>(null);
   const [groomers, setGroomers] = useState<GroomerOption[]>([]);
   const [previewing, setPreviewing] = useState(false);
+  const [position, setPosition] = useState<OfferLetterPosition>('groomer');
+  const [reportingGroomer, setReportingGroomer] = useState('');
   const isOffer = docType === 'offer_letter';
+  const isHelperOffer = isOffer && position === 'helper';
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ url: string; ack: PolicyAcknowledgment } | null>(null);
@@ -162,7 +165,10 @@ function GenerateLinkPanel({
     setSubmitting(true); setError(null);
     try {
       if (isOffer) {
-        const ack = await createOfferLetterLink({ signerName, groomerId, createdBy, letterDate, effectiveDate });
+        const ack = await createOfferLetterLink({
+          signerName, groomerId: isHelperOffer ? null : groomerId, createdBy, letterDate, effectiveDate,
+          position, reportingGroomer: isHelperOffer ? reportingGroomer : null,
+        });
         setResult({ url: buildPolicyLinkUrl(ack.token), ack });
         return;
       }
@@ -183,7 +189,10 @@ function GenerateLinkPanel({
     if (!signerName || !letterDate || !effectiveDate) { setError('Fill in the name and both dates first.'); return; }
     setPreviewing(true); setError(null);
     try {
-      const letter = buildOfferLetterContent({ employeeName: signerName, letterDate, effectiveDate });
+      const letter = buildOfferLetterContent({
+        employeeName: signerName, letterDate, effectiveDate, position,
+        reportingGroomer: isHelperOffer ? reportingGroomer : null,
+      });
       const doc = await buildOfferLetterPdf({
         ack: {
           id: 'preview', kind: 'offer_letter', offer_data: letter.data, role: 'groomer',
@@ -264,7 +273,33 @@ function GenerateLinkPanel({
       </div>
       )}
 
-      {role === 'groomer' && groomers.length > 0 && (
+      {isOffer && (
+        <div>
+          <label className="text-xs font-bold uppercase tracking-wide text-gray-500">Position</label>
+          <div className="flex gap-2 mt-2">
+            {(['groomer', 'helper'] as OfferLetterPosition[]).map(pos => (
+              <button key={pos} onClick={() => { setPosition(pos); setGroomerId(null); setError(null); }}
+                className={['px-4 py-2 rounded-xl text-sm font-semibold transition-all',
+                  position === pos ? 'bg-sniffy-purple text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'].join(' ')}>
+                {OFFER_POSITION_LABEL[pos]}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {isHelperOffer && (
+        <div>
+          <label className="text-xs font-bold uppercase tracking-wide text-gray-500">Reporting groomer (his manager)</label>
+          <select value={reportingGroomer} onChange={e => setReportingGroomer(e.target.value)}
+            className="mt-2 w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 bg-white">
+            <option value="">— not decided yet (letter says "assigned by management") —</option>
+            {groomers.map(g => <option key={g.id} value={g.name}>{g.name}</option>)}
+          </select>
+        </div>
+      )}
+
+      {!isHelperOffer && role === 'groomer' && groomers.length > 0 && (
         <div>
           <label className="text-xs font-bold uppercase tracking-wide text-gray-500">Pick from roster (optional)</label>
           <select
@@ -288,7 +323,7 @@ function GenerateLinkPanel({
         </label>
         <input value={name}
           onChange={e => { setName(e.target.value); setGroomerId(null); }}
-          placeholder="e.g. Hemant Sharma"
+          placeholder={isHelperOffer ? 'Helper\'s full name' : 'e.g. Hemant Sharma'}
           className="mt-2 w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5"/>
       </div>
 
@@ -513,7 +548,7 @@ function RecordsPanel() {
           <div className="flex-1 min-w-[180px]">
             <p className="font-semibold text-gray-900">{ack.signer_name}</p>
             <p className="text-xs text-gray-400">
-              {ack.kind === 'offer_letter' ? 'Offer letter' : POLICY_ROLE_LABEL[ack.role]} · created {fmtDate(ack.created_at)}
+              {ack.kind === 'offer_letter' ? `Offer letter · ${OFFER_POSITION_LABEL[ack.offer_data?.position ?? 'groomer']}` : POLICY_ROLE_LABEL[ack.role]} · created {fmtDate(ack.created_at)}
               {ack.signed_at ? ` · signed ${fmtDate(ack.signed_at)}` : ''}
             </p>
           </div>

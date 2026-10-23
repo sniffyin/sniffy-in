@@ -23,12 +23,24 @@ export interface OfferLetterData {
   effective_date: string;
   /** Paragraphs between "Dear …" and section 1. */
   preamble:       string[];
+  /** Position the letter is for; absent on letters made before helpers existed (= groomer). */
+  position?:      OfferLetterPosition;
+  /** Helper letters: the groomer the helper reports to, if known when the link was made. */
+  reporting_groomer?: string | null;
 }
+
+export type OfferLetterPosition = 'groomer' | 'helper';
+
+export const OFFER_POSITION_LABEL: Record<OfferLetterPosition, string> = {
+  groomer: 'Groomer',
+  helper:  'Helper',
+};
 
 export const OFFER_LETTER_TITLE = 'OFFER LETTER CUM EMPLOYMENT TERMS';
 
 const PROBATION_MONTHS_WORD = 'three (3)';
 const PROBATION_SALARY      = 'Rs. 35,000/- (Rupees Thirty Five Thousand Only)';
+const HELPER_SALARY         = 'Rs. 15,000/- (Rupees Fifteen Thousand Only)';
 
 /** yyyy-mm-dd → dd-mm-yyyy (the format Sniffy letters use). */
 export function fmtLetterDate(iso: string): string {
@@ -47,7 +59,11 @@ export function buildOfferLetterContent(opts: {
   employeeName:  string;
   letterDate:    string;
   effectiveDate: string;
+  position?:     OfferLetterPosition;
+  /** Helper letters only. */
+  reportingGroomer?: string | null;
 }): { title: string; data: OfferLetterData; sections: RolePolicySection[] } {
+  if (opts.position === 'helper') return buildHelperLetterContent(opts);
   const { employeeName, letterDate, effectiveDate } = opts;
   const eff = fmtLetterDate(effectiveDate);
 
@@ -116,7 +132,87 @@ export function buildOfferLetterContent(opts: {
 
   return {
     title: OFFER_LETTER_TITLE,
-    data: { letter_date: letterDate, effective_date: effectiveDate, preamble },
+    data: { letter_date: letterDate, effective_date: effectiveDate, preamble, position: 'groomer' },
+    sections,
+  };
+}
+
+/** Drop the "N. " prefix so shared clauses can be renumbered into another letter. */
+function unnumbered(heading: string): string {
+  return heading.replace(/^\d+\.\s*/, '');
+}
+
+/**
+ * Helper (groomer's assistant) letter. Reuses the groomer letter's conduct,
+ * pet-safety, confidentiality and termination clauses so the legal wording
+ * stays in one place; the salary / role / leave clauses are helper-specific.
+ */
+function buildHelperLetterContent(opts: {
+  employeeName:  string;
+  letterDate:    string;
+  effectiveDate: string;
+  reportingGroomer?: string | null;
+}): { title: string; data: OfferLetterData; sections: RolePolicySection[] } {
+  const { employeeName, letterDate, effectiveDate } = opts;
+  const manager = opts.reportingGroomer?.trim() || null;
+  const eff = fmtLetterDate(effectiveDate);
+  const shared = buildOfferLetterContent({ employeeName, letterDate, effectiveDate }).sections;
+  const pick = (prefix: string) => {
+    const sec = shared.find(x => unnumbered(x.heading).startsWith(prefix));
+    if (!sec) throw new Error(`Offer letter template is missing the "${prefix}" clause.`);
+    return sec;
+  };
+  const managerRef = manager ? `**${manager}**` : 'the Groomer assigned to you by management';
+
+  const preamble = [
+    `We are pleased to offer you employment with **Sniffy Pet Partners** as a **Groomer’s Helper** with effect from **${eff}**, subject to the terms and conditions stated in this letter.`,
+    'Your role will involve assisting a professional Pet Groomer in providing pet grooming services at customer locations, supporting service quality and pet safety, and representing the company in a disciplined and professional manner.',
+  ];
+
+  const numbered: RolePolicySection[] = [
+    { heading: 'Salary & Compensation', items: [
+      `During the first ${PROBATION_MONTHS_WORD} months’ probation period, you will receive a fixed monthly salary of **${HELPER_SALARY}**.`,
+      'Upon successful completion of probation, and subject to satisfactory performance, attendance, punctuality, and overall conduct, your salary may be reviewed based on merit and business requirements.',
+      'Your salary for each month shall be calculated on the **number of days you have actually worked**, after accounting for approved leave, Loss of Pay days, deductions, and approved records up to the **25th day** of that month. Salary shall ordinarily be credited within the **first week of the following month**. Any adjustments after the **25th** may be carried forward to the next salary cycle.',
+    ]},
+    { heading: 'Role, Reporting & Working Schedule', items: [
+      `You will be assigned to work with a Groomer, who will be your reporting manager. Your assigned Groomer is ${managerRef}. The assignment may be changed by management from time to time, with intimation to you.`,
+      'You are expected to accompany your assigned Groomer on all day-to-day grooming appointments and to support the Groomer in everything required for each service, including preparing the pet and the work area, handling and calming pets, assisting during bathing, drying and grooming, carrying and cleaning tools, and leaving the customer premises neat after the work is completed.',
+      'Your working schedule shall follow that of your assigned Groomer: **six days per week** with one weekly off day, and daily appointment and duty timings as per customer bookings and route planning. You shall observe the Groomer’s instructions on the job, learn the grooming process, and gradually take on more responsibility as guided.',
+      'Any incentive or bonus applicable to your role may be decided by management from time to time.',
+    ]},
+    { heading: 'Travel', items: [
+      'You will travel to appointments together with your assigned Groomer as per the route plan. Any travel reimbursement shall be as approved by management.',
+    ]},
+    { heading: 'Leave, Holidays & Attendance', items: [
+      `You shall be entitled to **four (4) days of leave per month**. All leave must be requested from, and approved through, your reporting manager, i.e. your assigned Groomer, who will inform the coordinator. Planned leave should preferably be applied for at least one week in advance. Emergency leave must be informed to your Groomer immediately.`,
+      'Salary is calculated on the number of days worked. Any leave taken **beyond four (4) days in a month**, and any absence without approval, shall be treated as **Loss of Pay** for those days.',
+      'Public holidays, if any, shall follow the holiday schedule applicable to your assigned Groomer, as communicated by management. If operational requirements require you to work on an official holiday, the company may provide one extra day salary or compensatory off, as decided by management.',
+      'Repeated late attendance or irregular reporting may affect your performance review.',
+    ]},
+    { heading: 'Probation & Confirmation', items: [
+      `Your first ${PROBATION_MONTHS_WORD} months of employment shall be treated as probation. During this period, your performance, work quality, discipline, punctuality, attendance, and the feedback of your assigned Groomer shall be reviewed.`,
+      'Upon satisfactory completion of probation, your employment may be confirmed in writing.',
+    ]},
+    pick('Duties & Professional Conduct'),
+    pick('Pet Safety'),
+    pick('Payments, Confidentiality'),
+    pick('Termination'),
+    { heading: 'Company Tools & Equipment', items: [
+      'Any tools, equipment, or materials issued to you or handled by you during work remain the property of the company at all times. You shall use them carefully and keep them clean.',
+      'In the event of loss, theft, damage, or misuse due to negligence or carelessness on your part, the cost of repair or replacement may be deducted from your salary, in one or more instalments as deemed appropriate by the company, subject to applicable law. Upon resignation, termination, or end of employment for any reason, all company property must be returned in good condition.',
+    ]},
+  ];
+
+  const acceptance = pick('Acceptance');
+  const sections: RolePolicySection[] = [
+    ...numbered.map((sec, i) => ({ heading: `${i + 1}. ${unnumbered(sec.heading)}`, items: sec.items })),
+    { heading: `${numbered.length + 1}. Acceptance`, items: acceptance.items },
+  ];
+
+  return {
+    title: OFFER_LETTER_TITLE,
+    data: { letter_date: letterDate, effective_date: effectiveDate, preamble, position: 'helper', reporting_groomer: manager },
     sections,
   };
 }

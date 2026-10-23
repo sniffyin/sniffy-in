@@ -37,6 +37,20 @@ const ADDON_INFO: Record<string, { problem: string; solution: string; note?: str
     solution:
       'We carefully trim the face, sanitary region and paw pads to keep these sensitive areas clean, comfortable and mess-free between full haircuts — done gently, without stressing your pet.',
   },
+  'De-shedding': {
+    problem:
+      'Double-coated dogs and heavy-shedding cats hold on to dead undercoat until it drops on the sofa, the bed and your clothes. A normal bath only removes some of it.',
+    solution:
+      'We work conditioner through the coat, then dry and brush out the loosened undercoat in a long, patient blow-out. It cuts shedding for a few weeks. It never involves shaving a double coat, and it does not stop shedding altogether.',
+    note: 'Flat ₹299 on top of a Spa Bath, for dogs and cats, whatever the size.',
+  },
+  'De-matting': {
+    problem:
+      'Mats pull on the skin, trap moisture and hide irritation, and they build up fast in Pune’s humid months, especially on long, curly and Persian coats.',
+    solution:
+      'We comb out light to moderate mats on the dry coat with a conditioning spray and a wide comb. Where a mat is too tight to remove without pain, we clip it instead and tell you before we start.',
+    note: 'Flat ₹299 on top of a Spa Bath. A coat that is too heavily matted to comb is better served by the Hair Cut package.',
+  },
   'Medicated Bath': {
     problem:
       'Persistent itching, flaky skin, redness or a bad smell often point to fungal or bacterial skin trouble that a normal shampoo won’t resolve — and it only gets worse if left untreated.',

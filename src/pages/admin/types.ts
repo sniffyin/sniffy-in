@@ -544,6 +544,8 @@ export const ADD_ONS: AddOnOption[] = [
   { label: 'Hygiene Hair Cut',             price: 299, note: 'face & sanitary' },
   { label: 'Deworming',                    price: 299 },
   { label: 'Special Handling',              price: 199, note: 'senior / strong / reactive dogs' },
+  { label: 'De-shedding',                  price: 299, note: 'undercoat removal' },
+  { label: 'De-matting',                   price: 299, note: 'mats and tangles' },
 ];
 
 // ─── Follow-up options ────────────────────────────────────────

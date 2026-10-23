@@ -16,7 +16,7 @@
  */
 
 import { supabase } from '../../lib/supabase';
-import { buildOfferLetterContent, type OfferLetterData } from './offerLetterTemplate';
+import { buildOfferLetterContent, type OfferLetterData, type OfferLetterPosition } from './offerLetterTemplate';
 
 export type PolicyRole = 'groomer' | 'coordinator' | 'founder';
 
@@ -173,11 +173,15 @@ export async function createOfferLetterLink(opts: {
   createdBy:     string;
   letterDate:    string;
   effectiveDate: string;
+  position?:     OfferLetterPosition;
+  reportingGroomer?: string | null;
 }): Promise<PolicyAcknowledgment> {
   const letter = buildOfferLetterContent({
     employeeName: opts.signerName,
     letterDate: opts.letterDate,
     effectiveDate: opts.effectiveDate,
+    position: opts.position,
+    reportingGroomer: opts.reportingGroomer,
   });
   const { data, error } = await supabase
     .from('policy_acknowledgments')

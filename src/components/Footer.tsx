@@ -1,6 +1,7 @@
 import { Phone, Mail, MapPin, Instagram, ArrowUpRight } from 'lucide-react';
 import { INSTAGRAM_URL, PHONE, EMAIL } from '../data/siteLinks';
 import { localityLinkPrefix } from '../data/puneLocalities';
+import { SERVICE_NAV } from '../data/services/nav';
 
 /**
  * Footer link graph.
@@ -44,6 +45,13 @@ const footerLinks = {
       { name: 'Koregaon Park', href: '/cat-grooming-in-pune/koregaon-park' },
       { name: 'Hadapsar', href: '/cat-grooming-in-pune/hadapsar' },
       { name: 'Aundh', href: '/cat-grooming-in-pune/aundh' },
+    ],
+  },
+  services: {
+    label: 'Services',
+    links: [
+      { name: 'All services', href: '/services' },
+      ...SERVICE_NAV.map((s) => ({ name: s.label, href: `/services/${s.slug}` })),
     ],
   },
   company: {
@@ -128,7 +136,7 @@ export default function Footer() {
           </div>
 
           {/* Nav columns */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {Object.values(footerLinks).map((section) => (
               <div key={section.label}>
                 <h4 className="text-sniffy-yellow font-bold text-sm uppercase tracking-widest mb-3">

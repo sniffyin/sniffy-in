@@ -29,6 +29,7 @@
  * is duplicated. If you restructure the story/review/FAQ components, update the
  * classes here too — or don't, and accept a slightly plainer pre-mount frame.
  */
+import { SERVICE_NAV } from '../src/data/services/nav.ts';
 import type { LocationConfig, LocationStorySection } from '../src/components/location/LocationHero.ts';
 import { deriveStoryMeta } from '../src/data/storyMeta.ts';
 import { blogPosts, type BlogAudience } from '../src/data/blogPosts.ts';
@@ -199,6 +200,8 @@ export function siteNavHtml(): string {
     ['/dog-grooming-in-pune', 'Dog grooming in Pune'],
     ['/cat-grooming-in-pune', 'Cat grooming in Pune'],
     ['/how-it-works', 'How it works'],
+    ['/services', 'Grooming services'],
+    ...SERVICE_NAV.map((s) => [`/services/${s.slug}`, s.label] as [string, string]),
     ['/why-sniffy', 'Why Sniffy'],
     ['/faqs', 'FAQs'],
     ['/blogs', 'Grooming guides'],

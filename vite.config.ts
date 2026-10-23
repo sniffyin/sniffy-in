@@ -5,6 +5,13 @@ import { resolve } from 'path';
 import { createReadStream, existsSync } from 'fs';
 import { ALL_PUNE_CITIES } from './src/data/locationData';
 import { ALL_CAT_PUNE_CITIES } from './src/data/catLocationData';
+import { SERVICES } from './src/data/services';
+
+// Generated service pages (services/<slug>.html) and the /services hub.
+const serviceInputs = Object.fromEntries([
+  ['servicesIndex', resolve(__dirname, 'services/index.html')],
+  ...SERVICES.map((s) => [`service_${s.slug.replace(/-/g, '_')}`, resolve(__dirname, `services/${s.slug}.html`)]),
+]);
 
 const locationInputs = Object.fromEntries(
   ALL_PUNE_CITIES.map(({ slug }) => {
@@ -49,7 +56,7 @@ const catLocationInputs = Object.fromEntries(
 // rule 0; Vite's static middleware does not — it treats the bare directory
 // path as a miss and hands it to the SPA fallback, which renders NotFound.
 // This middleware mirrors the Apache rule so dev/preview match production.
-const HUB_DIRS = ['dog-grooming-in-pune', 'cat-grooming-in-pune'];
+const HUB_DIRS = ['dog-grooming-in-pune', 'cat-grooming-in-pune', 'services'];
 
 const hubIndexMiddleware = () => {
   const handler = (server: { middlewares: { use: (fn: (req: { url?: string }, res: unknown, next: () => void) => void) => void } }) => {
@@ -57,6 +64,8 @@ const hubIndexMiddleware = () => {
       const [path] = (req.url ?? '').split('?');
       const dir = HUB_DIRS.find((d) => path === `/${d}` || path === `/${d}/`);
       if (dir) req.url = `/${dir}/index.html`;
+      // Mirror .htaccess rule 3 (clean URL -> .html) for the generated service pages.
+      else if (/^\/services\/[a-z0-9-]+$/.test(path) && existsSync(resolve(__dirname, `${path.slice(1)}.html`))) req.url = `${path}.html`;
       next();
     });
   };
@@ -152,6 +161,7 @@ export default defineConfig({
         globIgnores: [
           'dog-grooming-in-pune/**',
           'cat-grooming-in-pune/**',
+          'services/**',
           '**/sitemap.xml',
 
           // Admin/groomer-only libraries — ~1.35 MB combined, never touched by
@@ -217,6 +227,7 @@ export default defineConfig({
           // render NotFound for any visitor who already has the SW installed.
           /^\/dog-grooming-in-pune(\/|$)/,
           /^\/cat-grooming-in-pune(\/|$)/,
+          /^\/services(\/|$)/,
           // The error page must not be answered from the precached SPA shell.
           // Without this, a visitor with the SW installed who navigates to
           // /404.html gets index.html — which renders the right thing (App's `*`
@@ -300,6 +311,7 @@ export default defineConfig({
 
         ...locationInputs,
         ...catLocationInputs,
+        ...serviceInputs,
       },
 
       output: {

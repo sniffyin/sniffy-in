@@ -15,6 +15,7 @@ import path from "path";
 import { execFileSync } from "child_process";
 import { ALL_PUNE_CITIES } from "../src/data/locationData.ts";
 import { ALL_CAT_PUNE_CITIES } from "../src/data/catLocationData.ts";
+import { SERVICES } from "../src/data/services/index.ts";
 import { blogPosts } from "../src/data/blogPosts.ts";
 import { SEO_ROUTES } from "../src/data/seoRoutes.ts";
 
@@ -168,6 +169,13 @@ for (const city of ALL_CAT_PUNE_CITIES) {
     changefreq: "weekly",
     source: `${city.slug}.html`,
   });
+}
+
+// ─── Service pages ───────────────────────────────────────────────────────────
+// Generated and committed, so each page's own git history dates it.
+urls.push({ loc: `${BASE_URL}/services`, priority: "0.8", changefreq: "monthly", source: "services/index.html" });
+for (const s of SERVICES) {
+  urls.push({ loc: `${BASE_URL}/services/${s.slug}`, priority: "0.8", changefreq: "monthly", source: `services/${s.slug}.html` });
 }
 
 // ─── Blog posts ──────────────────────────────────────────────────────────────

@@ -15,10 +15,11 @@
     "generate-pune": "npx tsx scripts/generatePunePage.ts",
     "generate-cat-pages": "npx tsx scripts/generateCatLocationPages.ts",
     "generate-cat-pune": "npx tsx scripts/generateCatPunePage.ts",
+    "generate-services": "npx tsx scripts/generateServicePages.ts",
     "generate-sitemap": "tsx scripts/generate-sitemap.ts",
     "check-prices": "npx tsx scripts/checkPrices.ts",
     "prerender-spa": "tsx scripts/prerenderSpa.ts",
-    "generate-all": "npm run generate-blog-index && npm run generate-pages && npm run generate-pune && npm run generate-cat-pages && npm run generate-cat-pune",
+    "generate-all": "npm run generate-blog-index && npm run generate-pages && npm run generate-pune && npm run generate-cat-pages && npm run generate-cat-pune && npm run generate-services",
     "deploy": "npm run check-prices && npm run generate-all && npm run build && npm run prerender-spa && npm run generate-sitemap && npm run preview"
   },
   "dependencies": {
